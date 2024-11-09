@@ -1,50 +1,50 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
+import { RxCalendar } from 'react-icons/rx';
+import { SlLocationPin } from 'react-icons/sl';
 
-const SearchForm = ({ activeTab }) => {
+const SearchForm = (props) => {
+
+    const { activeTab, handleClickBtnLocation } = props;
+
+
     return (
         <div className="search-form">
             {activeTab === "selfDrive" && (
-                <form>
-                    {/* Form content for "Xe tự lái" */}
-                    <div className="mb-3">
-                        <label className="form-label fw-bold">Lộ trình</label>
-                        <div className="d-flex gap-3 custom-radio">
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="tripType" id="tripType1" defaultChecked />
-                                <label className="form-check-label" htmlFor="tripType1">
-                                    Nội thành
-                                </label>
+                <div className="search-form-container sd">
+                    <div className="search-form-item address">
+                        <div className="title">
+                            <div className="wrap-svg">
+                                <SlLocationPin className='location-icon' width="24px" height="24px" />
                             </div>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="tripType" id="tripType2" />
-                                <label className="form-check-label" htmlFor="tripType2">
-                                    Liên tỉnh
-                                </label>
-                            </div>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="tripType" id="tripType3" />
-                                <label className="form-check-label" htmlFor="tripType3">
-                                    Liên tỉnh (1 chiều)
-                                </label>
+                            <p>Pick-up Location</p>
+                        </div>
+                        <div className="choose">
+                            <div className="choose-item has-arrow" onClick={() => handleClickBtnLocation()}>
+                                <div className="here-autocomplete">
+                                    <p className="address pointer">Xa hop Ly, huyen ly nhan, tinh ha nam</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="pickupLocation" className="form-label">Tôi muốn đón tại...</label>
-                        <input type="text" className="form-control" id="pickupLocation" placeholder="Nhập địa điểm" />
-                    </div>
-                    <div className="row mb-3">
-                        <div className="col">
-                            <label htmlFor="startDate" className="form-label">Thời gian</label>
-                            <input type="datetime-local" className="form-control" id="startDate" defaultValue="2024-11-09T08:00" />
+                    <div className="vr"></div>
+                    <div className="search-form-item">
+                        <div className="title">
+                            <div className="wrap-svg">
+                                <RxCalendar className='location-icon' width="24px" height="24px" />
+                            </div>
+                            <p>Pick-up Date</p>
                         </div>
-                        <div className="col">
-                            <label htmlFor="endDate" className="form-label">&nbsp;</label>
-                            <input type="datetime-local" className="form-control" id="endDate" defaultValue="2024-11-09T10:00" />
+                        <div className="choose">
+                            <div className="choose-item has-arrow">
+                                <div className="here-autocomplete">
+                                    <p className="address pointer">Choose date to pick-up and drop-off</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" className="btn btn-search w-100">Tìm Xe</button>
-                </form>
+                    <Button variant='warning btn-search'>Search</Button>
+                </div>
             )}
 
             {activeTab === "withDriver" && (
