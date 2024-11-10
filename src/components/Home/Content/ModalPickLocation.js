@@ -1,27 +1,42 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
+import { CiLocationOn } from 'react-icons/ci';
+import { FaSearch } from 'react-icons/fa';
 
 function ModalPickLocation(props) {
-    const { show, setShow } = props;
+    const { show, setShow, setLocationSelected } = props;
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
 
     const handleSearch = async (e) => {
-        e.preventDefault();
-        const apiKey = 'AIzaSyDtk7qet6fKjvoVOoWp-2UyL5OJCHRQ1X4';
-        const endpoint = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=f4615ca71ae324702:omuauf_lfve&q=${query}`;
+        const apiKey = '15c2d02fb05241cdb742e994522b1dd2';
+        const endpoint = `https://api.positionstack.com/v1/forward?access_key=${apiKey}&query=${encodeURIComponent(query)}`;
+        console.log(endpoint);
         try {
             const response = await axios.get(endpoint);
-            setResults(response.data.predictions);
+            console.log(response);
+            setResults(response.data.data);
         } catch (error) {
             console.error("Error fetching data: ", error);
         }
-    }
+    };
+
+    const handleSelect = (description) => {
+        setQuery(description);
+        setLocationSelected(description);
+        setResults([]);
+        handleClose();
+    };
+
+    const handleInputChange = (e) => {
+        setQuery(e.target.value);
+        setResults([]);
+    };
 
 
     const handleShow = () => setShow(true);
@@ -30,47 +45,51 @@ function ModalPickLocation(props) {
         setShow(false);
     }
 
-
     return (
-        <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter"
+        <Modal show={show} onHide={handleClose}
+            aria-labelledby="contained-modal-title-vcenter"
             backdrop='static'
             size='lg'
             centered
+            className='modal-search-location'
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Using Grid in Modal
+                    Select your location
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body className="grid-example">
-                <Container>
-                    <Row>
-                        <div>
-                            <form onSubmit={handleSearch}>
-                                <input type="text" placeholder="Search for a location" value={query} onChange={(e) => setQuery(e.target.value)} />
-                                <button type="submit">Search</button>
-                            </form>
-                            <ul>
-                                {results.map((result, index) => (<li key={index}>{result.description}</li>))}
-                            </ul>
-                        </div>
-                    </Row>
+            <Modal.Body>
+                <Row className='mb-3 search-input'>
+                    <Col xs={10} md={10}>
+                        <Form.Control type='text' placeholder='Enter your location' value={query} onChange={handleInputChange} />
+                    </Col>
+                    <Col xs={2} md={2}>
+                        <Button onClick={() => handleSearch()} variant='warning' className='btn-search-location'>
+                            <span className="button-text">Search</span>
+                            <span className="button-icon"><FaSearch /></span>
+                        </Button>
+                    </Col>
+                </Row>
+                <Row className='search-suggest'>
+                    {results.length > 0 && (
+                        <>
+                            {results.map((result, index) => (
+                                <div className="location-item">
+                                    <div className="wrap-svg">
+                                        <CiLocationOn />
+                                    </div>
+                                    <div key={index} onClick={() => handleSelect(result.county + ", " + result.region)}>
+                                        {result.county + ", " + result.region}
+                                    </div>
+                                </div>
 
-                    <Row>
-                        <Col xs={6} md={4}>
-                            .col-xs-6 .col-md-4
-                        </Col>
-                        <Col xs={6} md={4}>
-                            .col-xs-6 .col-md-4
-                        </Col>
-                        <Col xs={6} md={4}>
-                            .col-xs-6 .col-md-4
-                        </Col>
-                    </Row>
-                </Container>
+                            ))}
+                        </>
+                    )}
+                </Row>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={handleClose}>Close</Button>
+                <Button onClick={handleClose} variant='outline-secondary'>Close</Button>
             </Modal.Footer>
         </Modal>
     );

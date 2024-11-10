@@ -5,7 +5,9 @@ import { SlLocationPin } from 'react-icons/sl';
 
 const SearchForm = (props) => {
 
-    const { activeTab, handleClickBtnLocation } = props;
+    const { activeTab, handleClickBtnLocation, locationSelected } = props;
+
+
 
 
     return (
@@ -22,7 +24,10 @@ const SearchForm = (props) => {
                         <div className="choose">
                             <div className="choose-item has-arrow" onClick={() => handleClickBtnLocation()}>
                                 <div className="here-autocomplete">
-                                    <p className="address pointer">Xa hop Ly, huyen ly nhan, tinh ha nam</p>
+                                    <p className="address pointer">
+                                        {locationSelected ? locationSelected : "Xa hop Ly, huyen ly nhan, tinh ha nam"}
+
+                                    </p>
                                 </div>
                             </div>
                         </div>
