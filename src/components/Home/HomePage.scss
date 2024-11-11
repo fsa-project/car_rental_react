@@ -138,6 +138,8 @@
 
                 .btn-search {
                     margin-left: 16px;
+                    color: #fff;
+                    font-weight: 500;
 
                     @media (max-width: 767px) {
                         margin-left: 0;
@@ -188,7 +190,8 @@
                 background-color: #f9f9f9;
                 width: 180px;
                 border-bottom: #03212b;
-                color: #919090;
+                color: #b6b6b6;
+                font-weight: 500;
 
                 &:hover {
                     background-color: #f5f5f5;
@@ -320,6 +323,12 @@
                 width: 100%;
                 display: flex;
                 justify-content: center;
+                font-weight: 600;
+                color: white;
+
+                &:hover {
+                    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+                }
 
                 .button-text {
                     display: inline-block;
@@ -359,6 +368,69 @@
                         background: 0#f6f6f6;
                     }
                 }
+            }
+        }
+    }
+}
+
+.modal-pick-date {
+    .modal-content {
+        .modal-header {
+            .modal-title {
+                font-weight: 600;
+            }
+        }
+
+        .modal-body {
+            .time-choose {
+                justify-content: center;
+                display: flex;
+
+                .time-choose-item {
+                    display: flex;
+                    flex-direction: column;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .modal-footer {
+            box-shadow: 0px 0px 0px #857, 0px 20px 35px #888;
+            display: flex;
+            justify-content: space-between;
+
+            .wrap-btn {
+                .btn {
+                    padding: 10px 16px;
+
+                    &.btn-warning {
+                        color: #fff;
+                        margin-left: 10px;
+                    }
+
+                    font-weight: 600;
+
+                    &:hover {
+                        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+                        ;
+                    }
+                }
+            }
+
+            .info-time {
+                p {
+                    font-weight: 300;
+                    margin: 0px;
+
+                    span {
+                        font-weight: 600;
+                    }
+
+                    &.time {
+                        font-weight: 600;
+                    }
+                }
+
             }
         }
     }

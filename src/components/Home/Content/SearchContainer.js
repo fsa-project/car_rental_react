@@ -4,7 +4,7 @@ import SearchForm from './SearchForm';
 
 const SearchContainer = (props) => {
 
-    const { handleClickBtnLocation, locationSelected } = props;
+    const { handleClickBtnLocation, locationSelected, handleClickBtnDate, dateSelected } = props;
     const [activeTab, setActiveTab] = useState("selfDrive");
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -16,6 +16,8 @@ const SearchContainer = (props) => {
             <SearchForm activeTab={activeTab}
                 handleClickBtnLocation={handleClickBtnLocation}
                 locationSelected={locationSelected}
+                handleClickBtnDate={handleClickBtnDate}
+                dateSelected={dateSelected}
             />
         </div>
     );
