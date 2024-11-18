@@ -1,105 +1,164 @@
-.bg {
-    width: 100vw;
-    height: 100vh;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: absolute;
-    filter: blur(8px);
-    -webkit-filter: blur(3px);
+/* Định dạng chung */
+.login-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  /* Chuyển nền thành màu trắng để nổi bật */
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-
-.sign-in__wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: relative;
-    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
-
-
-    form {
-        width: 24rem;
-        max-width: 90%;
-        z-index: 1;
-        animation: showSignInForm 1s;
-        border-radius: 16px !important;
-
-        img {
-            width: 10rem;
-        }
-    }
-
-    .sign-in__header {
-        padding: 10px 10px;
-        pointer-events: auto;
-        z-index: 10;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 10px;
-
-        button {
-            border: none;
-            padding: 8px 15px;
-        }
-
-        span {
-            font-weight: 400;
-        }
-    }
-
-    button {
-        font-weight: 500;
-        color: #fff;
-
-        &:hover {
-            color: #fff;
-        }
-    }
-
-    .register {
-
-        .choose-role {
-            display: flex;
-            justify-content: space-between;
-        }
-
-
-        @media (min-width: 840px) {
-            width: 40%;
-        }
-
-    }
+h4 {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
 }
 
-.sign-in__backdrop {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.3);
+/* Đổi màu input-group-text để đồng bộ với logo */
+.input-group-text {
+  background-color: #ffc107;
+  /* Màu vàng */
+  color: black;
+  border: none;
+  border-radius: 5px 0 0 5px;
 }
 
+.form-control {
+  border-radius: 0 5px 5px 0;
+}
 
-@keyframes showSignInForm {
+.form-group {
+  margin-bottom: 1.5rem;
+}
 
-    0%,
-    30% {
-        transform: translate(0, -150%);
+/* Button styles */
+button {
+  background-color: #ffc107;
+  /* Màu vàng */
+  color: #333;
+  /* Màu đen cho chữ */
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #333;
+  /* Màu đen khi hover */
+  color: #ffc107;
+  /* Màu vàng cho chữ khi hover */
+}
+
+/* Đường kẻ ngăn cách */
+.d-flex .divider {
+  border-left: 1px solid #ddd;
+  height: 100%;
+  margin: 0 1.5rem;
+}
+
+/* Hover & focus effect cho input */
+.form-control:focus,
+.input-group-text:focus {
+  outline: none;
+  box-shadow: 0px 0px 8px rgba(255, 193, 7, 0.5);
+  /* Đổi thành màu vàng */
+  border-color: #ffc107;
+}
+
+/* Link forgot password */
+a {
+  color: #ffc107;
+  /* Màu vàng cho các link */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Checkbox and radio button */
+.form-check-label {
+  margin-left: 0.25rem;
+  color: #555;
+}
+
+/* Các chú thích */
+.form-text {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+/* Media Query cho màn hình nhỏ */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .d-flex .divider {
+    display: none;
+  }
+
+  .col-md-5,
+  .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  /* Đảm bảo lớp tùy chỉnh có độ ưu tiên cao hơn lớp Bootstrap */
+  .custom-btn {
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 0.8rem 1.6rem;
+    transition: all 0.3s ease;
+  }
+
+  .custom-btn:hover {
+    background-color: #333;
+    color: #ffc107;
+    transform: translateY(-2px);
+  }
+
+  .forgot-password-link,
+  .terms-link {
+    color: #070707;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .forgot-password-link:hover,
+  .terms-link:hover {
+    color: #333;
+    text-decoration: underline;
+  }
+
+  .divider {
+    border-left: 1px solid #ccc;
+    height: 100%;
+  }
+
+  .register-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-btn {
+    &:hover {
+      background-color: #e0a800;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
-
-    70%,
-    90% {
-        transform: translate(0, 1rem);
-    }
-
-    80%,
-    100% {
-        transform: translate(0, 0);
-    }
+  }
 }

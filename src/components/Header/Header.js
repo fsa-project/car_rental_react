@@ -11,65 +11,65 @@ import { Offcanvas } from 'react-bootstrap';
 import Avatar from '../../assets/static/image/avatar-default.jpg'
 
 const Header = () => {
-    const [showDropdown, setShowDropdown] = useState(false);
-    const handleToggle = (isOpen) => {
-        setShowDropdown(isOpen);
-    };
+  const [showDropdown, setShowDropdown] = useState(false);
+  const handleToggle = (isOpen) => {
+    setShowDropdown(isOpen);
+  };
 
-    const handleImageClick = () => {
-        setShowDropdown(!showDropdown);
-    }
-
-
-    const navigate = useNavigate();
-
-    const handleLogin = () => {
-        navigate('/login');
-    }
-    const handleRegister = () => {
-        navigate('/register');
-    }
+  const handleImageClick = () => {
+    setShowDropdown(!showDropdown);
+  }
 
 
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate('/login');
+  }
+  const handleRegister = () => {
+    navigate('/register');
+  }
 
 
-    return (
-        <Navbar expand="lg" className="bg-body-tertiary">
-            <Container fluid="sm">
-                <NavLink className='navbar-brand' to={"/"}>
-                    <img
-                        src={Logo}
-                        width="100%"
-                        height="30"
-                        className="d-inline-block align-top"
-                        alt="React Bootstrap logo"
-                    />
-                </NavLink>
-                <Navbar.Toggle aria-controls="offcanvasNavbar-expand-lg" />
-                <Navbar.Offcanvas id="offcanvasNavbar-expand-lg"
-                    aria-labelledby="offcanvasNavbarLabel-expand-lg"
-                    placement="end"
-                >
-                    <Offcanvas.Header closeButton>
-                        <Offcanvas.Title id="offcanvasNavbarLabel-expand-lg">
-                            Carental
-                        </Offcanvas.Title>
-                    </Offcanvas.Header>
-                    <Offcanvas.Body>
-                        <Nav
-                            className="justify-content-end flex-grow-1 pe-3 text-align-center"
-                        >
-                            <NavLink to={"/"} className='nav-link header-link'>My Ride</NavLink>
-                            <NavLink to={"/"} className='nav-link header-link'>Become to Renter</NavLink>
-                            <NavLink to={"/"} className='nav-link header-link'>About us</NavLink>
-                            <div class="vr"></div>
-                        </Nav>
-                        <Nav>
-                            <div className="btn-auth">
-                                <Button variant='light btn-login' onClick={() => handleLogin()}>Sigh in</Button>
-                                <Button variant='outline-dark btn-register' onClick={() => handleRegister()}>Sign up</Button>
-                            </div>
-                            {/* <div className="dropdown-profile">
+
+
+  return (
+    <Navbar expand="lg" className="bg-body-tertiary">
+      <Container fluid="sm">
+        <NavLink className='navbar-brand' to={"/"}>
+          <img
+            src={Logo}
+            width="100%"
+            height="30"
+            className="d-inline-block align-top"
+            alt="React Bootstrap logo"
+          />
+        </NavLink>
+        <Navbar.Toggle aria-controls="offcanvasNavbar-expand-lg" />
+        <Navbar.Offcanvas id="offcanvasNavbar-expand-lg"
+          aria-labelledby="offcanvasNavbarLabel-expand-lg"
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title id="offcanvasNavbarLabel-expand-lg">
+              Carental
+            </Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <Nav
+              className="justify-content-end flex-grow-1 pe-3 text-align-center"
+            >
+              <NavLink to={"/"} className='nav-link header-link'>My Ride</NavLink>
+              <NavLink to={"/"} className='nav-link header-link'>Become to Renter</NavLink>
+              <NavLink to={"/"} className='nav-link header-link'>About us</NavLink>
+              <div class="vr"></div>
+            </Nav>
+            <Nav>
+              <div className="btn-auth">
+                <Button variant='light btn-login' onClick={() => handleLogin()}>Sigh in</Button>
+                <Button variant='outline-dark btn-register' onClick={() => handleRegister()}>Sign up</Button>
+              </div>
+              {/* <div className="dropdown-profile">
                                 <div className="avatar avatar--s" onClick={handleImageClick}>
                                     <img src={Avatar} loading='lazy' />
                                 </div>
@@ -87,16 +87,16 @@ const Header = () => {
                                 </NavDropdown>
                             </div> */}
 
-                        </Nav>
-                    </Offcanvas.Body>
-                </Navbar.Offcanvas>
-            </Container>
-        </Navbar>
+            </Nav>
+          </Offcanvas.Body>
+        </Navbar.Offcanvas>
+      </Container>
+    </Navbar>
 
 
 
 
-    )
+  )
 }
 
-export default Header
+export default Header;
