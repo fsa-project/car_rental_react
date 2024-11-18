@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import background from '../../assets/homepage_d.jpg'
-import { Container } from 'react-bootstrap'
 import HeroSection from './Content/HeroSection'
 import SearchContainer from './Content/SearchContainer'
 import ModalPickLocation from './Content/ModalPickLocation'
 import '../Home/HomePage.scss'
 import ModalPickDate from './Content/ModalPickDate'
+import WhyUs from './Content/WhyUs'
 
 const HomePage = () => {
 
@@ -23,7 +22,7 @@ const HomePage = () => {
     }
 
     return (
-        <Container className="homepage-container">
+        <div className="homepage-container">
             <HeroSection />
             <SearchContainer
                 handleClickBtnLocation={handleClickBtnLocation}
@@ -43,7 +42,8 @@ const HomePage = () => {
                 dateSelected={dateSelected}
                 setDateSelected={setDateSelected}
             />
-        </Container>
+            <WhyUs />
+        </div>
     )
 }
 

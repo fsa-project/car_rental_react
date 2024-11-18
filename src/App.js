@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 
 function App() {
   return (
-    <div fluid="lg" className="app-container">
+    <Container fluid="lg" className="app-container">
       <Row>
         <div className="header-container">
           <Header />
@@ -20,7 +20,7 @@ function App() {
         </div>
       </Row>
 
-    </div>
+    </Container>
   );
 }
 

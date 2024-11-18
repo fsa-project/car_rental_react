@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -6,10 +6,33 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Logo from '../../assets/logo51.png'
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Offcanvas } from 'react-bootstrap';
+import Avatar from '../../assets/static/image/avatar-default.jpg'
 
 const Header = () => {
+    const [showDropdown, setShowDropdown] = useState(false);
+    const handleToggle = (isOpen) => {
+        setShowDropdown(isOpen);
+    };
+
+    const handleImageClick = () => {
+        setShowDropdown(!showDropdown);
+    }
+
+
+    const navigate = useNavigate();
+
+    const handleLogin = () => {
+        navigate('/login');
+    }
+    const handleRegister = () => {
+        navigate('/register');
+    }
+
+
+
+
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid="sm">
@@ -43,14 +66,27 @@ const Header = () => {
                         </Nav>
                         <Nav>
                             <div className="btn-auth">
-                                <Button variant='light btn-login' >Sigh in</Button>
-                                <Button variant='outline-dark btn-register' >Sign up</Button>
+                                <Button variant='light btn-login' onClick={() => handleLogin()}>Sigh in</Button>
+                                <Button variant='outline-dark btn-register' onClick={() => handleRegister()}>Sign up</Button>
                             </div>
-                            {/* <NavDropdown title="Setting" id="offcanvasNavbarDropdown-expand-lg">
-                            <NavDropdown.Item >Login</NavDropdown.Item>
-                            <NavDropdown.Item >Logout</NavDropdown.Item>
-                            <NavDropdown.Item >Profile</NavDropdown.Item>
-                        </NavDropdown> */}
+                            {/* <div className="dropdown-profile">
+                                <div className="avatar avatar--s" onClick={handleImageClick}>
+                                    <img src={Avatar} loading='lazy' />
+                                </div>
+                                <NavDropdown
+                                    title="Do Thuat"
+                                    id="offcanvasNavbarDropdown-expand-lg"
+                                    show={showDropdown}
+                                    onClick={() => handleToggle(true)}
+                                    onMouseLeave={() => handleToggle(false)}
+                                >
+                                    <NavDropdown.Item >My profile</NavDropdown.Item>
+                                    <NavDropdown.Item >My Bookings</NavDropdown.Item>
+                                    <NavDropdown.Item >My Wallet</NavDropdown.Item>
+                                    <NavDropdown.Item >Log out</NavDropdown.Item>
+                                </NavDropdown>
+                            </div> */}
+
                         </Nav>
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>

@@ -6,16 +6,18 @@ import { useNavigate } from "react-router-dom";
 import BackgroundImage from "../../assets/login_background.jpg";
 import Logo from "../../assets/logo51.png";
 import { toast } from "react-toastify";
-import { useDispatch } from 'react-redux';
-import doLogin from "../../redux/action/userAction";
-import { postLogin } from "../../service/apiService";
+import { postRegister } from "../../service/apiService";
 
-
-const Login = () => {
-    const [inputEmail, setInputEmail] = useState("");
+const Register = () => {
+    const [inputName, setInputName] = useState("");
     const [inputPassword, setInputPassword] = useState("");
+    const [inputPhone, setInputPhone] = useState("");
+    const [inputConfirmPassword, setInputConfirmPassword] = useState("");
+    const [inputEmail, setInputEmail] = useState("");
+    const [inputRole, setInputRole] = useState("");
+
+
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const [show, setShow] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -25,22 +27,24 @@ const Login = () => {
         event.preventDefault();
         setLoading(true);
         await delay(500);
-        let data = await postLogin(inputEmail, inputPassword);
+        let data = await postRegister(inputEmail, inputPassword, inputName, inputPhone, inputRole);
         console.log(data);
 
-        if (data && data.error === null) {
+        if (data && data.EC === 0) {
             setShowSuccess(true);
-            //dispatch
-            dispatch(doLogin(data));
-            toast.success(data.message);
+            toast.success(data.EM);
             await delay(500);
             navigate("/");
         }
-        if (data && data.error !== null) {
+        if (data && data.EC !== 0) {
             setShow(true);
         }
         setLoading(false);
     };
+
+    const handleLogin = () => {
+        navigate("/login");
+    }
 
     const handlePassword = () => { };
 
@@ -48,38 +52,28 @@ const Login = () => {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    const handleRegister = () => {
-        navigate("/register");
-    }
-
-
     return (
-
         <>
-            <div className="bg" style={{ backgroundImage: `url(${BackgroundImage})` }}>
-
-            </div>
+            <div className="bg" style={{ backgroundImage: `url(${BackgroundImage})` }}></div>
             <div
                 className="sign-in__wrapper"
-
             >
                 <div className="sign-in__header w-100 mb-2 position-absolute top-0 start-50 translate-middle-x text-white text-end">
-                    <span>Don't have an account yet?</span>
-                    <Button variant="outline-warning" onClick={handleRegister}>Sign Up</Button>
+                    <span>Already have an account?</span><Button variant="outline-warning" onClick={handleLogin}>Sign In</Button>
                 </div>
                 <div className="sign-in__backdrop"></div>
 
 
-                <Form className="shadow p-4 bg-white rounded" onSubmit={handleSubmit}>
+                <Form className="shadow p-4 bg-white rounded register" onSubmit={handleSubmit}>
                     <img
                         className="img-thumbnail mx-auto d-block mb-2"
                         src={Logo}
                         alt="logo"
                     />
-                    <div className="h4 mb-2 text-center">Sign In</div>
+                    <div className="h4 mb-2 text-center">Sign Up</div>
                     {show ? (
                         <Alert
-                            className="mb-2"
+                            className="mb-3"
                             variant="danger"
                             onClose={() => setShow(false)}
                             dismissible
@@ -92,18 +86,28 @@ const Login = () => {
 
                     {showSuccess ? (
                         <Alert
-                            className="mb-2"
+                            className="mb-3"
                             variant="success"
                             onClose={() => setShowSuccess(false)}
                             dismissible
                         >
-                            Login success.
+                            Register success.
                         </Alert>
                     ) : (
                         <div />
                     )}
-                    <Form.Group className="mb-2" controlId="email">
-                        <Form.Label>Email</Form.Label>
+                    <Form.Group className="mb-3" controlId="name">
+                        <Form.Label>Name*</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={inputName}
+                            placeholder="Name"
+                            onChange={(e) => setInputName(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="email">
+                        <Form.Label>Email*</Form.Label>
                         <Form.Control
                             type="text"
                             value={inputEmail}
@@ -112,8 +116,18 @@ const Login = () => {
                             required
                         />
                     </Form.Group>
-                    <Form.Group className="mb-2" controlId="password">
-                        <Form.Label>Password</Form.Label>
+                    <Form.Group className="mb-3" controlId="password">
+                        <Form.Label>Phone*</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={inputPhone}
+                            placeholder="Phone"
+                            onChange={(e) => setInputPhone(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="password">
+                        <Form.Label>Password*</Form.Label>
                         <Form.Control
                             type="password"
                             value={inputPassword}
@@ -122,26 +136,44 @@ const Login = () => {
                             required
                         />
                     </Form.Group>
-                    <Form.Group className="mb-2" controlId="checkbox">
-                        <Form.Check type="checkbox" label="Remember me" />
+                    <Form.Group className="mb-3" controlId="username">
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={inputConfirmPassword}
+                            placeholder="Confirm password"
+                            onChange={(e) => setInputConfirmPassword(e.target.value)}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3 choose-role">
+                        <Form.Check
+                            type='radio'
+                            label="I want to rent a car"
+                            name="group1"
+                            id="radio1"
+                            inline
+                        />
+                        <Form.Check
+                            inline
+                            name="group1"
+                            type='radio'
+                            label="I am a car owner"
+                            id="radio2"
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="checkbox">
+                        <Form.Check type="checkbox" label="I have read and agree with the Term" />
                     </Form.Group>
                     {!loading ? (
                         <Button className="w-100" variant="warning" type="submit">
-                            Log In
+                            Register
                         </Button>
                     ) : (
                         <Button className="w-100" variant="warning" type="submit" disabled>
-                            Logging In...
+                            Register In...
                         </Button>
                     )}
                     <div className="d-grid justify-content-end">
-                        <Button
-                            className="text-muted px-0"
-                            variant="link"
-                            onClick={handlePassword}
-                        >
-                            Forgot password?
-                        </Button>
                         <Button
                             className="text-muted px-0"
                             variant="link"
@@ -153,8 +185,7 @@ const Login = () => {
                 </Form>
             </div>
         </>
-
     );
 };
 
-export default Login;
+export default Register;

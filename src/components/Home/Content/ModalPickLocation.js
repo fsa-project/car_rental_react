@@ -18,7 +18,7 @@ function ModalPickLocation(props) {
         const endpoint = `https://api.positionstack.com/v1/forward?access_key=${apiKey}&query=${encodeURIComponent(query)}`;
         console.log(endpoint);
         try {
-            const response = await axios.get(endpoint);
+            let response = await axios.get(endpoint);
             console.log(response);
             setResults(response.data.data);
         } catch (error) {
