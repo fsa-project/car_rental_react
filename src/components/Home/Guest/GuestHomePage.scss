@@ -1,0 +1,124 @@
+.guest-homepage {
+  font-family: Arial, sans-serif;
+  min-height: 100vh; /* Đảm bảo toàn bộ trang chiếm ít nhất chiều cao màn hình */
+  display: flex;
+  flex-direction: column;
+}
+
+.header-section {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+
+  height: 88vh;
+  box-sizing: border-box;
+
+  .left-section,
+  .right-section {
+    flex: 0 0 50%;
+    padding: 2rem;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .left-section {
+    background-color: #000000; /* Màu nền đen cho phần trái */
+  }
+
+  .right-section {
+    background-color: #ffc107; /* Màu vàng làm nền cho phần phải */
+  }
+
+  h2 {
+    font-size: 2rem; /* Tăng kích thước chữ cho tiêu đề */
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  p {
+    font-size: 1.2rem; /* Tăng kích thước chữ cho đoạn văn */
+    margin-bottom: 1.5rem;
+    line-height: 1.5; /* Tăng khoảng cách dòng cho dễ đọc */
+  }
+
+  button {
+    margin-top: 0.5rem;
+    font-weight: bold;
+    color: #000000; /* Màu đen cho chữ trong button */
+    background-color: #ffc107; /* Nền button là vàng */
+    border: 2px solid #000000;
+    padding: 0.8rem 2rem; /* Thêm padding để button nổi bật */
+    font-size: 1rem; /* Tăng kích thước chữ cho button */
+    border-radius: 25px; /* Làm tròn các góc của button */
+    transition: background-color 0.3s ease; /* Thêm hiệu ứng chuyển màu khi hover */
+  }
+
+  button:hover {
+    background-color: #e0a800; /* Thay đổi màu khi hover */
+  }
+}
+
+.main-section {
+  flex: 1; /* Đảm bảo phần main chiếm phần còn lại của màn hình */
+  padding: 3rem 2rem; /* Thêm padding đều để tạo không gian */
+  display: flex;
+  flex-direction: column; /* Căn chỉnh phần tử theo chiều dọc */
+  justify-content: center; /* Căn giữa nội dung theo chiều dọc */
+  align-items: center; /* Căn giữa theo chiều ngang */
+  text-align: center; /* Căn giữa chữ */
+}
+
+.why-us-section,
+.testimonials-section,
+.location-section {
+  background-color: #f0f0f0; /* Xám nhạt cho nền section */
+  color: #000000; /* Màu đen cho chữ */
+  padding: 2rem 0;
+  box-sizing: border-box;
+  margin: 1rem 0; /* Tạo khoảng cách giữa các section */
+}
+
+h3 {
+  color: #ffc107; /* Màu vàng cho tiêu đề */
+  margin-bottom: 1rem;
+  font-weight: bold;
+  font-size: 1.8rem; /* Tăng kích thước chữ cho tiêu đề */
+}
+
+.card {
+  border: none;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #000000;
+  padding: 1.5rem;
+  text-align: center; /* Căn giữa nội dung trong card */
+  margin-bottom: 2rem; /* Tạo khoảng cách giữa các card */
+}
+
+.card img.rounded-circle {
+  width: 70px; /* Tăng kích thước của ảnh tròn */
+  height: 70px;
+  margin-bottom: 1rem; /* Tạo khoảng cách dưới ảnh */
+}
+
+.card .icon {
+  font-size: 2.5rem; /* Kích thước icon lớn hơn */
+  color: #ffc107; /* Màu vàng cho icon */
+  margin-bottom: 1rem; /* Khoảng cách giữa icon và nội dung */
+}
+
+.card .card-body {
+  font-size: 1rem; /* Kích thước chữ trong card */
+  line-height: 1.6;
+}
+
+.card .card-title {
+  font-size: 1.5rem; /* Kích thước tiêu đề trong card */
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}

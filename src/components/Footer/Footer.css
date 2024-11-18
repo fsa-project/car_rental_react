@@ -1,0 +1,15 @@
+/* Mã màu của logo */
+.footer-title,
+.footer-link {
+  color: #000000; /* Đổi mã màu này thành màu logo của bạn */
+}
+
+.footer-link:hover {
+  color: #ff8c00; /* Màu khi hover, có thể điều chỉnh nếu cần */
+  text-decoration: underline;
+}
+
+.footer-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
