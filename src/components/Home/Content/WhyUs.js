@@ -4,6 +4,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import WhyUsCard from './WhyUsCard';
+import './component.scss'
 
 import Image1 from '../../../assets/static/image/image1.svg';
 import Image2 from '../../../assets/static/image/image2.svg';

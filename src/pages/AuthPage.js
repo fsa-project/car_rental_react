@@ -6,14 +6,13 @@ import "../components/Auth/Login.scss";
 
 function AuthPage() {
   return (
-    <Container className="p-4 login-container">
+    <Container className="p-4 auth-container">
       <br></br>
       <br></br>
       <Row>
         <Col md={5} className="d-flex flex-column">
           <Login />
         </Col>
-        {/* Line */}
         <Col
           md={1}
           className="d-flex justify-content-center align-items-center"

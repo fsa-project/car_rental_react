@@ -18,6 +18,7 @@ import AuthPage from "./pages/AuthPage";
 import CarDetails from "./components/Car/CarDetails";
 import EditProfile from "./components/User/EditProfile";
 import SearchCar from "./pages/SearchCar";
+import { ToastContainer } from "react-toastify";
 
 const Layout = () => {
   return (
@@ -40,6 +41,17 @@ const Layout = () => {
           <Route path="/searchCar" element={<SearchCar />} />
         </Route>
       </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light" />
     </>
   );
 };

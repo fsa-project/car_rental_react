@@ -1,7 +1,8 @@
 import axios from "../utils/axiosCustomize"
 
 const postLogin = (userEmail, userPassword) => {
-    return axios.post(`users`, { username: userEmail, password: userPassword }, {
+    axios.defaults.withCredentials = true;
+    return axios.post(`auth/login`, { username: userEmail, password: userPassword }, {
         headers: {
             'Content-Type': 'application/json',
         },

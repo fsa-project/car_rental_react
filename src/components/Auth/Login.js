@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import "./Login.scss";
-import ForgotPass from "./ForgotPass.js";
+import doLogin from "../../redux/action/userAction.js"
 import { Link } from "react-router-dom";
+import { postLogin, postRegister } from "../../service/apiService.js";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -17,23 +23,32 @@ const Login = () => {
     });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Logging in with:", formData.email, formData.password);
+
+    let data = await postLogin(formData.email, formData.password);
+    console.log(data);
+
+    if (data && data.error === null) {
+      //dispatch
+      dispatch(doLogin(data));
+      toast.success(data.message);
+      navigate("/");
+    }
+    if (data && data.error !== null) {
+      toast.error(data.message);
+    }
+
   };
 
   return (
     <Container>
-      <Row style={{ paddingTop: "30px", paddingBottom: "80px" }}>
-        {/* Form Đăng Nhập */}
+      <Row>
         <h4>LOG IN USING YOUR ACCOUNT</h4>
         <Form onSubmit={handleLogin}>
           <Form.Group controlId="loginEmail" className="mb-3">
-            <Form.Label>Your email address</Form.Label>
+            <Form.Label>Email</Form.Label>
             <div className="input-group">
-              <span className="input-group-text">
-                <i className="bi bi-envelope"></i>
-              </span>
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -46,9 +61,6 @@ const Login = () => {
           <Form.Group controlId="loginPassword" className="mb-3">
             <Form.Label>Password</Form.Label>
             <div className="input-group">
-              <span className="input-group-text">
-                <i className="bi bi-lock"></i>
-              </span>
               <Form.Control
                 type="password"
                 placeholder="Password"
@@ -67,19 +79,16 @@ const Login = () => {
 
           <Button
             style={{
-              backgroundColor: "#ffc107",
-              color: "#000",
+              color: "#fff",
               border: "none",
               fontWeight: "bold",
-              borderRadius: "8px",
-              padding: "0.8rem 1.6rem",
-              transition: "all 0.3s ease",
+              padding: "0.8rem 1.6rem"
             }}
-            variant="primary"
+            variant="warning"
             type="submit"
             className="w-100 custom-btn"
           >
-            <i className="bi bi-person-fill"></i> LOG IN
+            LOG IN
           </Button>
         </Form>
       </Row>

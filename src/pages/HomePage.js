@@ -8,6 +8,7 @@ import Header from "../components/Header/Header";
 import GuestHomePage from "../components/Home/Guest/GuestHomePage";
 import GuestPage from "./GuestPage";
 import "../pages/HomePage.scss";
+import WhyUs from "../components/Home/Content/WhyUs";
 const HomePage = () => {
   const [showModalPickLocation, setShowModalPickLocation] = useState(false);
   const [showModalPickDate, setShowModalPickDate] = useState(false);
@@ -43,6 +44,7 @@ const HomePage = () => {
         dateSelected={dateSelected}
         setDateSelected={setDateSelected}
       />
+      <WhyUs />
       <GuestPage />
     </Container>
   );

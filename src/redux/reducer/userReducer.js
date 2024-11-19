@@ -6,10 +6,8 @@ import { FETCH_USER_LOGIN_SUCCESS } from '../action/userAction';
 const INITIAL_STATE = {
     account: {
         access_token: '',
-        refresh_token: '',
-        username: '',
-        image: '',
-        role: ''
+        email: '',
+        name: '',
     },
     isAuthenticated: false
 };
@@ -20,11 +18,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
 
             return {
                 ...state, account: {
-                    access_token: action?.payload?.DT?.access_token,
-                    refresh_token: action?.payload?.DT?.refresh_token,
-                    username: action?.payload?.DT?.username,
-                    image: action?.payload?.DT?.image,
-                    role: action?.payload?.DT?.role
+                    access_token: action?.payload?.data?.access_token,
+                    email: action?.payload?.data?.user?.email,
+                    name: action?.payload?.data?.user?.username
+                    // image: action?.payload?.DT?.image,
+                    // role: action?.payload?.DT?.role
                 },
                 isAuthenticated: true
             };

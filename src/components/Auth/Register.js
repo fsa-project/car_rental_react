@@ -1,6 +1,7 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
 import "./Login.scss";
 import React from "react";
+import { FaClock } from "react-icons/fa";
 
 function Register() {
   const [formData, setFormData] = React.useState({
@@ -38,9 +39,6 @@ function Register() {
         <Form.Group controlId="signupName" className="mb-3">
           <Form.Label>Your Name</Form.Label>
           <div className="input-group">
-            <span className="input-group-text">
-              <i className="bi bi-person"></i>
-            </span>
             <Form.Control
               type="text"
               placeholder="Your name"
@@ -53,9 +51,6 @@ function Register() {
         <Form.Group controlId="signupEmail" className="mb-3">
           <Form.Label>Your email address</Form.Label>
           <div className="input-group">
-            <span className="input-group-text">
-              <i className="bi bi-envelope"></i>
-            </span>
             <Form.Control
               type="email"
               placeholder="Your email address"
@@ -68,9 +63,6 @@ function Register() {
         <Form.Group controlId="signupPhone" className="mb-3">
           <Form.Label>Your phone number</Form.Label>
           <div className="input-group">
-            <span className="input-group-text">
-              <i className="bi bi-telephone"></i>
-            </span>
             <Form.Control
               type="text"
               placeholder="Your phone number"
@@ -83,9 +75,6 @@ function Register() {
         <Form.Group controlId="signupPassword" className="mb-3">
           <Form.Label>Pick a password</Form.Label>
           <div className="input-group">
-            <span className="input-group-text">
-              <i className="bi bi-lock"></i>
-            </span>
             <Form.Control
               type="password"
               placeholder="Pick a password"
@@ -101,9 +90,6 @@ function Register() {
         <Form.Group controlId="confirmPassword" className="mb-3">
           <Form.Label>Confirm password</Form.Label>
           <div className="input-group">
-            <span className="input-group-text">
-              <i className="bi bi-lock"></i>
-            </span>
             <Form.Control
               type="password"
               placeholder="Confirm password"
@@ -113,62 +99,54 @@ function Register() {
             />
           </div>
         </Form.Group>
-        <Row>
-          <Col md={7}>
-            <Form.Check
-              type="radio"
-              label="I want to rent a car"
-              name="userType"
-              value="renter"
-              onChange={handleChange}
-              className="mb-2"
-              checked={formData.userType === "renter"}
-            />
-          </Col>
-          <Col md={5}>
-            <Form.Check
-              type="radio"
-              label="I am a car owner"
-              name="userType"
-              value="owner"
-              onChange={handleChange}
-              className="mb-3"
-              checked={formData.userType === "owner"}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col md={8}>
-            <Form.Check
-              type="checkbox"
-              label="I have read and agree with the Terms and Conditions"
-              name="agreeToTerms"
-              onChange={handleChange}
-              checked={formData.agreeToTerms}
-              className="mb-3"
-            />
-          </Col>
-          <Col md={4}>
-            <a href="/terms" className="terms-link">
-              Terms of Use
-            </a>
-          </Col>
-        </Row>
+        <div className="select-row">
+          <Form.Check
+            type="radio"
+            label="I want to rent a car"
+            name="userType"
+            value="renter"
+            onChange={handleChange}
+            className="mb-2"
+            checked={formData.userType === "renter"}
+          />
+          <Form.Check
+            type="radio"
+            label="I am a car owner"
+            name="userType"
+            value="owner"
+            onChange={handleChange}
+            className="mb-3"
+            checked={formData.userType === "owner"}
+          />
+        </div>
+        <div className="select-row">
+          <Form.Check
+            type="checkbox"
+            label="I have read and agree with the Terms and Conditions"
+            name="agreeToTerms"
+            onChange={handleChange}
+            checked={formData.agreeToTerms}
+            className="mb-3"
+          />
+          <a href="/terms" className="terms-link">
+            Terms of Use
+          </a>
+        </div>
         <Button
           style={{
-            backgroundColor: "#ffc107",
-            color: "#000",
+            color: "#fff",
             border: "none",
             fontWeight: "bold",
             borderRadius: "8px",
             padding: "0.8rem 1.6rem",
             transition: "all 0.3s ease",
           }}
+          variant="warning"
           type="submit"
           className="custom-btn w-100"
           disabled={!formData.agreeToTerms}
         >
-          <i className="bi bi-person-plus-fill"></i> SIGN UP
+          SIGN UP
         </Button>
       </Form>
     </div>
