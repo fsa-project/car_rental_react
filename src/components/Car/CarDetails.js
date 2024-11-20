@@ -6,11 +6,11 @@ function CarDetails() {
     <Container>
       <div
         className="car-details-container"
-        style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}
+        style={{ maxWidth: "700%", margin: "0 auto", padding: "20px" }}
       >
         <div className="d-flex justify-content-between">
           {/* Carousel */}
-          <div style={{ width: "1000px", paddingRight: "20px" }}>
+          <div style={{ width: "60%", paddingRight: "20px" }}>
             <Carousel>
               <Carousel.Item>
                 <img
@@ -29,7 +29,7 @@ function CarDetails() {
               <Carousel.Item>
                 <img
                   className="d-block w-100"
-                  src="https://vinfasthadong.com.vn/wp-content/uploads/2023/10/VinFast-VF3-mau-cam-noc-trang-scaled-1.jpg"
+                  src="https://cmu-cdn.vinfast.vn/2024/11/fd50e666-vinfastso1-1536x864.jpg"
                   alt="Car Image 3"
                 />
               </Carousel.Item>
