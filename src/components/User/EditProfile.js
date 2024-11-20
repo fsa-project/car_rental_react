@@ -1,12 +1,53 @@
 import React, { useState } from "react";
-import { Tabs, Tab, Table, Container } from "react-bootstrap";
+import { Tabs, Tab, Table, Container, Form, Button } from "react-bootstrap";
 
 const EditProfile = () => {
   const [key, setKey] = useState("basic");
 
+  // State quản lý thông tin cơ bản
+  const [basicInfo, setBasicInfo] = useState({
+    fullName: "John Doe",
+    dob: "1990-01-01",
+    phone: "123-456-789",
+    email: "johndoe@example.com",
+  });
+
+  // State quản lý chi tiết thông tin
+  const [details, setDetails] = useState({
+    nationalId: "123456789",
+    drivingLicense: "ABC123456",
+    address: "123 Street, City, Country",
+  });
+
+  // Hàm cập nhật state cho mục cơ bản
+  const handleBasicInfoChange = (e) => {
+    const { name, value } = e.target;
+    setBasicInfo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Hàm cập nhật state cho mục chi tiết
+  const handleDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Hàm xử lý lưu dữ liệu
+  const handleSave = (section) => {
+    if (section === "basic") {
+      console.log("Saved Basic Information:", basicInfo);
+    } else if (section === "details") {
+      console.log("Saved Details:", details);
+    } else {
+      console.log("Security changes saved");
+    }
+    alert(
+      `${section.charAt(0).toUpperCase() + section.slice(1)} information saved!`
+    );
+  };
+
   return (
     <Container>
-      <br></br>
+      <br />
       <h2>Edit Profile</h2>
       <div className="container mt-4">
         <Tabs
@@ -21,37 +62,95 @@ const EditProfile = () => {
               <tbody>
                 <tr>
                   <td>Full Name:</td>
-                  <td>John Doe</td>
+                  <td>
+                    <Form.Control
+                      type="text"
+                      name="fullName"
+                      value={basicInfo.fullName}
+                      onChange={handleBasicInfoChange}
+                    />
+                  </td>
                 </tr>
                 <tr>
                   <td>Date of Birth:</td>
-                  <td>01/01/1990</td>
+                  <td>
+                    <Form.Control
+                      type="date"
+                      name="dob"
+                      value={basicInfo.dob}
+                      onChange={handleBasicInfoChange}
+                    />
+                  </td>
                 </tr>
                 <tr>
                   <td>Phone Number:</td>
-                  <td>123-456-789</td>
+                  <td>
+                    <Form.Control
+                      type="text"
+                      name="phone"
+                      value={basicInfo.phone}
+                      onChange={handleBasicInfoChange}
+                    />
+                  </td>
                 </tr>
                 <tr>
                   <td>Email Address:</td>
-                  <td>johndoe@example.com</td>
+                  <td>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={basicInfo.email}
+                      onChange={handleBasicInfoChange}
+                    />
+                  </td>
                 </tr>
               </tbody>
             </Table>
+            <Button
+              className="btn btn-secondary"
+              onClick={() => handleSave("basic")}
+            >
+              Save Basic Information
+            </Button>
           </Tab>
 
           {/* Tab Details */}
           <Tab eventKey="details" title="Details">
             <div className="mt-3">
-              <p>
-                <strong>National ID No.:</strong> 123456789
-              </p>
-              <p>
-                <strong>Driving License:</strong> ABC123456
-              </p>
-              <p>
-                <strong>Address:</strong> 123 Street, City, Country
-              </p>
+              <Form.Group className="mb-3">
+                <Form.Label>National ID No.:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="nationalId"
+                  value={details.nationalId}
+                  onChange={handleDetailsChange}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Driving License:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="drivingLicense"
+                  value={details.drivingLicense}
+                  onChange={handleDetailsChange}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Address:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="address"
+                  value={details.address}
+                  onChange={handleDetailsChange}
+                />
+              </Form.Group>
             </div>
+            <Button
+              className="btn btn-secondary"
+              secondaryonClick={() => handleSave("details")}
+            >
+              Save Details
+            </Button>
           </Tab>
 
           {/* Tab Security */}
@@ -83,9 +182,13 @@ const EditProfile = () => {
                     placeholder="Confirm new password"
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">
-                  Save
-                </button>
+                <Button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => handleSave("security")}
+                >
+                  Save Security
+                </Button>
               </form>
             </div>
           </Tab>

@@ -18,6 +18,8 @@ import AuthPage from "./pages/AuthPage";
 import CarDetails from "./components/Car/CarDetails";
 import EditProfile from "./components/User/EditProfile";
 import SearchCar from "./pages/SearchCar";
+import BookingPage from "./pages/BookingPage";
+import BookingDetail from "./components/Booking/BookingDetail";
 import { ToastContainer } from "react-toastify";
 
 const Layout = () => {
@@ -39,6 +41,8 @@ const Layout = () => {
           <Route path="/carDetails" element={<CarDetails />} />
           <Route path="/editProfile" element={<EditProfile />} />
           <Route path="/searchCar" element={<SearchCar />} />
+          <Route path="/booking" element={<BookingPage />} />
+          <Route path="/test" element={<BookingDetail />} />
         </Route>
       </Routes>
       <ToastContainer
