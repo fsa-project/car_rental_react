@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import "./Login.scss";
-import doLogin from "../../redux/action/userAction.js"
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../../redux/action/userAction.js';
 import { Link } from "react-router-dom";
 import { postLogin, postRegister } from "../../service/apiService.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -27,11 +27,11 @@ const Login = () => {
     e.preventDefault();
 
     let data = await postLogin(formData.email, formData.password);
-    console.log(data);
+    console.log(data.data);
 
     if (data && data.error === null) {
       //dispatch
-      dispatch(doLogin(data));
+      dispatch(loginUser(data.data));
       toast.success(data.message);
       navigate("/");
     }
