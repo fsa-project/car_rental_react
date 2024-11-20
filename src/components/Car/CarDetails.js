@@ -10,7 +10,7 @@ function CarDetails() {
       >
         <div className="d-flex justify-content-between">
           {/* Carousel */}
-          <div style={{ width: "60%", paddingRight: "20px" }}>
+          <div style={{ width: "1000px", paddingRight: "20px" }}>
             <Carousel>
               <Carousel.Item>
                 <img

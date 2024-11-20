@@ -20,6 +20,7 @@ import EditProfile from "./components/User/EditProfile";
 import SearchCar from "./pages/SearchCar";
 import BookingPage from "./pages/BookingPage";
 import BookingDetail from "./components/Booking/BookingDetail";
+import MyBooking from "./components/Booking/MyBooking";
 
 const Layout = () => {
   return (
@@ -42,6 +43,7 @@ const Layout = () => {
           <Route path="/searchCar" element={<SearchCar />} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/test" element={<BookingDetail />} />
+          <Route path="/myBooking" element={<MyBooking/>} />
         </Route>
       </Routes>
     </>
