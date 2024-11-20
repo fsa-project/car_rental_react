@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "./components/Footer/Footer";
 import Logo from "../src/assets/logo51.png";
 import { Helmet } from "react-helmet";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (

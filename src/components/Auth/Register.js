@@ -1,6 +1,7 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
 import "./Login.scss";
 import React from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 function Register() {
   const [formData, setFormData] = React.useState({
@@ -19,7 +20,8 @@ function Register() {
     if (formData.newPassword === formData.confirmPassword) {
       console.log("Signing up with:", formData);
     } else {
-      alert("Passwords do not match");
+      alert("noooo");
+      toast.error("Password do not match");
     }
   };
 
