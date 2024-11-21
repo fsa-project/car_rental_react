@@ -3,23 +3,26 @@ import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import User from "./components/User/User";
 
-import Login from "./components/Auth/Login";
 import App from "./App";
 import TermOfUse from "./pages/TermOfUse";
-import GuestHomePage from "./components/Home/Guest/GuestHomePage";
 import GuestPage from "./pages/GuestPage";
 import NotFoundPage from "./pages/NotFound/NotFoundPage";
 import OwnerPage from "./pages/OwnerPage/OwnerPage";
 import ForgotPass from "./components/Auth/ForgotPass";
 import ResetPass from "./components/Auth/ResetPass";
 import ListCar from "./components/Car/ListCar";
-import ListCar1 from "./components/Car/ListCar1";
 import AuthPage from "./pages/AuthPage";
 import CarDetails from "./components/Car/CarDetails";
 import EditProfile from "./components/User/EditProfile";
 import SearchCar from "./pages/SearchCar";
 import BookingPage from "./pages/BookingPage";
 import BookingDetail from "./components/Booking/BookingDetail";
+import MyBooking from "./components/Booking/MyBooking";
+import RateTrip from "./components/Booking/RateTrip";
+import MyWallet from "./components/Walet/MyWallet";
+import MyReport from "./components/User/MyReport";
+import AddCarPage from "./pages/AddCarPage";
+import OwnerListCarPage from "./pages/OwnerListCar/OwnerListCarPage";
 import { ToastContainer } from "react-toastify";
 
 const Layout = () => {
@@ -35,14 +38,19 @@ const Layout = () => {
           <Route path="/owner" element={<OwnerPage />} />
           <Route path="/forgot" element={<ForgotPass />} />
           <Route path="/reset" element={<ResetPass />} />
-          <Route path="/listCar" element={<ListCar />} />
-          <Route path="/listCar1" element={<ListCar1 />} />
+          <Route path="/list-car" element={<ListCar />} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/carDetails" element={<CarDetails />} />
-          <Route path="/editProfile" element={<EditProfile />} />
-          <Route path="/searchCar" element={<SearchCar />} />
+          <Route path="/car-details" element={<CarDetails />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/search-car" element={<SearchCar />} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/test" element={<BookingDetail />} />
+          <Route path="/my-booking" element={<MyBooking />} />
+          <Route path="/rate" element={<RateTrip />} />
+          <Route path="/wallet" element={<MyWallet />} />
+          <Route path="/report" element={<MyReport />} />
+          <Route path="/add-car" element={<AddCarPage />} />
+          <Route path="/owner-list-car" element={<OwnerListCarPage />} />
         </Route>
       </Routes>
       <ToastContainer
@@ -55,7 +63,8 @@ const Layout = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light" />
+        theme="light"
+      />
     </>
   );
 };

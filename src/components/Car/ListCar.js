@@ -19,8 +19,8 @@ const ListCar = () => {
     id: i + 1,
     name: "Nissan Navara El 2017",
     images: [
-      "https://via.placeholder.com/300x200?text=Image+1",
-      "https://via.placeholder.com/300x200?text=Image+2",
+      "https://vinfast-hcm.vn/wp-content/uploads/2023/06/vinfast-vf3.png",
+      "https://giaxevinfast.net/wp-content/uploads/2024/04/VinFast-VF3-11.png",
     ],
     rating: 0,
     rides: 0,

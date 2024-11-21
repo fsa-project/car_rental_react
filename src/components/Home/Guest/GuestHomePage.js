@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import "./GuestHomePage.scss";
+import { useNavigate } from "react-router-dom";
 
 const GuestHomePage = () => {
   return (
@@ -15,20 +16,33 @@ const GuestHomePage = () => {
 };
 
 // Header Section Component
-const HeaderSection = () => (
-  <Row className="header-section">
-    <Col md={6} className="left-section">
-      <h2>Looking for a vehicle? You're at the right place.</h2>
-      <p>Choose between 100% of private cars for rent at really low prices!</p>
-      <Button variant="light">Find a Rental Car Near You</Button>
-    </Col>
-    <Col md={6} className="right-section">
-      <h2>Are you a car owner?</h2>
-      <p>List your car and make money from your asset today!</p>
-      <Button variant="dark">List Your Car Today</Button>
-    </Col>
-  </Row>
-);
+const HeaderSection = () => {
+  const navigate = useNavigate();
+
+  return (
+    <Row className="header-section">
+      {/* Phần bên trái */}
+      <Col md={6} className="left-section">
+        <h2>Looking for a vehicle? You're at the right place.</h2>
+        <p>
+          Choose between 100% of private cars for rent at really low prices!
+        </p>
+        <Button variant="light" onClick={() => navigate("/auth")}>
+          Find a Rental Car Near You
+        </Button>
+      </Col>
+
+      {/* Phần bên phải */}
+      <Col md={6} className="right-section">
+        <h2>Are you a car owner?</h2>
+        <p>List your car and make money from your asset today!</p>
+        <Button variant="dark" onClick={() => navigate("/auth")}>
+          List Your Car Today
+        </Button>
+      </Col>
+    </Row>
+  );
+};
 
 // Why Us Section Component
 const WhyUsSection = () => {
