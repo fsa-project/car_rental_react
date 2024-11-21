@@ -22,6 +22,7 @@ import RateTrip from "./components/Booking/RateTrip";
 import MyWallet from "./components/Walet/MyWallet";
 import MyReport from "./components/User/MyReport";
 import AddCarPage from "./pages/AddCarPage";
+import OwnerListCarPage from "./pages/OwnerListCar/OwnerListCarPage";
 
 const Layout = () => {
   return (
@@ -48,6 +49,7 @@ const Layout = () => {
           <Route path="/wallet" element={<MyWallet />} />
           <Route path="/report" element={<MyReport />} />
           <Route path="/add-car" element={<AddCarPage />} />
+          <Route path="/owner-list-car" element={<OwnerListCarPage />} />
         </Route>
       </Routes>
     </>

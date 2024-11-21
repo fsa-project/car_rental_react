@@ -27,7 +27,7 @@ const AddCarPage = () => {
   };
 
   const handleCancel = () => {
-    navigate("/carDetails");
+    navigate("/owner-list-car");
   };
 
   const renderStep = () => {

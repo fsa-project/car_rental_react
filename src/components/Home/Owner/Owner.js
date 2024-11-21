@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Col, Card, Button } from "react-bootstrap";
-
+import "./Owner.scss";
 const Owner = () => {
   const benefits = [
     {
@@ -55,7 +55,7 @@ const Owner = () => {
       </Row>
       <div>
         <h4>Make money on your car right away</h4>
-        <Button variant="secondary" size="lg">
+        <Button className="btn-owner" size="lg">
           List Your Car Today
         </Button>
       </div>
