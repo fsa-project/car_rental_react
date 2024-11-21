@@ -1,185 +1,161 @@
-import React, { useState } from "react";
-import {
-  Container,
-  Table,
-  Button,
-  Card,
-  Row,
-  Col,
-  Carousel,
-  Dropdown,
-} from "react-bootstrap";
+import React from "react";
+import { Container, Button, Dropdown, Col, Row } from "react-bootstrap";
+import "./MyBooking.scss"; // Import file SCSS
+
 function MyBooking() {
-  const cars = Array.from({ length: 10 }, (_, i) => ({
+  const cars = Array.from({ length: 6 }, (_, i) => ({
     id: i + 1,
+    image:
+      "https://cmu-cdn.vinfast.vn/2024/11/fd50e666-vinfastso1-1536x864.jpg",
     name: "Nissan Navara El 2017",
-    images: [
-      "https://vinfast-hcm.vn/wp-content/uploads/2023/06/vinfast-vf3.png",
-      "https://giaxevinfast.net/wp-content/uploads/2024/04/VinFast-VF3-11.png",
-    ],
-    rating: 0,
-    rides: 0,
-    price: "900K/day",
-    location: "Cau Giay, Hanoi",
-    status: i % 2 === 0 ? "Available" : "Unavailable",
+    from: "13/02/2022 - 12:00 PM",
+    to: "23/02/2022 - 14:00 PM",
+    days: 10,
+    basePrice: "900K/day",
+    total: "9M",
+    deposit: "3M",
+    bookingNo: `0123456`,
+    status: [
+      "Confirmed",
+      "Pending deposit",
+      "In-progress",
+      "Pending payment",
+      "Completed",
+      "Cancelled",
+    ][i], // Tạo các trạng thái khác nhau để kiểm tra
   }));
-  const styles = {
-    image: {
-      width: "150px",
-      height: "100px",
-      objectFit: "cover",
-    },
-    carouselImage: {
-      height: "200px",
-      objectFit: "cover",
-    },
-    available: {
-      color: "green",
-      fontWeight: "bold",
-    },
-    unavailable: {
-      color: "red",
-      fontWeight: "bold",
-    },
-    primaryButton: {
-      backgroundColor: "#ffc107",
-      color: "black",
-      border: "none",
-      fontWeight: "bold",
-      padding: "0.5rem 1rem",
-      borderRadius: "5px",
-    },
-    secondaryButton: {
-      backgroundColor: "white",
-      color: "#333",
-      border: "1pt solid #333",
-      fontWeight: "bold",
-      padding: "0.5rem 1rem",
-      borderRadius: "5px",
-    },
-    activeButton: {
-      backgroundColor: "#ffc107",
-      color: "#333",
-      border: "none",
-    },
-    inactiveButton: {
-      backgroundColor: "white",
-      color: "#333",
-      border: "1pt solid #333",
-    },
+
+  const renderActionButtons = (status) => {
+    switch (status) {
+      case "Confirmed":
+        return (
+          <>
+            <Button className="btn-detail">View details</Button>
+            <Button className="btn-pickup">Confirm pick-up</Button>
+            <Button className="btn-danger">Cancel</Button>
+          </>
+        );
+      case "Pending deposit":
+        return (
+          <>
+            <Button className="btn-detail">View details</Button>
+            <Button className="btn-danger">Cancel</Button>
+          </>
+        );
+      case "In-progress":
+        return (
+          <>
+            <Button className="btn-detail">View details</Button>
+            <Button className="btn-return">Return car</Button>
+          </>
+        );
+      case "Pending payment":
+        return (
+          <>
+            <Button className="btn-detail">View details</Button>
+          </>
+        );
+      case "Completed":
+        return (
+          <>
+            <Button className="btn-detail">View details</Button>
+          </>
+        );
+      case "Cancelled":
+        return (
+          <>
+            <Button className="btn-detail">View details</Button>
+          </>
+        );
+      default:
+        return null;
+    }
   };
+
   return (
     <Container>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <Container>
-          <h3 className="text-center mb-4">My Booking</h3>
-          <div className="row align-items-center">
-            <div className="col-sm-6">
-              <p className="mb-0">You have 4 on-going bookings</p>
+      <h1 className="text-center">My Bookings</h1>
+      <div className="d-flex justify-content-between align-items-center">
+        <p className="mb-0">You have {cars.length} on-going bookings</p>
+        <Dropdown>
+          <Dropdown.Toggle variant="outline-secondary">
+            Newest to Latest
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item>Newest</Dropdown.Item>
+            <Dropdown.Item>Latest</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      {/* Table container */}
+      <div className="table-container">
+        {cars.map((car) => (
+          <div key={car.id} className="row-item">
+            <div className="action-column">
+              <div className="image-column">
+                <img src={car.image} alt={car.name} className="car-image" />
+              </div>
             </div>
-            <div className="col-sm-6 text-end">
-              <Dropdown>
-                <Dropdown.Toggle variant="outline-secondary">
-                  Newest to Latest
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item>Newest</Dropdown.Item>
-                  <Dropdown.Item>Latest</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+            {/* Details column */}
+
+            <div className="details-column">
+              <Row>
+                <Col md={6}>
+                  <h5 className="car-title">{car.name}</h5>
+                  <p className="car-info">
+                    <strong>From:</strong> {car.from}
+                  </p>
+                  <p className="car-info">
+                    <strong>To:</strong> {car.to}
+                  </p>
+                  <p className="car-info">
+                    <strong>Number of days:</strong> {car.days}
+                  </p>
+                </Col>
+                <Col md={6}>
+                  <p className="car-info">
+                    <strong>Base price:</strong> {car.basePrice}
+                  </p>
+                  <p className="car-info">
+                    <strong>Total:</strong> {car.total}
+                  </p>
+                  <p className="car-info">
+                    <strong>Deposit:</strong> {car.deposit}
+                  </p>
+                  <p className="car-info">
+                    <strong>Booking No:</strong> {car.bookingNo}
+                  </p>
+                  <p className="car-info">
+                    <strong>Status:</strong>{" "}
+                    <span
+                      className={
+                        car.status === "Confirmed"
+                          ? "status-confirmed"
+                          : car.status === "In-progress"
+                          ? "status-in-progress"
+                          : car.status === "Pending deposit"
+                          ? "status-pending"
+                          : car.status === "Completed"
+                          ? "status-completed"
+                          : car.status === "Cancelled"
+                          ? "status-cancelled"
+                          : ""
+                      }
+                    >
+                      {car.status}
+                    </span>
+                  </p>
+                </Col>
+              </Row>
+            </div>
+
+            {/* Action column */}
+            <div className="action-column">
+              {renderActionButtons(car.status)}
             </div>
           </div>
-          <br></br>
-          <Row>
-            {cars.map((car) => (
-              <Col md={12} key={car.id} className="mb-4">
-                <Card className="p-4">
-                  <Row className="align-items-center">
-                    {/* Carousel */}
-                    <Col md={6} className="d-flex justify-content-center">
-                      <Carousel>
-                        {car.images.map((img, index) => (
-                          <Carousel.Item key={index}>
-                            <img
-                              src={img}
-                              alt={`Car ${index + 1}`}
-                              style={styles.carouselImage}
-                            />
-                          </Carousel.Item>
-                        ))}
-                      </Carousel>
-                    </Col>
-
-                    {/* Nội dung */}
-                    <Col
-                      md={4}
-                      className="d-flex flex-column justify-content-center"
-                    >
-                      <h5 className="text-center">{car.name}</h5>
-                      <p className="text-center">
-                        <strong>Ratings:</strong>{" "}
-                        {"★".repeat(car.rating) + "☆".repeat(5 - car.rating)}{" "}
-                        <span style={{ color: "#aaa" }}>
-                          {car.rating === 0 ? "(No ratings yet)" : ""}
-                        </span>
-                      </p>
-                      <p className="text-center">
-                        <strong>From</strong> {car.rides}
-                      </p>
-                      <p className="text-center">
-                        <strong>To</strong> {car.price}
-                      </p>
-                      <p className="text-center">
-                        <strong>Number of days: </strong> {car.location}
-                      </p>
-                      <p className="text-center">
-                        <strong>base price: </strong> {car.location}
-                      </p>
-                      <p className="text-center">
-                        <strong>Total: </strong> {car.location}
-                      </p>
-                      <p className="text-center">
-                        <strong>Deposit: </strong> {car.location}
-                      </p>
-                      <p className="text-center">
-                        <strong>Booking No: </strong> {car.location}
-                      </p>
-                      <p className="text-center">
-                        <strong>Status:</strong>{" "}
-                        <span
-                          style={
-                            car.status === "Available"
-                              ? styles.available
-                              : styles.unavailable
-                          }
-                        >
-                          {car.status}
-                        </span>
-                      </p>
-                    </Col>
-                    <Col md={1}>
-                      <div className="d-flex justify-content-center gap-2 mt-3">
-                        <Button
-                          style={styles.primaryButton}
-                          disabled={car.status !== "Available"}
-                        >
-                          Rent now
-                        </Button>
-                      </div>
-                    </Col>
-                    <Col md={1}>
-                      <div className="d-flex justify-content-center gap-2 mt-3">
-                        <Button style={styles.secondaryButton}>
-                          View details
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </Container>
+        ))}
       </div>
     </Container>
   );
