@@ -5,30 +5,23 @@ const INITIAL_STATE = {
         access_token: '',
         email: '',
         name: '',
-        role: {}
+        role: {} // role là object mặc định rỗng
     },
     isAuthenticated: false
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case FETCH_USER_LOGIN_SUCCESS:
+        case FETCH_USER_LOGIN_SUCCESS: {
+            const { user, access_token } = action.payload; // Tách user và access_token từ payload
             return {
                 ...state,
-                account: action.payload,
+                account: { ...user, access_token }, // Cập nhật account với thông tin mới
                 isAuthenticated: true
             };
+        }
         case LOGOUT_USER:
-            return {
-                ...state,
-                account: {
-                    access_token: '',
-                    email: '',
-                    name: '',
-                    role: {}
-                },
-                isAuthenticated: false
-            };
+            return INITIAL_STATE; // Reset state về trạng thái ban đầu
         default:
             return state;
     }

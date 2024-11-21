@@ -11,4 +11,22 @@ const postLogin = (userEmail, userPassword) => {
 const postRegister = (userEmail, userPassword, userName, userPhone, userRole) => {
     return axios.post(`api/v1/register`, { email: userEmail, username: userName, password: userPassword });
 }
-export { postLogin, postRegister }
+
+const refreshToken = () => {
+    axios.defaults.withCredentials = true;
+    return axios.get(`auth/refresh`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+}
+
+const getUserCars = () => {
+    axios.defaults.withCredentials = true;
+    return axios.get(`cars/user-cars`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+}
+export { postLogin, postRegister, getUserCars, refreshToken }

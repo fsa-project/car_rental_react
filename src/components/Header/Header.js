@@ -10,11 +10,12 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Offcanvas } from 'react-bootstrap';
 import Avatar from '../../assets/static/image/avatar-default.jpg'
 import './Header.scss'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from '../../redux/action/userAction';
 
 const Header = () => {
-  //const account = useSelector((state) => state.user.account); // Trỏ đến state.user
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const { isAuthenticated, account } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const [showDropdown, setShowDropdown] = useState(false);
   const handleToggle = (isOpen) => {
@@ -32,6 +33,10 @@ const Header = () => {
   }
   const handleRegister = () => {
     navigate('/auth');
+  }
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate('/');
   }
 
   return (
@@ -67,7 +72,7 @@ const Header = () => {
             </Nav>
             <Nav>
               {
-                isAuthenticated === true ?
+                !isAuthenticated ?
                   <>
                     <div className="btn-auth">
                       <Button variant='light btn-login' onClick={() => handleLogin()}>Sigh in</Button>
@@ -81,7 +86,7 @@ const Header = () => {
                         <img src={Avatar} loading='lazy' />
                       </div>
                       <NavDropdown
-                        title="Do Thuat"
+                        title={account.name}
                         id="offcanvasNavbarDropdown-expand-lg"
                         show={showDropdown}
                         onClick={() => handleToggle(true)}
@@ -90,7 +95,7 @@ const Header = () => {
                         <NavDropdown.Item >My profile</NavDropdown.Item>
                         <NavDropdown.Item >My Bookings</NavDropdown.Item>
                         <NavDropdown.Item >My Wallet</NavDropdown.Item>
-                        <NavDropdown.Item >Log out</NavDropdown.Item>
+                        <NavDropdown.Item onClick={() => handleLogout()} >Log out</NavDropdown.Item>
                       </NavDropdown>
                     </div>
                   </>
