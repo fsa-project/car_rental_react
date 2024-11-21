@@ -1,18 +1,21 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate để điều hướng
+import { useNavigate } from "react-router-dom";
 import { Button, Container, ProgressBar } from "react-bootstrap";
-import "../pages/BookingPage.scss";
+import "../pages/AddCarPage.scss";
 import BookingDetail from "../components/Booking/BookingDetail";
 import Payment from "../components/Booking/Payment";
-import Finish from "../components/Booking/Finish";
+import Finish from "../components/Car/AddCar/Finish";
 import BookingInfo from "../components/Booking/BookingInfo";
+import Basic from "../components/Car/AddCar/Basic";
+import Pricing from "../components/Car/AddCar/Pricing";
+import Detail from "../components/Car/AddCar/Detail";
 
-const BookingPage = () => {
+const AddCarPage = () => {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
 
   const handleNext = () => {
-    if (step < 3) {
+    if (step < 4) {
       setStep(step + 1);
     } else {
       alert("Successfully!");
@@ -24,16 +27,18 @@ const BookingPage = () => {
   };
 
   const handleCancel = () => {
-    navigate("/carDetails");
+    navigate("/owner-list-car");
   };
 
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <BookingDetail />;
+        return <Basic />;
       case 2:
-        return <Payment />;
+        return <Detail />;
       case 3:
+        return <Pricing />;
+      case 4:
         return <Finish />;
       default:
         return null;
@@ -42,16 +47,16 @@ const BookingPage = () => {
 
   return (
     <Container>
-      <BookingInfo />
+      <h2>Add a car</h2>
       <div className="booking-page">
         {/* Process Bar */}
         <ProgressBar className="progress position-relative mb-4">
-          <div className="progress-bar-label">{`Step ${step} of 3`}</div>
+          <div className="progress-bar-label">{`Step ${step} of 4`}</div>
           <div
             className="progress-bar"
             role="progressbar"
-            style={{ width: `${(step / 3) * 100}%` }}
-            aria-valuenow={(step / 3) * 100}
+            style={{ width: `${(step / 4) * 100}%` }}
+            aria-valuenow={(step / 4) * 100}
             aria-valuemin="0"
             aria-valuemax="100"
           ></div>
@@ -74,7 +79,7 @@ const BookingPage = () => {
             </Button>
           )}
 
-          {step !== 1 && step !== 3 && (
+          {step !== 1 && step !== 5 && (
             <Button
               style={{
                 backgroundColor: "#f1ac00",
@@ -88,7 +93,7 @@ const BookingPage = () => {
             </Button>
           )}
 
-          {step === 2 ? (
+          {step === 4 ? (
             <Button
               style={{
                 backgroundColor: "#f1ac00",
@@ -98,9 +103,9 @@ const BookingPage = () => {
               }}
               onClick={handleNext}
             >
-              Confirm
+              Submit
             </Button>
-          ) : step !== 3 ? (
+          ) : step !== 4 ? (
             <Button
               style={{
                 backgroundColor: "#f1ac00",
@@ -119,4 +124,4 @@ const BookingPage = () => {
   );
 };
 
-export default BookingPage;
+export default AddCarPage;

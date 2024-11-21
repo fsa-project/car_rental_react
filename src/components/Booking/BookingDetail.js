@@ -118,7 +118,7 @@ const BookingDetail = () => {
               <Form.Control
                 type="text"
                 placeholder="Enter full name"
-                disabled={!isDifferentDriver} // Vô hiệu hóa khi không chọn checkbox
+                disabled={!isDifferentDriver}
               />
             </Form.Group>
           </Col>
