@@ -7,25 +7,37 @@ export const LOGOUT_USER = 'LOGOUT_USER';
 // Action Creators
 export const loginUser = (data) => (dispatch) => {
     try {
+        const { user, access_token } = data; // Tách dữ liệu user và access_token
+
         // Lưu thông tin vào localStorage
-        localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('user', JSON.stringify(user));
 
         // Dispatch action để cập nhật Redux Store
         dispatch({
             type: FETCH_USER_LOGIN_SUCCESS,
-            payload: { user: data.user, access_token: data.access_token },
+            payload: { user, access_token },
         });
     } catch (error) {
         console.error('Failed to handle login data:', error);
     }
 };
 
+
 export const logoutUser = () => (dispatch) => {
-    // Xóa thông tin người dùng
-    dispatch({
-        type: LOGOUT_USER,
-    });
+    try {
+        // Xóa thông tin từ localStorage
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token')
+        localStorage.removeItem('user');
+
+        // Dispatch action để reset Redux Store
+        dispatch({
+            type: LOGOUT_USER,
+        });
+    } catch (error) {
+        console.error('Failed to handle logout:', error);
+    }
 };
 
 export default loginUser

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -12,7 +13,8 @@ import "./Header.scss";
 import { useSelector } from "react-redux";
 
 const Header = () => {
-  const isAuthenticated = useSelector((state) => state.user?.isAuthenticated);
+  //const account = useSelector((state) => state.user.account); // Trỏ đến state.user
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -32,15 +34,6 @@ const Header = () => {
   };
   const handleRegister = () => {
     navigate("/auth");
-  };
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-    window.location.reload();
-  };
-
-  const handleToggleDropdown = () => {
-    setShowDropdown((prev) => !prev);
   };
 
   return (
@@ -80,46 +73,46 @@ const Header = () => {
               <div className="vr"></div>
             </Nav>
             <Nav>
-              {!isAuthenticated ? (
-                <div className="btn-auth">
-                  <Button variant="light btn-login" onClick={handleLogin}>
-                    Sign in
-                  </Button>
-                  <Button
-                    variant="outline-dark btn-register"
-                    onClick={handleRegister}
-                  >
-                    Sign up
-                  </Button>
-                </div>
-              ) : (
-                <div className="dropdown-profile">
-                  <div
-                    className="avatar avatar--s"
-                    onClick={handleToggleDropdown}
-                  >
-                    <img src={Avatar} loading="lazy" alt="User Avatar" />
+              {isAuthenticated === true ? (
+                <>
+                  <div className="btn-auth">
+                    <Button
+                      variant="light btn-login"
+                      onClick={() => handleLogin()}
+                    >
+                      Sigh in
+                    </Button>
+                    <Button
+                      variant="outline-dark btn-register"
+                      onClick={() => handleRegister()}
+                    >
+                      Sign up
+                    </Button>
                   </div>
-                  <NavDropdown
-                    title="Do Thuat"
-                    id="offcanvasNavbarDropdown-expand-lg"
-                    show={showDropdown}
-                    onClick={handleToggleDropdown}
-                  >
-                    <NavDropdown.Item onClick={handleProfile}>
-                      My profile
-                    </NavDropdown.Item>
-                    <NavDropdown.Item onClick={handleBooking}>
-                      My Bookings
-                    </NavDropdown.Item>
-                    <NavDropdown.Item onClick={handleWallet}>
-                      My Wallet
-                    </NavDropdown.Item>
-                    <NavDropdown.Item onClick={handleLogout}>
-                      Log out
-                    </NavDropdown.Item>
-                  </NavDropdown>
-                </div>
+                </>
+              ) : (
+                <>
+                  <div className="dropdown-profile">
+                    <div
+                      className="avatar avatar--s"
+                      onClick={handleImageClick}
+                    >
+                      <img src={Avatar} loading="lazy" />
+                    </div>
+                    <NavDropdown
+                      title="Do Thuat"
+                      id="offcanvasNavbarDropdown-expand-lg"
+                      show={showDropdown}
+                      onClick={() => handleToggle(true)}
+                      onMouseLeave={() => handleToggle(false)}
+                    >
+                      <NavDropdown.Item>My profile</NavDropdown.Item>
+                      <NavDropdown.Item>My Bookings</NavDropdown.Item>
+                      <NavDropdown.Item>My Wallet</NavDropdown.Item>
+                      <NavDropdown.Item>Log out</NavDropdown.Item>
+                    </NavDropdown>
+                  </div>
+                </>
               )}
             </Nav>
           </Offcanvas.Body>

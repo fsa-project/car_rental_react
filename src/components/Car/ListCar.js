@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Table,
@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { FiList } from "react-icons/fi";
 import { MdGridOn } from "react-icons/md";
+import { getUserCars, refreshToken } from "../../service/apiService";
 
 const ListCar = () => {
   const [viewMode, setViewMode] = useState("list"); // "list" hoặc "carousel"
@@ -28,6 +29,37 @@ const ListCar = () => {
     location: "Cau Giay, Hanoi",
     status: i % 2 === 0 ? "Available" : "Unavailable",
   }));
+
+  const [data, setData] = useState([]);
+
+
+
+  const fetchCar = async () => {
+    try {
+      const response = await getUserCars(); // Gọi API
+      console.log(">>> Full Response:", JSON.stringify(response, null, 2)); // In ra toàn bộ response
+
+      // Kiểm tra cấu trúc và lấy mảng data
+      if (response && response.data) {
+        const cars = response.data; // Lấy mảng từ `data`
+        console.log(">>> Cars:", cars);
+
+        // Dùng map để lặp qua mảng xe
+        cars.map((car, index) => {
+          console.log(`Car ${index + 1}:`);
+          console.log(`- Name: ${car.name}`);
+          console.log(`- Base Price: ${car.basePrice}`);
+          console.log(`- Address: ${car.address}`);
+          console.log(`- Images: ${car.images.length > 0 ? car.images : "No images"}`);
+        });
+      } else {
+        console.error("Response does not contain data.");
+      }
+    } catch (error) {
+      console.error("Error fetching cars:", error);
+    }
+  };
+
 
   // Các style
   const styles = {
@@ -78,6 +110,7 @@ const ListCar = () => {
 
   return (
     <Container className="py-5">
+      <Button onClick={() => fetchCar()}>list</Button>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="text-center">Car Listing</h3>
         <div className="d-flex gap-2">
