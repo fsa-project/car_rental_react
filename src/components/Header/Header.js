@@ -13,7 +13,8 @@ import './Header.scss'
 import { useSelector } from 'react-redux';
 
 const Header = () => {
-  const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+  //const account = useSelector((state) => state.user.account); // Trỏ đến state.user
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const handleToggle = (isOpen) => {
