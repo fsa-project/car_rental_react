@@ -54,7 +54,6 @@ code {
 }
 
 @media (min-width: 1400px) {
-
   .container,
   .container-lg,
   .container-md,
@@ -73,8 +72,8 @@ code {
 
 .app-container {
   .header-container {
-    font-weight: 500;
-    padding: 18px 0px;
+    font-weight: 600;
+    padding: 10px 0px;
 
     .btn-auth {
       .btn-login {
@@ -100,13 +99,8 @@ code {
           img {
             display: none;
           }
-
         }
-
       }
-
-
-
 
       cursor: pointer;
     }
