@@ -14,6 +14,9 @@ import { useNavigate } from "react-router-dom";
 
 const ListCar = () => {
   const navigate = useNavigate();
+  const handleCarDetail = () => {
+    navigate('/car-details');
+  }
   const cars = Array.from({ length: 5 }, (_, i) => ({
     id: i + 1,
     name: "Nissan Navara El 2017",
@@ -27,6 +30,8 @@ const ListCar = () => {
     location: "Cau Giay, Hanoi",
     status: i % 2 === 0 ? "Available" : "Stopped",
   }));
+
+
 
   return (
     <Container className="owner-list-car py-1">
@@ -111,7 +116,7 @@ const ListCar = () => {
                     >
                       Confirm Deposit
                     </Button>
-                    <Button className="secondary-button">View details</Button>
+                    <Button className="secondary-button" onClick={handleCarDetail}>View details</Button>
                   </div>
                 </Col>
               </Row>

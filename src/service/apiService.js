@@ -9,7 +9,7 @@ const postLogin = (userEmail, userPassword) => {
     });
 }
 const postRegister = (userEmail, userPassword, userName, userPhone, userRole) => {
-    return axios.post(`api/v1/register`, { email: userEmail, username: userName, password: userPassword });
+    return axios.post(`users/register`, { email: userEmail, name: userName, password: userPassword, phoneNo: userPhone, role: { name: userRole } });
 }
 
 const refreshToken = () => {
@@ -29,4 +29,13 @@ const getUserCars = () => {
         },
     });
 }
-export { postLogin, postRegister, getUserCars, refreshToken }
+
+const postAddNewCar = () => {
+    axios.defaults.withCredentials = true;
+    return axios.post(`cars/create`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+}
+export { postLogin, postRegister, getUserCars, refreshToken, postAddNewCar }

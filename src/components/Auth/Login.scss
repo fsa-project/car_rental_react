@@ -23,11 +23,7 @@
 
 }
 
-/* Media Query cho màn hình nhỏ */
 @media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
 
   .d-flex .divider {
     display: none;

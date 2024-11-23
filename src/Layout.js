@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import HomePage from "./components/Home/HomePage";
 import User from "./components/User/User";
 
 import App from "./App";
@@ -29,7 +29,7 @@ const Layout = () => {
     <>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<GuestPage />} />
+          <Route index element={<HomePage />} />
           <Route path="/users" element={<User />} />
           <Route path="/terms" element={<TermOfUse />} />
           <Route path="/home" element={<HomePage />} />

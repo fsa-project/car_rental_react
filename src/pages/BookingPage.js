@@ -64,7 +64,7 @@ const BookingPage = () => {
             <Button
               style={{
                 backgroundColor: "#f1ac00",
-                color: "black",
+                color: "#fff",
                 border: "none",
                 fontWeight: "bold",
               }}
@@ -78,7 +78,7 @@ const BookingPage = () => {
             <Button
               style={{
                 backgroundColor: "#f1ac00",
-                color: "black",
+                color: "#fff",
                 border: "none",
                 fontWeight: "bold",
               }}
@@ -92,7 +92,7 @@ const BookingPage = () => {
             <Button
               style={{
                 backgroundColor: "#f1ac00",
-                color: "black",
+                color: "#fff",
                 border: "none",
                 fontWeight: "bold",
               }}
@@ -104,7 +104,7 @@ const BookingPage = () => {
             <Button
               style={{
                 backgroundColor: "#f1ac00",
-                color: "black",
+                color: "#fff",
                 border: "none",
                 fontWeight: "bold",
               }}

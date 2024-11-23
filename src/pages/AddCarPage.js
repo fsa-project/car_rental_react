@@ -67,12 +67,7 @@ const AddCarPage = () => {
         <div className="d-flex justify-content-between mt-4">
           {step === 1 && (
             <Button
-              style={{
-                backgroundColor: "#f1ac00",
-                color: "black",
-                border: "none",
-                fontWeight: "bold",
-              }}
+              variant="warning"
               onClick={handleCancel}
             >
               Cancel
@@ -81,12 +76,7 @@ const AddCarPage = () => {
 
           {step !== 1 && step !== 5 && (
             <Button
-              style={{
-                backgroundColor: "#f1ac00",
-                color: "black",
-                border: "none",
-                fontWeight: "bold",
-              }}
+              variant="warning"
               onClick={handleBack}
             >
               &larr; Back
@@ -95,24 +85,14 @@ const AddCarPage = () => {
 
           {step === 4 ? (
             <Button
-              style={{
-                backgroundColor: "#f1ac00",
-                color: "black",
-                border: "none",
-                fontWeight: "bold",
-              }}
+              variant="warning"
               onClick={handleNext}
             >
               Submit
             </Button>
           ) : step !== 4 ? (
             <Button
-              style={{
-                backgroundColor: "#f1ac00",
-                color: "black",
-                border: "none",
-                fontWeight: "bold",
-              }}
+              variant="warning"
               onClick={handleNext}
             >
               Next →

@@ -2,26 +2,25 @@ import React from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import "./GuestHomePage.scss";
 import { useNavigate } from "react-router-dom";
+import WhyUs from '../Content/WhyUs'
+import LocationSection from "../Content/LocationSection";
 
 const GuestHomePage = () => {
   return (
     <Container fluid className="guest-homepage">
       <HeaderSection />
-
-      <WhyUsSection />
+      <WhyUs />
       <TestimonialsSection />
       <LocationSection />
     </Container>
   );
 };
 
-// Header Section Component
 const HeaderSection = () => {
   const navigate = useNavigate();
 
   return (
     <Row className="header-section">
-      {/* Phần bên trái */}
       <Col md={6} className="left-section">
         <h2>Looking for a vehicle? You're at the right place.</h2>
         <p>
@@ -32,7 +31,6 @@ const HeaderSection = () => {
         </Button>
       </Col>
 
-      {/* Phần bên phải */}
       <Col md={6} className="right-section">
         <h2>Are you a car owner?</h2>
         <p>List your car and make money from your asset today!</p>
@@ -44,59 +42,7 @@ const HeaderSection = () => {
   );
 };
 
-// Why Us Section Component
-const WhyUsSection = () => {
-  const whyUsDetails = [
-    {
-      image: "https://cdn-icons-png.flaticon.com/512/5818/5818559.png",
-      title: "Save money",
-      text: "We have no setup or registration fees. You are only charged when you rent a car. So get started for FREE!",
-    },
-    {
-      image: "https://www.freeiconspng.com/uploads/tool-icon-20.png",
-      title: "Convenient",
-      text: "We have a large selection of privately owned cars to suit your needs throughout the country.",
-    },
-    {
-      image:
-        "https://icons.veryicon.com/png/o/miscellaneous/fulu-butler-icon-library/to-grant-authorization-2.png",
-      title: "Legal and insurance",
-      text: "We fully cover all rentals and even provide roadside assistance. Our system checks provide safety.",
-    },
-    {
-      image:
-        "https://static.vecteezy.com/system/resources/previews/009/898/154/non_2x/24-hours-7-days-black-icon-isolated-on-white-background-free-vector.jpg",
-      title: "24/7 support",
-      text: "Our team is ready to support you all along the way with our 24/7 hotline and services.",
-    },
-  ];
-
-  const renderWhyUsCards = () =>
-    whyUsDetails.map((detail, index) => (
-      <Col md={3} key={index}>
-        <Card className="p-3">
-          <img
-            class="card-img-top"
-            src={detail.image}
-            alt="Card image cap"
-          ></img>
-          <Card.Title>{detail.title}</Card.Title>
-          <Card.Text>{detail.text}</Card.Text>
-        </Card>
-      </Col>
-    ));
-
-  return (
-    <Row className="why-us-section text-center p-4">
-      <h3 style={{ fontSize: "bold" }}>Why us?</h3>
-      {renderWhyUsCards()}
-    </Row>
-  );
-};
-
-// Testimonials Section Component
 const TestimonialsSection = () => {
-  // Dữ liệu testimonials
   const testimonials = [
     {
       avatar:
@@ -169,74 +115,14 @@ const TestimonialsSection = () => {
     ));
 
   return (
-    <Row className="testimonials-section text-center p-4 bg-light">
-      <h3>What people say?</h3>
-      {renderTestimonials()}
-    </Row>
-  );
-};
-
-// Location Section Component
-const LocationSection = () => {
-  // Dữ liệu về địa điểm
-  const locations = [
-    {
-      name: "Hanoi",
-      cars: "30+ cars",
-      image:
-        "https://cdn.vietnam.vn/wp-content/uploads/2024/09/Xe-buyt-Ha-Noi-su-dung-toi-47-ve-thang.jpg", // Chèn ảnh phù hợp
-    },
-    {
-      name: "Ho Chi Minh city",
-      cars: "50+ cars",
-      image:
-        "https://cdn.tgdd.vn/Files/2022/02/15/1415624/ban-do-va-lo-trinh-chi-tiet-cac-tuyen-xe-buyt-tp-ho-chi-minh-2022-202202150743420266.jpg",
-    },
-    {
-      name: "Da Nang - Hoi An",
-      cars: "40+ cars",
-      image:
-        "https://filesdata.cadn.com.vn//filedatacadn/media/800/2023/6/15/5486.jpg",
-    },
-    {
-      name: "Nha Trang",
-      cars: "20+ cars",
-      image:
-        "https://filesdata.cadn.com.vn//filedatacadn/media/800/2023/6/15/5486.jpg",
-    },
-    {
-      name: "Hai Phong",
-      cars: "25+ cars",
-      image:
-        "https://mia.vn/media/uploads/blog-du-lich/di-chuyen-bang-xe-bus-o-hai-phong-vua-an-toan-va-tiet-kiem-1647105096.jpg",
-    },
-    {
-      name: "Quang Ninh",
-      cars: "35+ cars",
-      image:
-        "https://media.quangninh.gov.vn/618ca5c4-79b3-478a-8adb-4184369067f7/Libraries/HinhAnhBaiViet/A%20BAT/Nam%202023/T3/T1/2062266_megabus_busquang_ninh_09191009.jpg",
-    },
-  ];
-
-  // Hàm hiển thị danh sách địa điểm
-  const renderLocations = () =>
-    locations.map((location, index) => (
-      <Col md={4} key={index} className="p-3">
-        <Card className="p-3">
-          <Card.Img variant="top" src={location.image} alt={location.name} />
-          <Card.Body>
-            <Card.Title>{location.name}</Card.Title>
-            <Card.Text>{location.cars}</Card.Text>
-          </Card.Body>
-        </Card>
-      </Col>
-    ));
-
-  return (
-    <Row className="location-section text-center p-4">
-      <h3>Where to find us?</h3>
-      {renderLocations()}
-    </Row>
+    <div className="testimonials-section text-center bg-light">
+      <Container>
+        <Row>
+          <h3>What people say?</h3>
+          {renderTestimonials()}
+        </Row>
+      </Container>
+    </div>
   );
 };
 

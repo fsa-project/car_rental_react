@@ -1,6 +1,7 @@
 import React from "react";
-import { Row, Col, Card, Button } from "react-bootstrap";
+import { Row, Col, Card, Button, Container } from "react-bootstrap";
 import "./Owner.scss";
+import { useNavigate } from "react-router-dom";
 const Owner = () => {
   const benefits = [
     {
@@ -35,30 +36,37 @@ const Owner = () => {
     },
   ];
 
+  const navigate = useNavigate();
+  const handleListCar = () => {
+    navigate("/owner-list-car");
+  }
+
   return (
-    <div className="rent-benefits-section text-center p-4 bg-light">
-      <h3>Have a car for rent? Don't miss out on your benefit</h3>
-      <Row>
-        {benefits.map((benefit, index) => (
-          <Col md={4} key={index} className="p-3">
-            <Card className="h-100">
-              <Card.Body>
-                <div className="icon mb-3" style={{ fontSize: "2rem" }}>
-                  {benefit.icon}
-                </div>
-                <Card.Title>{benefit.title}</Card.Title>
-                <Card.Text>{benefit.text}</Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-      <div>
-        <h4>Make money on your car right away</h4>
-        <Button className="btn-owner" size="lg">
-          List Your Car Today
-        </Button>
-      </div>
+    <div className="big-container">
+      <Container className="rent-benefits-section text-center p-4">
+        <h3>Have a car for rent? Don't miss out on your benefit</h3>
+        <Row>
+          {benefits.map((benefit, index) => (
+            <Col md={4} key={index} className="p-3">
+              <Card className="h-100">
+                <Card.Body>
+                  <div className="icon mb-3" style={{ fontSize: "2rem" }}>
+                    {benefit.icon}
+                  </div>
+                  <Card.Title>{benefit.title}</Card.Title>
+                  <Card.Text>{benefit.text}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+        <div>
+          <h4>Make money on your car right away</h4>
+          <Button variant="warning" className="btn-owner" size="lg" onClick={handleListCar}>
+            List Your Car Today
+          </Button>
+        </div>
+      </Container>
     </div>
   );
 };

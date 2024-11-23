@@ -16,16 +16,14 @@ function App() {
       <div className="header-container">
         <Header />
       </div>
-      <hr></hr>
-      <Row>
-        <div className="main-container">
-          <div className="sidenav-container"></div>
-          <div className="app-content">
-            <Outlet />
-          </div>
+      {/* <hr className="hr"></hr> */}
+      <div className="main-container">
+        <div className="sidenav-container"></div>
+        <div className="app-content">
+          <Outlet />
         </div>
-      </Row>
-      <hr></hr>
+      </div>
+      <hr className="hr"></hr>
       <Footer />
     </div>
   );

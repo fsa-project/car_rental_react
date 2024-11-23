@@ -12,6 +12,7 @@ import {
 import { FiList } from "react-icons/fi";
 import { MdGridOn } from "react-icons/md";
 import { getUserCars, refreshToken } from "../../service/apiService";
+import { useNavigate } from "react-router-dom";
 
 const ListCar = () => {
   const [viewMode, setViewMode] = useState("list"); // "list" hoặc "carousel"
@@ -30,6 +31,7 @@ const ListCar = () => {
     status: i % 2 === 0 ? "Available" : "Unavailable",
   }));
 
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
 
 
@@ -59,7 +61,9 @@ const ListCar = () => {
       console.error("Error fetching cars:", error);
     }
   };
-
+  const handleCarDetail = () => {
+    navigate('/car-details');
+  }
 
   // Các style
   const styles = {
@@ -269,7 +273,7 @@ const ListCar = () => {
                       >
                         Rent now
                       </Button>
-                      <Button style={styles.secondaryButton}>
+                      <Button style={styles.secondaryButton} onClick={handleCarDetail()}>
                         View details
                       </Button>
                     </div>

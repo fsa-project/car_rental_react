@@ -38,6 +38,21 @@ const Header = () => {
     dispatch(logoutUser());
     navigate('/');
   }
+  const handleProfile = () => {
+    navigate('/edit-profile');
+  }
+  const handleMyBooking = () => {
+    navigate('/my-booking');
+  }
+  const handleWallet = () => {
+    navigate('/wallet');
+  }
+  const handleReport = () => {
+    navigate('/report');
+  }
+  const handleMyCars = () => {
+    navigate('/owner-list-car');
+  }
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
@@ -92,29 +107,29 @@ const Header = () => {
                         onClick={() => handleToggle(true)}
                         onMouseLeave={() => handleToggle(false)}
                       >
-                        <NavDropdown.Item >My profile</NavDropdown.Item>
-                        <NavDropdown.Item >My Bookings</NavDropdown.Item>
-                        <NavDropdown.Item >My Wallet</NavDropdown.Item>
+                        <NavDropdown.Item onClick={handleProfile}>My Profile</NavDropdown.Item>
+                        <NavDropdown.Item onClick={handleWallet}>My Wallet</NavDropdown.Item>
+                        {account.role.name === "OWNER" ?
+                          <>
+                            <NavDropdown.Item onClick={handleMyCars} >My Cars</NavDropdown.Item>
+                            <NavDropdown.Item onClick={handleReport}>My Report</NavDropdown.Item>
+                          </>
+                          :
+                          <>
+                            <NavDropdown.Item onClick={handleMyBooking}>My Bookings</NavDropdown.Item>
+                          </>
+                        }
                         <NavDropdown.Item onClick={() => handleLogout()} >Log out</NavDropdown.Item>
                       </NavDropdown>
                     </div>
                   </>
               }
-
-
-
-
-
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
       </Container>
     </Navbar>
 
-
-
-
   )
 }
-
 export default Header;

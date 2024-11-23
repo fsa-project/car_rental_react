@@ -13,6 +13,7 @@ nProgress.configure({
     trickleSpeed: 100
 })
 
+
 //biến lưu trạng thái của refresh token
 let isRefreshing = false;
 let failedQueue = [];
@@ -88,6 +89,10 @@ instance.interceptors.response.use(function (response) {
                     .catch((err) => {
                         console.log(">>error" + err);
                         processQueue(err, null); // Báo lỗi cho các request trong hàng đợi
+
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token')
+                        localStorage.removeItem('user');
                         reject(err);
                     })
                     .finally(() => {
@@ -101,13 +106,6 @@ instance.interceptors.response.use(function (response) {
             failedQueue.push({ resolve, reject });
         });
     }
-
-    // Xử lý lỗi khác (không phải 401)
-    // return Promise.reject(
-    //     error.response && error.response.data
-    //         ? error.response.data
-    //         : error
-    // );
     return error && error.response && error.response.data ? error.response.data : Promise.reject(error);
 
 });

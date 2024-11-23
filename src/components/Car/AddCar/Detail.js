@@ -91,7 +91,7 @@ function Detail() {
               />
             </Col>
             <Col md={3} style={{ textAlign: "left", paddingTop: "11px" }}>
-              <h5>Litters/100km</h5>
+              <h6>Litters/100km</h6>
             </Col>
           </Row>
         </div>
@@ -227,19 +227,21 @@ function Detail() {
         </div>
       </div>
 
-      <h3>Images</h3>
-      <div className="form-grid images-grid">
-        {["front", "back", "left", "right"].map((field) => (
-          <div className="upload-group" key={field}>
-            <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
-            <input
-              type="file"
-              accept=".jpg,.jpeg,.png,.gif"
-              onChange={(e) => handleFileChange(e, field)}
-              required
-            />
-          </div>
-        ))}
+      <div className="image-section">
+        <h3>Images</h3>
+        <div className="form-grid images-grid">
+          {["front", "back", "left", "right"].map((field) => (
+            <div className="upload-group" key={field}>
+              <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png,.gif"
+                onChange={(e) => handleFileChange(e, field)}
+                required
+              />
+            </div>
+          ))}
+        </div>
       </div>
       <p className="note">
         Please include full 4 images of your vehicle (Front, Back, Left, Right).

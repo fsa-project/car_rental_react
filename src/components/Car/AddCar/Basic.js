@@ -39,7 +39,6 @@ function Basic() {
         information.
       </p>
       <div className="form-grid">
-        {/* Phần Form */}
         <div>
           <div className="form-group">
             <label>License plate *</label>

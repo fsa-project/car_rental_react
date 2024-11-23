@@ -1,7 +1,12 @@
 import React from "react";
 import { Carousel, Tab, Tabs, Table, Button, Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function CarDetails() {
+  const navigate = useNavigate();
+  const handleBooking = () => {
+    navigate('/booking');
+  }
   return (
     <Container>
       <div
@@ -55,6 +60,7 @@ function CarDetails() {
               Status: <span style={{ color: "green" }}>Available</span>
             </p>
             <Button
+              onClick={handleBooking}
               style={{
                 backgroundColor: "#ffc107",
                 border: "none",

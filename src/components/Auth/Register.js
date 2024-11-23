@@ -2,6 +2,10 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import "./Login.scss";
 import React from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { postLogin, postRegister } from "../../service/apiService";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import loginUser from "../../redux/action/userAction";
 
 function Register() {
   const [formData, setFormData] = React.useState({
@@ -13,16 +17,39 @@ function Register() {
     userType: "",
     agreeToTerms: false,
   });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     console.log(formData);
     e.preventDefault();
     if (formData.newPassword === formData.confirmPassword) {
       console.log("Signing up with:", formData);
+      let data = await postRegister(formData.email, formData.newPassword, formData.name, formData.phone, formData.userType);
+      console.log(">>> register response: " + data.data)
+      if (data && data.statusCode === 201) {
+        handleLogin();
+      }
     } else {
       alert("noooo");
       toast.error("Password do not match");
     }
+  };
+
+  const handleLogin = async (e) => {
+    let data = await postLogin(formData.email, formData.newPassword);
+    console.log(data.data);
+
+    if (data && data.error === null) {
+      //dispatch
+      dispatch(loginUser(data.data));
+      toast.success(data.message);
+      navigate("/");
+    }
+    if (data && data.error !== null) {
+      toast.error(data.message);
+    }
+
   };
 
   const handleChange = (e) => {
@@ -105,19 +132,19 @@ function Register() {
             type="radio"
             label="I want to rent a car"
             name="userType"
-            value="renter"
+            value="RENTER"
             onChange={handleChange}
             className="mb-2"
-            checked={formData.userType === "renter"}
+            checked={formData.userType === "RENTER"}
           />
           <Form.Check
             type="radio"
             label="I am a car owner"
             name="userType"
-            value="owner"
+            value="OWNER"
             onChange={handleChange}
             className="mb-3"
-            checked={formData.userType === "owner"}
+            checked={formData.userType === "OWNER"}
           />
         </div>
         <div className="select-row">
@@ -146,6 +173,7 @@ function Register() {
           type="submit"
           className="custom-btn w-100"
           disabled={!formData.agreeToTerms}
+          onClick={handleSignup}
         >
           SIGN UP
         </Button>
