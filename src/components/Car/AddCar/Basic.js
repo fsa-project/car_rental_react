@@ -3,11 +3,12 @@ import "./Basic.scss";
 
 function Basic() {
   const [formData, setFormData] = useState({
+    name: "",
     licensePlate: "",
     color: "Black",
     brand: "",
     model: "",
-    productionYear: "2022",
+    productionYears: "2022",
     seats: "4",
     transmission: "Automatic",
     fuel: "Gasoline",
@@ -87,7 +88,7 @@ function Basic() {
             <label>Production year *</label>
             <select
               name="productionYear"
-              value={formData.productionYear}
+              value={formData.productionYears}
               onChange={handleInputChange}
             >
               <option value="2022">2022</option>

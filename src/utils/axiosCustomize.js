@@ -1,5 +1,8 @@
 import axios from "axios";
 import nProgress from "nprogress";
+import { toast } from "react-toastify";
+import { logoutUser } from "../redux/action/userAction";
+import { store } from '../redux/store';
 
 const instance = axios.create({
     baseURL: 'http://localhost:8386/'
@@ -93,6 +96,12 @@ instance.interceptors.response.use(function (response) {
                         localStorage.removeItem('access_token');
                         localStorage.removeItem('refresh_token')
                         localStorage.removeItem('user');
+
+                        //const dispatch = useDispatch();
+                        store.dispatch(logoutUser());
+
+                        toast.error("Your session are expire, please login again");
+                        window.location.href = "/auth"
                         reject(err);
                     })
                     .finally(() => {

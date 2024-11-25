@@ -1,4 +1,4 @@
-import { FETCH_USER_LOGIN_SUCCESS, LOGOUT_USER } from '../action/userAction';
+import { FETCH_USER_LOGIN_SUCCESS, LOGOUT_USER, UPDATE_USER } from '../action/userAction';
 
 const INITIAL_STATE = {
     account: {
@@ -22,6 +22,17 @@ const userReducer = (state = INITIAL_STATE, action) => {
         }
         case LOGOUT_USER:
             return INITIAL_STATE; // Reset state về trạng thái ban đầu
+        case UPDATE_USER: {
+            const { name, email } = action.payload;
+            return {
+                ...state,
+                account: {
+                    ...state.account,
+                    name,
+                    email
+                }
+            };
+        }
         default:
             return state;
     }

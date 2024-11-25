@@ -11,6 +11,26 @@ import Pricing from "../components/Car/AddCar/Pricing";
 import Detail from "../components/Car/AddCar/Detail";
 
 const AddCarPage = () => {
+
+  const [formData, setFormData] = useState({
+    licensePlate: "",
+    color: "Black",
+    brand: "",
+    model: "",
+    productionYears: "2022",
+    seats: "4",
+    transmission: "Automatic",
+    fuel: "Gasoline",
+    registrationPaper: null,
+    certificateOfInspection: null,
+    insurance: null,
+    // Thêm các thuộc tính khác:
+    driverName: "",
+    driverLicense: "",
+    phoneNumber: "",
+  });
+
+
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
 
