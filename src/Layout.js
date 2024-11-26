@@ -24,7 +24,6 @@ import MyReport from "./components/User/MyReport";
 import AddCarPage from "./pages/AddCarPage";
 import OwnerListCarPage from "./pages/OwnerListCar/OwnerListCarPage";
 import { ToastContainer } from "react-toastify";
-
 const Layout = () => {
   return (
     <>

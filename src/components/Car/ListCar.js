@@ -31,35 +31,25 @@ const ListCar = () => {
   }));
 
   const [data, setData] = useState([]);
-
-
-
+  useEffect(() => {
+    fetchCar(); // Gọi API khi component được mount
+  }, []);
   const fetchCar = async () => {
     try {
       const response = await getUserCars(); // Gọi API
-      console.log(">>> Full Response:", JSON.stringify(response, null, 2)); // In ra toàn bộ response
+      console.log(">>> Full Response:", JSON.stringify(response, null, 2));
 
-      // Kiểm tra cấu trúc và lấy mảng data
-      if (response && response.data) {
-        const cars = response.data; // Lấy mảng từ `data`
-        console.log(">>> Cars:", cars);
-
-        // Dùng map để lặp qua mảng xe
-        cars.map((car, index) => {
-          console.log(`Car ${index + 1}:`);
-          console.log(`- Name: ${car.name}`);
-          console.log(`- Base Price: ${car.basePrice}`);
-          console.log(`- Address: ${car.address}`);
-          console.log(`- Images: ${car.images.length > 0 ? car.images : "No images"}`);
-        });
+      if (response && response.statusCode === 200) {
+        setData(response.data.result); // Gán nếu là mảng
       } else {
-        console.error("Response does not contain data.");
+        console.error("Response data is not an array.");
+        setData([]); // Đặt giá trị mặc định là mảng rỗng nếu dữ liệu không hợp lệ
       }
     } catch (error) {
       console.error("Error fetching cars:", error);
+      setData([]); // Đặt giá trị mặc định là mảng rỗng nếu lỗi xảy ra
     }
   };
-
 
   // Các style
   const styles = {
@@ -110,7 +100,6 @@ const ListCar = () => {
 
   return (
     <Container className="py-5">
-      <Button onClick={() => fetchCar()}>list</Button>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="text-center">Car Listing</h3>
         <div className="d-flex gap-2">
@@ -152,7 +141,7 @@ const ListCar = () => {
               <th>#</th>
               <th>Car Name</th>
               <th>Image</th>
-              <th>Ratings</th>
+              {/* <th>Ratings</th> */}
               <th>No. of Rides</th>
               <th>Price</th>
               <th>Location</th>
@@ -161,55 +150,58 @@ const ListCar = () => {
             </tr>
           </thead>
           <tbody>
-            {cars.map((car, index) => (
-              <tr key={car.id}>
-                <td>{index + 1}</td>
-                <td>{car.name}</td>
-                <td>
-                  <img
-                    src={car.images[0]}
-                    alt={car.name}
-                    style={styles.image}
-                  />
-                </td>
-                <td>
+            {Array.isArray(data) &&
+              data.map((car, index) => (
+                <tr key={car.id}>
+                  <td>{index + 1}</td>
+                  <td>{car.name}</td>
+                  <td>
+                    <img
+                      src={car.images[0]}
+                      alt={car.name}
+                      style={styles.image}
+                    />
+                  </td>
+                  {/* <td>
                   {"★".repeat(car.rating) + "☆".repeat(5 - car.rating)}{" "}
                   {car.rating === 0 && (
                     <span style={{ color: "#aaa" }}>No ratings yet</span>
                   )}
-                </td>
-                <td>{car.rides}</td>
-                <td>{car.price}</td>
-                <td>{car.location}</td>
-                <td>
-                  <span
-                    style={
-                      car.status === "Available"
-                        ? styles.available
-                        : styles.unavailable
-                    }
-                  >
-                    {car.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="d-flex gap-2">
-                    <Button
-                      style={styles.primaryButton}
-                      disabled={car.status !== "Available"}
+                </td> */}
+                  <td>{car.rides}</td>
+                  <td>{car.basePrice}</td>
+                  <td>{car.address}</td>
+                  <td>
+                    <span
+                      style={
+                        car.status === "Available"
+                          ? styles.available
+                          : styles.unavailable
+                      }
                     >
-                      Rent now
-                    </Button>
-                    <Button style={styles.secondaryButton}>View details</Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {car.carStatus}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="d-flex gap-2">
+                      <Button
+                        style={styles.primaryButton}
+                        disabled={car.status !== "Available"}
+                      >
+                        Rent now
+                      </Button>
+                      <Button style={styles.secondaryButton}>
+                        View details
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       ) : (
         <Row>
-          {cars.map((car) => (
+          {data.map((car) => (
             <Col md={12} key={car.id} className="mb-4">
               <Card className="p-3">
                 <Row className="align-items-center">
@@ -234,13 +226,13 @@ const ListCar = () => {
                     className="d-flex flex-column justify-content-center"
                   >
                     <h5 className="text-center">{car.name}</h5>
-                    <p className="text-center">
+                    {/* <p className="text-center">
                       <strong>Ratings:</strong>{" "}
                       {"★".repeat(car.rating) + "☆".repeat(5 - car.rating)}{" "}
                       <span style={{ color: "#aaa" }}>
                         {car.rating === 0 ? "(No ratings yet)" : ""}
                       </span>
-                    </p>
+                    </p> */}
                     <p className="text-center">
                       <strong>No. of rides:</strong> {car.rides}
                     </p>

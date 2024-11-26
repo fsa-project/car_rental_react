@@ -7,7 +7,6 @@ const GuestHomePage = () => {
   return (
     <Container fluid className="guest-homepage">
       <HeaderSection />
-
       <WhyUsSection />
       <TestimonialsSection />
       <LocationSection />
@@ -27,7 +26,7 @@ const HeaderSection = () => {
         <p>
           Choose between 100% of private cars for rent at really low prices!
         </p>
-        <Button variant="light" onClick={() => navigate("/auth")}>
+        <Button variant="light" onClick={() => navigate("/home")}>
           Find a Rental Car Near You
         </Button>
       </Col>
@@ -36,7 +35,7 @@ const HeaderSection = () => {
       <Col md={6} className="right-section">
         <h2>Are you a car owner?</h2>
         <p>List your car and make money from your asset today!</p>
-        <Button variant="dark" onClick={() => navigate("/auth")}>
+        <Button variant="dark" onClick={() => navigate("/owner-list-car")}>
           List Your Car Today
         </Button>
       </Col>
