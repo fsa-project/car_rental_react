@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import "./Finish.scss";
 
-function Finish() {
+const Finish = (props) => {
+  const { formData, previewImage } = props
   const dummyData = [
     {
       id: 1,
-      name: "T72",
+      name: `${formData.name}`,
       ratings: 4,
-      noOfRides: 10,
-      price: "900k/day",
-      location: "Cau Giay, Hanoi",
+      noOfRides: `${formData.mileage}`,
+      price: `${formData.basePrice}/day`,
+      location: `${formData.address}`,
       status: "Available",
-      images: [
-        "https://sohanews.sohacdn.com/160588918557773824/2021/4/1/photo-2-1617237786080908009966.jpg",
-      ],
+      images: previewImage ? previewImage : null,
     },
   ];
 
@@ -30,7 +29,7 @@ function Finish() {
       <div className="preview-section">
         <div className="image-carousel">
           <div className="image-placeholder">
-            <img src={currentCar.images[0]} alt={currentCar.name} />
+            <img src={currentCar.images} alt={currentCar.name} />
           </div>
         </div>
         <div className="car-details">
@@ -68,11 +67,10 @@ function Finish() {
           <div className="details-row">
             <span>Status:</span>
             <span
-              className={`span ${
-                currentCar.status === "Available"
-                  ? "status-available"
-                  : "status-unavailable"
-              }`}
+              className={`span ${currentCar.status === "Available"
+                ? "status-available"
+                : "status-unavailable"
+                }`}
             >
               {currentCar.status}
             </span>

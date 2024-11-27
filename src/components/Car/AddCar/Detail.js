@@ -2,71 +2,40 @@ import React, { useState } from "react";
 import "./Detail.scss"; // Import file SCSS cho styling
 import { Col, Row } from "react-bootstrap";
 
-function Detail() {
-  const [formData, setFormData] = useState({
-    mileage: "",
-    fuelConsumption: "",
-    address: {
-      search: "",
-      city: "",
-      district: "",
-      ward: "",
-      street: "",
-    },
-    description: "",
-    functions: {
-      bluetooth: false,
-      gps: false,
-      camera: false,
-      sunRoof: false,
-      childLock: false,
-      childSeat: false,
-      dvd: false,
-      usb: false,
-    },
-    images: {
-      front: null,
-      back: null,
-      left: null,
-      right: null,
-    },
-  });
+const Detail = (props) => {
+  const { formData, setFormData, onImagesChange, handleCheckboxChange, addFunc, setCarImages, setPreviewImage } = props;
 
-  const handleInputChange = (event) => {
+  const validateFile = (file) => {
+    const validTypes = ["image/jpeg", "image/png", "image/gif"];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    return validTypes.includes(file.type) && file.size <= maxSize;
+  };
+
+  const handleFormChange = (event) => {
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    if (name === "mileage" || name === "fuelConsumption") {
+      if (value < 0) return alert("Value cannot be negative");
+    }
+    setFormData(event);
   };
 
-  const handleCheckboxChange = (event) => {
-    const { name, checked } = event.target;
-    setFormData({
-      ...formData,
-      functions: { ...formData.functions, [name]: checked },
-    });
-  };
+  const [images, setImages] = useState([]);
 
-  const handleFileChange = (event, field) => {
-    setFormData({
-      ...formData,
-      images: { ...formData.images, [field]: event.target.files[0] },
-    });
-  };
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files); // Chuyển FileList thành mảng
+    console.log(files);
+    setCarImages((prevState) => ({
+      ...prevState,
+      [e.target.name]: files[0] || null,
+    }));
 
-  const handleAddressChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      address: { ...formData.address, [name]: value },
-    });
-  };
+    const fileURL = URL.createObjectURL(files[0]);
+    setPreviewImage(fileURL);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Submitted Data: ", formData);
-  };
+  }
 
   return (
-    <form className="detail-form" onSubmit={handleSubmit}>
+    <form className="detail-form">
       <h2>Vehicle Details</h2>
       <div className="form-grid">
         <div className="form-group">
@@ -75,7 +44,10 @@ function Detail() {
             type="number"
             name="mileage"
             value={formData.mileage}
-            onChange={handleInputChange}
+            onChange={handleFormChange}
+            min="0"
+            step="1"
+            pattern="^[0-9]"
             required
           />
         </div>
@@ -87,167 +59,78 @@ function Detail() {
                 type="number"
                 name="fuelConsumption"
                 value={formData.fuelConsumption}
-                onChange={handleInputChange}
+                onChange={handleFormChange}
+                min="0"
               />
             </Col>
             <Col md={3} style={{ textAlign: "left", paddingTop: "11px" }}>
-              <h6>Litters/100km</h6>
+              <h6>L/100km</h6>
             </Col>
           </Row>
         </div>
         <div className="form-group full-width">
           <label>Address *</label>
-          <div className="address-inputs">
-            <input
-              type="text"
-              name="search"
-              placeholder="Search for an address"
-              value={formData.address.search}
-              onChange={handleAddressChange}
-            />
-            <input
-              type="text"
-              name="city"
-              placeholder="City/Province"
-              value={formData.address.city}
-              onChange={handleAddressChange}
-            />
-            <input
-              type="text"
-              name="district"
-              placeholder="District"
-              value={formData.address.district}
-              onChange={handleAddressChange}
-            />
-            <input
-              type="text"
-              name="ward"
-              placeholder="Ward"
-              value={formData.address.ward}
-              onChange={handleAddressChange}
-            />
-            <input
-              type="text"
-              name="street"
-              placeholder="House number, Street"
-              value={formData.address.street}
-              onChange={handleAddressChange}
-            />
-          </div>
+          <input
+            type="text"
+            name="address"
+            placeholder="House number, Street"
+            value={formData.address}
+            onChange={handleFormChange}
+            required
+          />
         </div>
         <div className="form-group full-width">
           <label>Description</label>
           <textarea
             name="description"
             value={formData.description}
-            onChange={handleInputChange}
+            onChange={handleFormChange}
           />
         </div>
       </div>
 
       <h3>Additional Functions</h3>
       <div className="form-grid">
-        <div className="checkbox-group">
-          <label>
+        {[
+          { name: "bluetooth", label: " Bluetooth" },
+          { name: "gps", label: " GPS" },
+          { name: "camera", label: " Camera" },
+          { name: "sunRoof", label: " Sun Roof" },
+          { name: "childLock", label: " Child Lock" },
+          { name: "childSeat", label: " Child Seat" },
+          { name: "dvd", label: " DVD" },
+          { name: "usb", label: " USB" },
+        ].map((item) => (
+          <label key={item.name}>
             <input
               type="checkbox"
-              name="bluetooth"
-              checked={formData.functions.bluetooth}
+              name={item.name}
+              checked={addFunc[item.name]}
               onChange={handleCheckboxChange}
             />
-            Bluetooth
+            {item.label}
           </label>
-          <label>
-            <input
-              type="checkbox"
-              name="gps"
-              checked={formData.functions.gps}
-              onChange={handleCheckboxChange}
-            />
-            GPS
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="camera"
-              checked={formData.functions.camera}
-              onChange={handleCheckboxChange}
-            />
-            Camera
-          </label>
-        </div>
-        <div className="checkbox-group">
-          <label>
-            <input
-              type="checkbox"
-              name="sunRoof"
-              checked={formData.functions.sunRoof}
-              onChange={handleCheckboxChange}
-            />
-            Sun Roof
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="childLock"
-              checked={formData.functions.childLock}
-              onChange={handleCheckboxChange}
-            />
-            Child Lock
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="childSeat"
-              checked={formData.functions.childSeat}
-              onChange={handleCheckboxChange}
-            />
-            Child Seat
-          </label>
-        </div>
-        <div className="checkbox-group">
-          <label>
-            <input
-              type="checkbox"
-              name="dvd"
-              checked={formData.functions.dvd}
-              onChange={handleCheckboxChange}
-            />
-            DVD
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="usb"
-              checked={formData.functions.usb}
-              onChange={handleCheckboxChange}
-            />
-            USB
-          </label>
-        </div>
+        ))}
       </div>
 
-      <div className="image-section">
-        <h3>Images</h3>
-        <div className="form-grid images-grid">
-          {["front", "back", "left", "right"].map((field) => (
-            <div className="upload-group" key={field}>
-              <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.gif"
-                onChange={(e) => handleFileChange(e, field)}
-                required
-              />
-            </div>
-          ))}
-        </div>
+      <h3>Images</h3>
+      <div className="form-grid images-grid">
+        {["front", "back", "left", "right"].map((field) => (
+          <div className="upload-group" key={field}>
+            <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,.gif"
+              name={field}
+              onChange={handleFileChange}
+              required
+            />
+          </div>
+        ))}
       </div>
-      <p className="note">
-        Please include full 4 images of your vehicle (Front, Back, Left, Right).
-      </p>
+      <p className="note">Please include full 4 images of your vehicle (Front, Back, Left, Right).</p>
     </form>
   );
-}
+};
 
 export default Detail;

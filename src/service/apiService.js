@@ -1,3 +1,4 @@
+import { json } from "react-router-dom";
 import axios from "../utils/axiosCustomize"
 
 const postLogin = (userEmail, userPassword) => {
@@ -30,12 +31,44 @@ const getUserCars = () => {
     });
 }
 
-const postAddNewCar = () => {
+const postAddNewCar = (metadata, documents, images) => {
     axios.defaults.withCredentials = true;
-    return axios.post(`cars/create`, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
+
+    const formData = new FormData();
+    const imagesArray = Object.values(images).filter((file) => file !== null);
+
+
+    formData.append(
+        "metadata",
+        new Blob([JSON.stringify(metadata)], {
+            type: "application/json"
+        }));
+    console.log(JSON.stringify(metadata));
+
+    if (Array.isArray(documents)) {
+        documents.forEach((file) => {
+            formData.append("documents", file);
+            console.log("tao la document");
+            console.log(file)
+        });
+    } else {
+        console.error("carImages is not an array:", images);
+        return;
+    }
+
+    if (Array.isArray(imagesArray)) {
+        imagesArray.forEach((file) => {
+            formData.append("images", file);
+            console.log("tao la file");
+            console.log(file)
+        });
+    } else {
+        console.error("carImages is not an array:", images);
+        return;
+    }
+
+    return axios.post(`cars/create`, formData, {
+        withCredentials: true
     });
 }
 export { postLogin, postRegister, getUserCars, refreshToken, postAddNewCar }

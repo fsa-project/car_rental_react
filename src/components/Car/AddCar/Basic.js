@@ -1,35 +1,29 @@
 import React, { useState } from "react";
 import "./Basic.scss";
 
-function Basic() {
-  const [formData, setFormData] = useState({
-    name: "",
-    licensePlate: "",
-    color: "Black",
-    brand: "",
-    model: "",
-    productionYears: "2022",
-    seats: "4",
-    transmission: "Automatic",
-    fuel: "Gasoline",
-    registrationPaper: null,
-    certificateOfInspection: null,
-    insurance: null,
-  });
+const Basic = (props) => {
+  const { formData, setFormData, onDocumentsChange } = props;
 
-  const handleFileChange = (event, field) => {
-    setFormData({ ...formData, [field]: event.target.files[0] });
-  };
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const [documents, setDocuments] = useState([]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Submitted Data: ", formData);
   };
+
+  // Update documents
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files); // Chuyển FileList thành mảng
+    const updatedDocuments = [...documents, ...files];
+
+    setDocuments(updatedDocuments);
+    onDocumentsChange(updatedDocuments); // Gửi toàn bộ mảng file về parent
+  }
 
   return (
     <form className="basic-form" onSubmit={handleSubmit}>
@@ -47,7 +41,7 @@ function Basic() {
               type="text"
               name="licensePlate"
               value={formData.licensePlate}
-              onChange={handleInputChange}
+              onChange={setFormData}
               required
             />
           </div>
@@ -56,7 +50,7 @@ function Basic() {
             <select
               name="color"
               value={formData.color}
-              onChange={handleInputChange}
+              onChange={setFormData}
             >
               <option value="Black">Black</option>
               <option value="White">White</option>
@@ -70,7 +64,7 @@ function Basic() {
               type="text"
               name="brand"
               value={formData.brand}
-              onChange={handleInputChange}
+              onChange={setFormData}
               required
             />
           </div>
@@ -80,16 +74,16 @@ function Basic() {
               type="text"
               name="model"
               value={formData.model}
-              onChange={handleInputChange}
+              onChange={setFormData}
               required
             />
           </div>
           <div className="form-group">
             <label>Production year *</label>
             <select
-              name="productionYear"
+              name="productionYears"
               value={formData.productionYears}
-              onChange={handleInputChange}
+              onChange={setFormData}
             >
               <option value="2022">2022</option>
               <option value="2021">2021</option>
@@ -99,9 +93,9 @@ function Basic() {
           <div className="form-group">
             <label>No. of seats *</label>
             <select
-              name="seats"
-              value={formData.seats}
-              onChange={handleInputChange}
+              name="numberOfSeats"
+              value={formData.numberOfSeats}
+              onChange={setFormData}
             >
               <option value="4">4</option>
               <option value="5">5</option>
@@ -118,20 +112,20 @@ function Basic() {
               <label>
                 <input
                   type="radio"
-                  name="transmission"
+                  name="transmissionType"
                   value="Automatic"
-                  checked={formData.transmission === "Automatic"}
-                  onChange={handleInputChange}
+                  checked={formData.transmissionType === "Automatic"}
+                  onChange={setFormData}
                 />
                 Automatic
               </label>
               <label>
                 <input
                   type="radio"
-                  name="transmission"
+                  name="transmissionType"
                   value="Manual"
-                  checked={formData.transmission === "Manual"}
-                  onChange={handleInputChange}
+                  checked={formData.transmissionType === "Manual"}
+                  onChange={setFormData}
                 />
                 Manual
               </label>
@@ -142,20 +136,20 @@ function Basic() {
               <label>
                 <input
                   type="radio"
-                  name="fuel"
+                  name="fuelType"
                   value="Gasoline"
-                  checked={formData.fuel === "Gasoline"}
-                  onChange={handleInputChange}
+                  checked={formData.fuelType === "Gasoline"}
+                  onChange={setFormData}
                 />
                 Gasoline
               </label>
               <label>
                 <input
                   type="radio"
-                  name="fuel"
+                  name="fuelType"
                   value="Diesel"
-                  checked={formData.fuel === "Diesel"}
-                  onChange={handleInputChange}
+                  checked={formData.fuelType === "Diesel"}
+                  onChange={setFormData}
                 />
                 Diesel
               </label>
@@ -168,7 +162,8 @@ function Basic() {
               <input
                 type="file"
                 accept=".jpg,.jpeg,.png,.pdf"
-                onChange={(e) => handleFileChange(e, "registrationPaper")}
+                multiple
+                onChange={handleFileChange}
                 required
               />
             </div>
@@ -177,7 +172,8 @@ function Basic() {
               <input
                 type="file"
                 accept=".jpg,.jpeg,.png,.pdf"
-                onChange={(e) => handleFileChange(e, "certificateOfInspection")}
+                multiple
+                onChange={handleFileChange}
                 required
               />
             </div>
@@ -186,7 +182,8 @@ function Basic() {
               <input
                 type="file"
                 accept=".jpg,.jpeg,.png,.pdf"
-                onChange={(e) => handleFileChange(e, "insurance")}
+                multiple
+                onChange={handleFileChange}
                 required
               />
             </div>
