@@ -32,6 +32,9 @@ const Header = () => {
   const handleLogin = () => {
     navigate("/auth");
   };
+  const handleRegister = () => {
+    navigate("/auth");
+  };
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/");
@@ -39,14 +42,17 @@ const Header = () => {
   const handleProfile = () => {
     navigate("/edit-profile");
   };
-  const handleBooking = () => {
+  const handleMyBooking = () => {
     navigate("/my-booking");
   };
   const handleWallet = () => {
     navigate("/wallet");
   };
-  const handleRegister = () => {
-    navigate("/auth");
+  const handleReport = () => {
+    navigate("/report");
+  };
+  const handleMyCars = () => {
+    navigate("/owner-list-car");
   };
 
   return (
@@ -120,15 +126,28 @@ const Header = () => {
                       onMouseLeave={() => handleToggle(false)}
                     >
                       <NavDropdown.Item onClick={handleProfile}>
-                        My profile
-                      </NavDropdown.Item>
-                      <NavDropdown.Item onClick={handleBooking}>
-                        My Bookings
+                        My Profile
                       </NavDropdown.Item>
                       <NavDropdown.Item onClick={handleWallet}>
                         My Wallet
                       </NavDropdown.Item>
-                      <NavDropdown.Item onClick={handleLogout}>
+                      {account.role.name === "OWNER" ? (
+                        <>
+                          <NavDropdown.Item onClick={handleMyCars}>
+                            My Cars
+                          </NavDropdown.Item>
+                          <NavDropdown.Item onClick={handleReport}>
+                            My Report
+                          </NavDropdown.Item>
+                        </>
+                      ) : (
+                        <>
+                          <NavDropdown.Item onClick={handleMyBooking}>
+                            My Bookings
+                          </NavDropdown.Item>
+                        </>
+                      )}
+                      <NavDropdown.Item onClick={() => handleLogout()}>
                         Log out
                       </NavDropdown.Item>
                     </NavDropdown>

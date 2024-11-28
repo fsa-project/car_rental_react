@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import HomePage from "./components/Home/HomePage";
 import User from "./components/User/User";
 
 import App from "./App";
@@ -24,12 +24,14 @@ import MyReport from "./components/User/MyReport";
 import AddCarPage from "./pages/AddCarPage";
 import OwnerListCarPage from "./pages/OwnerListCar/OwnerListCarPage";
 import { ToastContainer } from "react-toastify";
+import ThanksForPayingPage from "./pages/ThanksForPayingPage";
+import OwnerCarDetail from "./components/Car/OwnerCarDetail";
 const Layout = () => {
   return (
     <>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<GuestPage />} />
+          <Route index element={<HomePage />} />
           <Route path="/users" element={<User />} />
           <Route path="/terms" element={<TermOfUse />} />
           <Route path="/home" element={<HomePage />} />
@@ -39,7 +41,8 @@ const Layout = () => {
           <Route path="/reset" element={<ResetPass />} />
           <Route path="/list-car" element={<ListCar />} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/car-details" element={<CarDetails />} />
+          {/* <Route path="/car-details" element={<CarDetails />} /> */}
+          <Route path="/car-details/:carId" element={<CarDetails />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/search-car" element={<SearchCar />} />
           <Route path="/booking" element={<BookingPage />} />
@@ -49,7 +52,12 @@ const Layout = () => {
           <Route path="/wallet" element={<MyWallet />} />
           <Route path="/report" element={<MyReport />} />
           <Route path="/add-car" element={<AddCarPage />} />
+          <Route path="/tkspaying" element={<ThanksForPayingPage />} />
           <Route path="/owner-list-car" element={<OwnerListCarPage />} />
+          <Route
+            path="/owner-car-details/:carId"
+            element={<OwnerCarDetail />}
+          />
         </Route>
       </Routes>
       <ToastContainer

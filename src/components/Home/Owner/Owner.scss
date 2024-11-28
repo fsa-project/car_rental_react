@@ -1,12 +1,14 @@
-.btn-owner {
-  background-color: transparent;
-  color: #191a1b;
-  border: solid 1px;
-  border-color: #191a1b;
-}
+.big-container {
+  .rent-benefits-section {
+    .btn-owner {
+      margin-top: 10px;
+      color: #fff;
+      border: solid 1px;
+      font-weight: 500;
 
-.btn-owner:hover {
-  background-color: #191a1b;
-  color: #fff;
-  border-color: #191a1b;
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
 }

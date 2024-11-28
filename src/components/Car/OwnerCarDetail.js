@@ -3,15 +3,23 @@ import { Carousel, Tab, Tabs, Table, Button, Container } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUserCarsDetail } from "../../service/apiService"; // API service
 
-function CarDetails() {
+function OwnerCarDetail() {
   const navigate = useNavigate();
   const { carId } = useParams();
 
   const [carDetail, setCarDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleBooking = () => {
-    navigate("/booking");
+  const handleUpdateCar = () => {
+    navigate(`/update-car/${carId}`);
+  };
+
+  const handleConfirm = () => {
+    if (carDetail.carStatus === "Booked") {
+      console.log("Confirm deposit");
+    } else if (carDetail.carStatus === "Stopped") {
+      console.log("Confirm payment");
+    }
   };
 
   useEffect(() => {
@@ -69,13 +77,6 @@ function CarDetails() {
 
           <div style={{ width: "40%" }}>
             <h2>{carDetail.name}</h2>
-            {/* <p>
-              Ratings: <span>☆☆☆☆☆</span> (
-              {carDetail.ratings || "No ratings yet"})
-            </p> */}
-            {/* <p>
-              No. of rides: <strong>{carDetail.rides || 0}</strong>
-            </p> */}
             <p>
               Price: <strong>{carDetail.basePrice}/day</strong>
             </p>
@@ -86,26 +87,46 @@ function CarDetails() {
               Status:{" "}
               <span
                 style={{
-                  color: carDetail.status === "Available" ? "green" : "red",
+                  color: carDetail.carStatus === "Available" ? "green" : "red",
                 }}
               >
                 {carDetail.carStatus}
               </span>
             </p>
-            <Button
-              onClick={handleBooking}
-              style={{
-                backgroundColor: "#ffc107",
-                border: "none",
-                borderRadius: "5px",
-                padding: "10px 20px",
-                color: "#070707",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              Rent Now
-            </Button>
+
+            {carDetail.carStatus === "Booked" && (
+              <Button
+                onClick={handleConfirm}
+                style={{
+                  backgroundColor: "#ffc107",
+                  border: "none",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  color: "#070707",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                Confirm Deposit
+              </Button>
+            )}
+
+            {carDetail.carStatus === "Stopped" && (
+              <Button
+                onClick={handleConfirm}
+                style={{
+                  backgroundColor: "#ffc107",
+                  border: "none",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  color: "#070707",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                Confirm Payment
+              </Button>
+            )}
           </div>
         </div>
 
@@ -149,15 +170,7 @@ function CarDetails() {
                   <th>Note</th>
                 </tr>
               </thead>
-              <tbody>
-                {/* {carDetail.documents.map((doc, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{doc.name}</td>
-                    <td>{doc.note}</td>
-                  </tr>
-                ))} */}
-              </tbody>
+              <tbody>{/* Documents mapping */}</tbody>
             </Table>
             <p className="text-muted">
               Note: Documents will be available for viewing after you’ve paid
@@ -190,18 +203,30 @@ function CarDetails() {
               <p>
                 <strong>Term of use:</strong>
               </p>
-              {/* {carDetail.terms.map((term, index) => (
-                <div key={index}>
-                  <input type="checkbox" checked={term.checked} disabled />{" "}
-                  {term.text}
-                </div>
-              ))} */}
             </div>
           </Tab>
         </Tabs>
+
+        {/* Nút cập nhật thông tin chi tiết xe */}
+        <div className="mt-4 text-center">
+          <Button
+            onClick={handleUpdateCar}
+            style={{
+              backgroundColor: "#ffc107",
+              border: "none",
+              borderRadius: "5px",
+              padding: "10px 20px",
+              color: "#070707",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            Update Car Information
+          </Button>
+        </div>
       </div>
     </Container>
   );
 }
 
-export default CarDetails;
+export default OwnerCarDetail;

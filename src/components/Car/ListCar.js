@@ -12,6 +12,7 @@ import {
 import { FiList } from "react-icons/fi";
 import { MdGridOn } from "react-icons/md";
 import { getUserCars, refreshToken } from "../../service/apiService";
+import { useNavigate } from "react-router-dom";
 
 const ListCar = () => {
   const [viewMode, setViewMode] = useState("list"); // "list" hoặc "carousel"
@@ -27,9 +28,10 @@ const ListCar = () => {
     rides: 0,
     price: "900K/day",
     location: "Cau Giay, Hanoi",
-    status: i % 2 === 0 ? "Available" : "Unavailable",
+    carStatus: i % 2 === 0 ? "Available" : "Unavailable",
   }));
 
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
     fetchCar(); // Gọi API khi component được mount
@@ -50,6 +52,9 @@ const ListCar = () => {
       setData([]); // Đặt giá trị mặc định là mảng rỗng nếu lỗi xảy ra
     }
   };
+  const handleCarDetail = () => {
+    navigate("/car-details");
+  };
 
   // Các style
   const styles = {
@@ -66,8 +71,12 @@ const ListCar = () => {
       color: "green",
       fontWeight: "bold",
     },
-    unavailable: {
+    stopped: {
       color: "red",
+      fontWeight: "bold",
+    },
+    booked: {
+      color: "blue",
       fontWeight: "bold",
     },
     primaryButton: {
@@ -174,9 +183,11 @@ const ListCar = () => {
                   <td>
                     <span
                       style={
-                        car.status === "Available"
+                        car.carStatus === "Available"
                           ? styles.available
-                          : styles.unavailable
+                          : car.carStatus === "Stopped"
+                          ? styles.stopped
+                          : styles.booked
                       }
                     >
                       {car.carStatus}
@@ -186,7 +197,7 @@ const ListCar = () => {
                     <div className="d-flex gap-2">
                       <Button
                         style={styles.primaryButton}
-                        disabled={car.status !== "Available"}
+                        disabled={car.carStatus !== "Available"}
                       >
                         Rent now
                       </Button>
@@ -246,22 +257,27 @@ const ListCar = () => {
                       <strong>Status:</strong>{" "}
                       <span
                         style={
-                          car.status === "Available"
+                          car.carStatus === "Available"
                             ? styles.available
-                            : styles.unavailable
+                            : car.carStatus === "Stopped"
+                            ? styles.stopped
+                            : styles.booked
                         }
                       >
-                        {car.status}
+                        {car.carStatus}
                       </span>
                     </p>
                     <div className="d-flex justify-content-center gap-2 mt-3">
                       <Button
                         style={styles.primaryButton}
-                        disabled={car.status !== "Available"}
+                        disabled={car.carStatus !== "Available"}
                       >
                         Rent now
                       </Button>
-                      <Button style={styles.secondaryButton}>
+                      <Button
+                        style={styles.secondaryButton}
+                        onClick={handleCarDetail()}
+                      >
                         View details
                       </Button>
                     </div>

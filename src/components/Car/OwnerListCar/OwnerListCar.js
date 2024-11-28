@@ -13,15 +13,21 @@ import { FiList } from "react-icons/fi";
 import { MdGridOn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { getUserCars } from "../../../service/apiService"; // API service
+
 import "./OwnerListCar.scss";
 
 const OwnerListCar = () => {
   const navigate = useNavigate();
-  const [cars, setCars] = useState([]); // Lưu danh sách xe từ API
+
+  const handleCarDetail = (carId) => {
+    navigate(`/owner-car-details/${carId}`);
+  };
+  const [cars, setCars] = useState([]);
   const [viewMode, setViewMode] = useState("table"); // "carousel" hoặc "table"
+  const [sortOption, setSortOption] = useState("");
 
   useEffect(() => {
-    fetchCar(); // Gọi API khi component được mount
+    fetchCar();
   }, []);
 
   const fetchCar = async () => {
@@ -30,15 +36,38 @@ const OwnerListCar = () => {
       console.log(">>> Full Response:", JSON.stringify(response, null, 2));
 
       if (response && response.statusCode === 200) {
-        setCars(response.data.result); // Gán nếu là mảng
+        setCars(response.data.result);
       } else {
         console.error("Response data is not an array.");
-        setCars([]); // Đặt giá trị mặc định là mảng rỗng nếu dữ liệu không hợp lệ
+        setCars([]);
       }
     } catch (error) {
       console.error("Error fetching cars:", error);
-      setCars([]); // Đặt giá trị mặc định là mảng rỗng nếu lỗi xảy ra
+      setCars([]);
     }
+  };
+  const sortCars = (option) => {
+    let sortedCars = [...cars];
+    switch (option) {
+      // case "latest":
+      //   sortedCars.sort(
+      //     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      //   );
+      //   break;
+      case "price_high_to_low":
+        sortedCars.sort((a, b) => b.basePrice - a.basePrice);
+        break;
+      case "price_low_to_high":
+        sortedCars.sort((a, b) => a.basePrice - b.basePrice);
+        break;
+      default:
+        break;
+    }
+    setCars(sortedCars);
+  };
+  const handleSort = (option) => {
+    setSortOption(option);
+    sortCars(option);
   };
 
   // Các style tùy chỉnh
@@ -65,11 +94,13 @@ const OwnerListCar = () => {
       fontWeight: "bold",
     },
     primaryButton: {
-      backgroundColor: "#ffc107",
+      width: "170px",
+      backgroundColor: "white",
       color: "black",
-      border: "none",
+      border: "1pt solid #333",
       fontWeight: "bold",
-      padding: "0.5rem 1rem",
+      padding: "0.5rem ",
+      paddingRight: "",
       borderRadius: "5px",
     },
     secondaryButton: {
@@ -117,9 +148,15 @@ const OwnerListCar = () => {
               Sort by
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item>Latest to Newest</Dropdown.Item>
-              <Dropdown.Item>Price: Highest to Lowest</Dropdown.Item>
-              <Dropdown.Item>Price: Lowest to Highest</Dropdown.Item>
+              {/* <Dropdown.Item onClick={() => handleSort("latest")}>
+                Latest to Newest
+              </Dropdown.Item> */}
+              <Dropdown.Item onClick={() => handleSort("price_high_to_low")}>
+                Price: Highest to Lowest
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSort("price_low_to_high")}>
+                Price: Lowest to Highest
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </div>
@@ -133,11 +170,11 @@ const OwnerListCar = () => {
               <th>#</th>
               <th>Car Name</th>
               <th>Image</th>
-
               <th>Price</th>
               <th>Location</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th>Confirm</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -150,10 +187,13 @@ const OwnerListCar = () => {
                     <img
                       src={car.images[0]}
                       alt={car.name}
-                      style={styles.image}
+                      style={{
+                        width: "80px",
+                        height: "50px",
+                        objectFit: "cover",
+                      }}
                     />
                   </td>
-
                   <td>{car.basePrice}</td>
                   <td>{car.address}</td>
                   <td>
@@ -169,39 +209,32 @@ const OwnerListCar = () => {
                       {car.carStatus}
                     </span>
                   </td>
+                  {/* Cột Confirm */}
                   <td>
-                    <div className="d-flex gap-2">
-                      {car.carStatus === "Booked" && (
-                        <>
-                          <Button style={styles.primaryButton}>
-                            Confirm Payment
-                          </Button>
-                          <Button style={styles.secondaryButton}>
-                            View details
-                          </Button>
-                        </>
-                      )}
-                      {car.carStatus === "Available" && (
-                        <>
-                          <Button style={styles.primaryButton} disabled>
-                            Confirm Deposit
-                          </Button>
-                          <Button style={styles.secondaryButton}>
-                            View details
-                          </Button>
-                        </>
-                      )}
-                      {car.carStatus === "Stopped" && (
-                        <>
-                          <Button style={styles.primaryButton}>
-                            Confirm Deposit
-                          </Button>
-                          <Button style={styles.secondaryButton}>
-                            View details
-                          </Button>
-                        </>
-                      )}
-                    </div>
+                    {car.carStatus === "Booked" && (
+                      <Button style={styles.primaryButton}>
+                        Confirm Payment
+                      </Button>
+                    )}
+                    {car.carStatus === "Available" && (
+                      <Button style={styles.primaryButton} disabled>
+                        Confirm Deposit
+                      </Button>
+                    )}
+                    {car.carStatus === "Stopped" && (
+                      <Button style={styles.primaryButton}>
+                        Confirm Deposit
+                      </Button>
+                    )}
+                  </td>
+                  {/* Cột Action */}
+                  <td>
+                    <Button
+                      onClick={() => handleCarDetail(car.id)}
+                      style={styles.secondaryButton}
+                    >
+                      View details
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -236,6 +269,13 @@ const OwnerListCar = () => {
                     >
                       <h5 className="text-center">{car.name}</h5>
                       <p className="text-center">
+                        <strong>Ratings:</strong>{" "}
+                        {"★".repeat(car.rating) + "☆".repeat(5 - car.rating)}{" "}
+                        <span className="no-rating">
+                          {car.rating === 0 ? "(No ratings yet)" : ""}
+                        </span>
+                      </p>
+                      <p className="text-center">
                         <strong>No. of rides:</strong> {car.rides}
                       </p>
                       <p className="text-center">
@@ -264,7 +304,10 @@ const OwnerListCar = () => {
                             <Button style={styles.primaryButton}>
                               Confirm Payment
                             </Button>
-                            <Button style={styles.secondaryButton}>
+                            <Button
+                              onClick={() => handleCarDetail(car.id)}
+                              style={styles.secondaryButton}
+                            >
                               View details
                             </Button>
                           </>
@@ -274,7 +317,10 @@ const OwnerListCar = () => {
                             <Button style={styles.primaryButton} disabled>
                               Confirm Deposit
                             </Button>
-                            <Button style={styles.secondaryButton}>
+                            <Button
+                              style={styles.secondaryButton}
+                              onClick={() => handleCarDetail(car.id)}
+                            >
                               View details
                             </Button>
                           </>
@@ -284,7 +330,10 @@ const OwnerListCar = () => {
                             <Button style={styles.primaryButton}>
                               Confirm Deposit
                             </Button>
-                            <Button style={styles.secondaryButton}>
+                            <Button
+                              style={styles.secondaryButton}
+                              onClick={() => handleCarDetail(car.id)}
+                            >
                               View details
                             </Button>
                           </>

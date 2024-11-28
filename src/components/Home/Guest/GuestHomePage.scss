@@ -1,6 +1,6 @@
 .guest-homepage {
-  font-family: Arial, sans-serif;
-  min-height: 100vh; /* Đảm bảo toàn bộ trang chiếm ít nhất chiều cao màn hình */
+  font-family: 'Manrope', sans-serif;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -27,67 +27,68 @@
   }
 
   .left-section {
-    background-color: #000000; /* Màu nền đen cho phần trái */
+    background-color: #000000;
   }
 
   .right-section {
-    background-color: #ffc107; /* Màu vàng làm nền cho phần phải */
+    background-color: #ffc107;
   }
 
   h2 {
-    font-size: 2rem; /* Tăng kích thước chữ cho tiêu đề */
+    font-size: 2rem;
     margin-bottom: 1rem;
     font-weight: bold;
   }
 
   p {
-    font-size: 1.2rem; /* Tăng kích thước chữ cho đoạn văn */
+    font-size: 1.2rem;
     margin-bottom: 1.5rem;
-    line-height: 1.5; /* Tăng khoảng cách dòng cho dễ đọc */
+    line-height: 1.5;
   }
 
   button {
+
     margin-top: 0.5rem;
     font-weight: bold;
-    color: #000000; /* Màu đen cho chữ trong button */
-    background-color: #ffc107; /* Nền button là vàng */
+    color: #000000;
+    background-color: #ffc107;
     border: 2px solid #000000;
-    padding: 0.8rem 2rem; /* Thêm padding để button nổi bật */
-    font-size: 1rem; /* Tăng kích thước chữ cho button */
-    border-radius: 25px; /* Làm tròn các góc của button */
-    transition: background-color 0.3s ease; /* Thêm hiệu ứng chuyển màu khi hover */
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
   }
 
   button:hover {
-    background-color: #e0a800; /* Thay đổi màu khi hover */
+    background-color: #e0a800;
   }
 }
 
 .main-section {
-  flex: 1; /* Đảm bảo phần main chiếm phần còn lại của màn hình */
-  padding: 3rem 2rem; /* Thêm padding đều để tạo không gian */
+  flex: 1;
+  padding: 3rem 2rem;
   display: flex;
-  flex-direction: column; /* Căn chỉnh phần tử theo chiều dọc */
-  justify-content: center; /* Căn giữa nội dung theo chiều dọc */
-  align-items: center; /* Căn giữa theo chiều ngang */
-  text-align: center; /* Căn giữa chữ */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .why-us-section,
 .testimonials-section,
 .location-section {
-  background-color: #f0f0f0; /* Xám nhạt cho nền section */
-  color: #000000; /* Màu đen cho chữ */
+  background-color: #f0f0f0;
+  color: #000000;
   padding: 2rem 0;
   box-sizing: border-box;
-  margin: 1rem 0; /* Tạo khoảng cách giữa các section */
+  margin: 1rem 0;
 }
 
 h3 {
-  color: #ffc107; /* Màu vàng cho tiêu đề */
+  color: #ffc107;
   margin-bottom: 1rem;
   font-weight: bold;
-  font-size: 1.8rem; /* Tăng kích thước chữ cho tiêu đề */
+  font-size: 1.8rem;
 }
 
 .card {
@@ -96,29 +97,29 @@ h3 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: #000000;
   padding: 1.5rem;
-  text-align: center; /* Căn giữa nội dung trong card */
-  margin-bottom: 2rem; /* Tạo khoảng cách giữa các card */
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .card img.rounded-circle {
-  width: 70px; /* Tăng kích thước của ảnh tròn */
+  width: 70px;
   height: 70px;
-  margin-bottom: 1rem; /* Tạo khoảng cách dưới ảnh */
+  margin-bottom: 1rem;
 }
 
 .card .icon {
-  font-size: 2.5rem; /* Kích thước icon lớn hơn */
-  color: #ffc107; /* Màu vàng cho icon */
-  margin-bottom: 1rem; /* Khoảng cách giữa icon và nội dung */
+  font-size: 2.5rem;
+  color: #ffc107;
+  margin-bottom: 1rem;
 }
 
 .card .card-body {
-  font-size: 1rem; /* Kích thước chữ trong card */
+  font-size: 1rem;
   line-height: 1.6;
 }
 
 .card .card-title {
-  font-size: 1.5rem; /* Kích thước tiêu đề trong card */
+  font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
