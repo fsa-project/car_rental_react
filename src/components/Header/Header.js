@@ -1,63 +1,64 @@
-import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Logo from '../../assets/logo51.png'
-import { NavLink, useNavigate } from 'react-router-dom';
-import { Offcanvas } from 'react-bootstrap';
-import Avatar from '../../assets/static/image/avatar-default.jpg'
-import './Header.scss'
-import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../../redux/action/userAction';
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import Logo from "../../assets/logo51.png";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Offcanvas } from "react-bootstrap";
+import Avatar from "../../assets/static/image/avatar-default.jpg";
+import "./Header.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../redux/action/userAction";
 
 const Header = () => {
+  //const account = useSelector((state) => state.user.account); // Trỏ đến state.user
   const { isAuthenticated, account } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const [showDropdown, setShowDropdown] = useState(false);
+  const handleImageClick = () => {
+    setShowDropdown(!showDropdown);
+  };
   const handleToggle = (isOpen) => {
     setShowDropdown(isOpen);
   };
 
-  const handleImageClick = () => {
-    setShowDropdown(!showDropdown);
-  }
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    navigate('/auth');
-  }
+    navigate("/auth");
+  };
   const handleRegister = () => {
-    navigate('/auth');
-  }
+    navigate("/auth");
+  };
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate('/');
-  }
+    navigate("/");
+  };
   const handleProfile = () => {
-    navigate('/edit-profile');
-  }
+    navigate("/edit-profile");
+  };
   const handleMyBooking = () => {
-    navigate('/my-booking');
-  }
+    navigate("/my-booking");
+  };
   const handleWallet = () => {
-    navigate('/wallet');
-  }
+    navigate("/wallet");
+  };
   const handleReport = () => {
-    navigate('/report');
-  }
+    navigate("/report");
+  };
   const handleMyCars = () => {
-    navigate('/owner-list-car');
-  }
+    navigate("/owner-list-car");
+  };
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid="sm">
-        <NavLink className='navbar-brand' to={"/"}>
+        <NavLink className="navbar-brand" to={"/"}>
           <img
             src={Logo}
             width="100%"
@@ -67,7 +68,8 @@ const Header = () => {
           />
         </NavLink>
         <Navbar.Toggle aria-controls="offcanvasNavbar-expand-lg" />
-        <Navbar.Offcanvas id="offcanvasNavbar-expand-lg"
+        <Navbar.Offcanvas
+          id="offcanvasNavbar-expand-lg"
           aria-labelledby="offcanvasNavbarLabel-expand-lg"
           placement="end"
         >
@@ -77,59 +79,87 @@ const Header = () => {
             </Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <Nav
-              className="justify-content-end flex-grow-1 pe-3 text-align-center"
-            >
-              <NavLink to={"/"} className='nav-link header-link'>My Ride</NavLink>
-              <NavLink to={"/"} className='nav-link header-link'>Become to Renter</NavLink>
-              <NavLink to={"/"} className='nav-link header-link'>About us</NavLink>
-              <div class="vr"></div>
+            <Nav className="justify-content-end flex-grow-1 pe-3 text-align-center">
+              <NavLink to={"/"} className="nav-link header-link">
+                My Ride
+              </NavLink>
+              <NavLink to={"/"} className="nav-link header-link">
+                Become to Renter
+              </NavLink>
+              <NavLink to={"/"} className="nav-link header-link">
+                About us
+              </NavLink>
+              <div className="vr"></div>
             </Nav>
             <Nav>
-              {
-                !isAuthenticated ?
-                  <>
-                    <div className="btn-auth">
-                      <Button variant='light btn-login' onClick={() => handleLogin()}>Sigh in</Button>
-                      <Button variant='outline-dark btn-register' onClick={() => handleRegister()}>Sign up</Button>
+              {!isAuthenticated ? (
+                <>
+                  <div className="btn-auth">
+                    <Button
+                      variant="light btn-login"
+                      onClick={() => handleLogin()}
+                    >
+                      Sigh in
+                    </Button>
+                    <Button
+                      variant="outline-dark btn-register"
+                      onClick={() => handleRegister()}
+                    >
+                      Sign up
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="dropdown-profile">
+                    <div
+                      className="avatar avatar--s"
+                      onClick={handleImageClick}
+                    >
+                      <img src={Avatar} loading="lazy" />
                     </div>
-                  </>
-                  :
-                  <>
-                    <div className="dropdown-profile">
-                      <div className="avatar avatar--s" onClick={handleImageClick}>
-                        <img src={Avatar} loading='lazy' />
-                      </div>
-                      <NavDropdown
-                        title={account.name}
-                        id="offcanvasNavbarDropdown-expand-lg"
-                        show={showDropdown}
-                        onClick={() => handleToggle(true)}
-                        onMouseLeave={() => handleToggle(false)}
-                      >
-                        <NavDropdown.Item onClick={handleProfile}>My Profile</NavDropdown.Item>
-                        <NavDropdown.Item onClick={handleWallet}>My Wallet</NavDropdown.Item>
-                        {account.role.name === "OWNER" ?
-                          <>
-                            <NavDropdown.Item onClick={handleMyCars} >My Cars</NavDropdown.Item>
-                            <NavDropdown.Item onClick={handleReport}>My Report</NavDropdown.Item>
-                          </>
-                          :
-                          <>
-                            <NavDropdown.Item onClick={handleMyBooking}>My Bookings</NavDropdown.Item>
-                          </>
-                        }
-                        <NavDropdown.Item onClick={() => handleLogout()} >Log out</NavDropdown.Item>
-                      </NavDropdown>
-                    </div>
-                  </>
-              }
+                    <NavDropdown
+                      title={account.name}
+                      id="offcanvasNavbarDropdown-expand-lg"
+                      show={showDropdown}
+                      onClick={() => handleToggle(true)}
+                      onMouseLeave={() => handleToggle(false)}
+                    >
+                      <NavDropdown.Item onClick={handleProfile}>
+                        My Profile
+                      </NavDropdown.Item>
+                      <NavDropdown.Item onClick={handleWallet}>
+                        My Wallet
+                      </NavDropdown.Item>
+                      {account.role.name === "OWNER" ? (
+                        <>
+                          <NavDropdown.Item onClick={handleMyCars}>
+                            My Cars
+                          </NavDropdown.Item>
+                          <NavDropdown.Item onClick={handleReport}>
+                            My Report
+                          </NavDropdown.Item>
+                        </>
+                      ) : (
+                        <>
+                          <NavDropdown.Item onClick={handleMyBooking}>
+                            My Bookings
+                          </NavDropdown.Item>
+                        </>
+                      )}
+                      <NavDropdown.Item onClick={() => handleLogout()}>
+                        Log out
+                      </NavDropdown.Item>
+                    </NavDropdown>
+                  </div>
+                </>
+              )}
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
       </Container>
     </Navbar>
+  );
+};
 
-  )
-}
 export default Header;

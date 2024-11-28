@@ -54,7 +54,6 @@ code {
 }
 
 @media (min-width: 1400px) {
-
   .container,
   .container-lg,
   .container-md,
@@ -72,7 +71,7 @@ code {
 }
 
 .app-container {
-  font-family: 'Manrope', sans-serif;
+  font-family: "Manrope", sans-serif;
 
   .btn.btn-warning {
     color: #fff;
@@ -111,13 +110,8 @@ code {
           img {
             display: none;
           }
-
         }
-
       }
-
-
-
 
       cursor: pointer;
     }

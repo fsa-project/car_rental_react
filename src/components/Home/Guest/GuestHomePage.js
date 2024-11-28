@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import "./GuestHomePage.scss";
 import { useNavigate } from "react-router-dom";
-import WhyUs from '../Content/WhyUs'
+import WhyUs from "../Content/WhyUs";
 import LocationSection from "../Content/LocationSection";
 
 const GuestHomePage = () => {
@@ -26,7 +26,7 @@ const HeaderSection = () => {
         <p>
           Choose between 100% of private cars for rent at really low prices!
         </p>
-        <Button variant="light" onClick={() => navigate("/auth")}>
+        <Button variant="light" onClick={() => navigate("/home")}>
           Find a Rental Car Near You
         </Button>
       </Col>
@@ -34,7 +34,7 @@ const HeaderSection = () => {
       <Col md={6} className="right-section">
         <h2>Are you a car owner?</h2>
         <p>List your car and make money from your asset today!</p>
-        <Button variant="dark" onClick={() => navigate("/auth")}>
+        <Button variant="dark" onClick={() => navigate("/owner-list-car")}>
           List Your Car Today
         </Button>
       </Col>
