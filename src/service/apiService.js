@@ -126,4 +126,21 @@ const postAddNewCar = (metadata, documents, images) => {
         withCredentials: true
     });
 }
-export { postLogin, postRegister, getUserCars, refreshToken, postAddNewCar }
+
+
+const postNewBooking = (carId, bookingInfo) => {
+    return axios.post(`bookings/new-booking`, bookingInfo, {
+        params: { carId: carId },
+    });
+}
+
+
+
+const initiateVnpayPayment = (amount) => {
+    if (!amount || amount <= 0) {
+        throw new Error("Amount is required and must be greater than 0");
+    }
+
+    return axios.post(`payment/vnpay`, { amount });
+};
+export { postLogin, postRegister, getUserCars, refreshToken, postAddNewCar, getUserCarsDetail, initiateVnpayPayment }
