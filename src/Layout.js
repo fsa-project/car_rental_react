@@ -26,6 +26,7 @@ import OwnerListCarPage from "./pages/OwnerListCar/OwnerListCarPage";
 import { ToastContainer } from "react-toastify";
 import ThanksForPayingPage from "./pages/ThanksForPayingPage";
 import OwnerCarDetail from "./components/Car/OwnerCarDetail";
+import UpdateCarDetail from "./components/Car/UpdateCarDetail";
 const Layout = () => {
   return (
     <>
@@ -57,6 +58,10 @@ const Layout = () => {
           <Route
             path="/owner-car-details/:carId"
             element={<OwnerCarDetail />}
+          />
+          <Route
+            path="/owner-car-details/update/:carId"
+            element={<UpdateCarDetail />}
           />
         </Route>
       </Routes>

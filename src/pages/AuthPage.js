@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import "../components/Auth/Login.scss";
+import LoadingIcon from "../components/Loading";
 
 function AuthPage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  if (loading) {
+    return <LoadingIcon />;
+  }
+
   return (
     <Container className="p-4 auth-container">
-      <br></br>
-      <br></br>
+      <br />
+      <br />
       <Row>
         <Col md={5} className="d-flex flex-column">
           <Login />
@@ -23,8 +36,8 @@ function AuthPage() {
           <Register />
         </Col>
       </Row>
-      <br></br>
-      <br></br>
+      <br />
+      <br />
     </Container>
   );
 }

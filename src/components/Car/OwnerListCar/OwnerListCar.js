@@ -13,11 +13,12 @@ import { FiList } from "react-icons/fi";
 import { MdGridOn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { getUserCars } from "../../../service/apiService"; // API service
-
+import loading from "../../Loading";
 import "./OwnerListCar.scss";
 
 const OwnerListCar = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const handleCarDetail = (carId) => {
     navigate(`/owner-car-details/${carId}`);
@@ -34,7 +35,7 @@ const OwnerListCar = () => {
     try {
       const response = await getUserCars(); // Gọi API
       console.log(">>> Full Response:", JSON.stringify(response, null, 2));
-
+      setLoading(false);
       if (response && response.statusCode === 200) {
         setCars(response.data.result);
       } else {
@@ -113,7 +114,9 @@ const OwnerListCar = () => {
     },
   };
 
-  return (
+  return loading ? (
+    <loading />
+  ) : (
     <Container className="owner-list-car py-1">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <Button

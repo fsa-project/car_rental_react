@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Carousel, Tab, Tabs, Table, Button, Container } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUserCarsDetail } from "../../service/apiService"; // API service
+import LoadingIcon from "../Loading";
+import "./OwnerCarDetail.scss";
 
 function OwnerCarDetail() {
   const navigate = useNavigate();
@@ -10,8 +12,46 @@ function OwnerCarDetail() {
   const [carDetail, setCarDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const renderCheckbox = (featureName, dataString) => {
+    if (dataString.includes(featureName)) {
+      return (
+        <label>
+          <input type="checkbox" checked disabled /> {featureName}
+        </label>
+      );
+    } else {
+      return (
+        <label>
+          <input type="checkbox" disabled /> {featureName}
+        </label>
+      ); // Nếu không có tính năng, không hiển thị gì
+    }
+  };
+  const renderTerms = (termsOfUse, dataString) => {
+    if (dataString.includes(termsOfUse)) {
+      return (
+        <label>
+          <input type="checkbox" checked disabled /> {termsOfUse}
+        </label>
+      );
+    } else {
+      return (
+        <label>
+          <input type="checkbox" disabled /> {termsOfUse}
+        </label>
+      ); // Nếu không có tính năng, không hiển thị gì
+    }
+  };
+  const renderTermCheckbox = (termName, isChecked) => {
+    return (
+      <label>
+        <input type="checkbox" checked={isChecked} disabled /> {termName}
+      </label>
+    );
+  };
+
   const handleUpdateCar = () => {
-    navigate(`/update-car/${carId}`);
+    navigate(`/owner-car-details/update/${carId}`);
   };
 
   const handleConfirm = () => {
@@ -46,7 +86,7 @@ function OwnerCarDetail() {
   }, [carId]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <LoadingIcon />;
   }
 
   if (!carDetail) {
@@ -149,15 +189,15 @@ function OwnerCarDetail() {
                 </tr>
                 <tr>
                   <td>Production year:</td>
-                  <td>{carDetail.year}</td>
+                  <td>{carDetail.productionYears}</td>
                   <td>No. of seats:</td>
-                  <td>{carDetail.seats}</td>
+                  <td>{carDetail.numberOfSeats}</td>
                 </tr>
                 <tr>
                   <td>Transmission:</td>
-                  <td>{carDetail.transmission}</td>
+                  <td>{carDetail.transmissionType}</td>
                   <td>Fuel:</td>
-                  <td>{carDetail.fuel}</td>
+                  <td>{carDetail.fuelType}</td>
                 </tr>
               </tbody>
             </Table>
@@ -170,12 +210,24 @@ function OwnerCarDetail() {
                   <th>Note</th>
                 </tr>
               </thead>
-              <tbody>{/* Documents mapping */}</tbody>
+              <tbody>
+                {carDetail.documents && carDetail.documents.length > 0 ? (
+                  carDetail.documents.map((doc, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{doc.name}</td>
+                      <td>{doc.note}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="text-center">
+                      No documents available.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </Table>
-            <p className="text-muted">
-              Note: Documents will be available for viewing after you’ve paid
-              the deposit to rent.
-            </p>
           </Tab>
           <Tab eventKey="details" title="Details">
             <div className="mt-3">
@@ -187,9 +239,29 @@ function OwnerCarDetail() {
                 liter/100 km
               </p>
               <p>
+                <strong>Address:</strong> <br></br>
+                <span className="text-muted">
+                  Note: Full address will be available after you’ve paid the
+                  deposit to rent.
+                </span>
+              </p>
+              <p>
                 <strong>Description:</strong>
               </p>
               <p>{carDetail.description}</p>
+              <p>
+                <strong>Additional functions:</strong>
+              </p>
+              <div className="additional-functions">
+                {renderCheckbox("Bluetooth", carDetail.additionalFunctions)}
+                {renderCheckbox("GPS", carDetail.additionalFunctions)}
+                {renderCheckbox("Rear Camera", carDetail.additionalFunctions)}
+                {renderCheckbox("Sun roof", carDetail.additionalFunctions)}
+                {renderCheckbox("Child lock", carDetail.additionalFunctions)}
+                {renderCheckbox("Child seat", carDetail.additionalFunctions)}
+                {renderCheckbox("DVD", carDetail.additionalFunctions)}
+                {renderCheckbox("USB", carDetail.additionalFunctions)}
+              </div>
             </div>
           </Tab>
           <Tab eventKey="terms" title="Terms of use">
@@ -203,6 +275,12 @@ function OwnerCarDetail() {
               <p>
                 <strong>Term of use:</strong>
               </p>
+              <div className="terms-of-use">
+                {renderTerms("No smoking", carDetail.termsOfUse)}
+                {renderTerms("No pet", carDetail.termsOfUse)}
+                {renderTerms("No food in car", carDetail.termsOfUse)}
+                {renderTerms("Other", carDetail.termsOfUse)}
+              </div>
             </div>
           </Tab>
         </Tabs>
@@ -225,6 +303,7 @@ function OwnerCarDetail() {
           </Button>
         </div>
       </div>
+      <br></br>
     </Container>
   );
 }
