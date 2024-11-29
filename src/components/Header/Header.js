@@ -14,7 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/action/userAction";
 
 const Header = () => {
-  //const account = useSelector((state) => state.user.account); // Trỏ đến state.user
+  // const account = useSelector((state) => state.user.account); // Trỏ đến state.user
+  // const userName = account?.name || localStorage.getItem("name");
   const { isAuthenticated, account } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 

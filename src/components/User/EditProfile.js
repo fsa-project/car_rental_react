@@ -1,57 +1,196 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, Tab, Table, Container, Form, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import './EditProfile.scss'
+import "./EditProfile.scss";
+import { getUsersDetail, updateProfile } from "../../service/apiService"; // API service
+import LoadingIcon from "../Loading";
 
 const EditProfile = () => {
   const [key, setKey] = useState("basic");
-  const { isAuthenticated, account } = useSelector((state) => state.user);
+  const { account } = useSelector((state) => state.user);
 
-  // State quản lý thông tin cơ bản
+  // Lấy `userId` từ Redux hoặc localStorage
+  const userId = account?.id || localStorage.getItem("userId");
+  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  // Khởi tạo dữ liệu
   const [basicInfo, setBasicInfo] = useState({
-    fullName: "John Doe",
-    dob: "1990-01-01",
-    phone: "123-456-789",
-    email: "johndoe@example.com",
+    name: "",
+    dateOfBirth: "",
+    phoneNo: "",
+    email: "",
   });
 
-  // State quản lý chi tiết thông tin
   const [details, setDetails] = useState({
-    nationalId: "123456789",
-    drivingLicense: "ABC123456",
-    address: "123 Street, City, Country",
+    nationalIdNo: "",
+    drivingLicense: "",
+    address: "",
   });
 
-  // Hàm cập nhật state cho mục cơ bản
+  const [password, setPassWord] = useState({
+    password: "",
+    repassword: "",
+  });
+
+  // Thêm state cho mật khẩu mới và xác nhận mật khẩu
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Fetch thông tin người dùng
+  useEffect(() => {
+    const fetchUserDetail = async () => {
+      if (!userId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await getUsersDetail(userId);
+
+        if (response?.statusCode === 200 && response.data) {
+          setUser((prevUser) => ({
+            ...prevUser,
+            ...response.data,
+          }));
+          setBasicInfo({
+            name: response.data.name || "",
+            dateOfBirth: response.data.dateOfBirth || "",
+            phoneNo: response.data.phoneNo || "",
+            email: response.data.email || "",
+          });
+          setDetails({
+            nationalIdNo: response.data.nationalIdNo || "",
+            drivingLicense: response.data.drivingLicense || "",
+            address: response.data.address || "",
+          });
+        } else {
+          console.error("Failed to fetch user detail.");
+        }
+      } catch (error) {
+        console.error("Error fetching user detail:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserDetail();
+  }, [userId]);
+
+  if (isLoading) {
+    return <LoadingIcon />;
+  }
+
+  if (!userId) {
+    return <p>No user ID found. Please login again.</p>;
+  }
+
+  // Cập nhật state cho Basic Info
   const handleBasicInfoChange = (e) => {
     const { name, value } = e.target;
     setBasicInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Hàm cập nhật state cho mục chi tiết
+  // Cập nhật state cho Details
   const handleDetailsChange = (e) => {
-    const { name, value } = e.target;
-    setDetails((prev) => ({ ...prev, [name]: value }));
+    const { name, value, files } = e.target;
+    if (name === "drivingLicense") {
+      setDetails((prev) => ({ ...prev, [name]: files[0] }));
+    } else {
+      setDetails((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+  const fetchUpdatedUser = async () => {
+    const userDetailResponse = await getUsersDetail(userId);
+    if (userDetailResponse?.statusCode === 200 && userDetailResponse.data) {
+      setUser(userDetailResponse.data);
+      setBasicInfo({
+        name: userDetailResponse.data.name || "",
+        dateOfBirth: userDetailResponse.data.dateOfBirth || "",
+        phoneNo: userDetailResponse.data.phoneNo || "",
+        email: userDetailResponse.data.email || "",
+      });
+      setDetails({
+        nationalIdNo: userDetailResponse.data.nationalIdNo || "",
+        drivingLicense: userDetailResponse.data.drivingLicense || "",
+        address: userDetailResponse.data.address || "",
+      });
+    }
   };
 
-  // Hàm xử lý lưu dữ liệu
-  const handleSave = (section) => {
-    if (section === "basic") {
-      console.log("Saved Basic Information:", basicInfo);
-    } else if (section === "details") {
-      console.log("Saved Details:", details);
-    } else {
-      console.log("Security changes saved");
+  // Xử lý lưu thông tin
+  const handleSave = async (section) => {
+    try {
+      if (section === "basic" || section === "details") {
+        const payload = section === "basic" ? basicInfo : details;
+        const response = await updateProfile(userId, basicInfo, details);
+
+        if (response.statusCode === 200) {
+          alert(
+            `${
+              section.charAt(0).toUpperCase() + section.slice(1)
+            } information saved!`
+          );
+          setUser(response.data);
+        } else {
+          console.error(response.data?.message || "Failed to update profile.");
+          alert("Failed to save information. Please try again.");
+        }
+      } else if (section === "security") {
+        if (newPassword !== confirmPassword) {
+          alert("Passwords do not match!");
+          return;
+        }
+
+        const response = await updateProfile(
+          userId,
+          basicInfo,
+          details,
+          newPassword
+        );
+
+        if (response.statusCode === 200) {
+          alert("Password updated successfully!");
+          setNewPassword("");
+          setConfirmPassword("");
+        } else {
+          console.error(response.data?.message || "Failed to update password.");
+          alert("Failed to update password. Please try again.");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("An error occurred. Please try again.");
     }
-    alert(
-      `${section.charAt(0).toUpperCase() + section.slice(1)} information saved!`
-    );
+  };
+
+  // Xử lý hủy thay đổi
+  const handleDiscard = (section) => {
+    if (section === "basic") {
+      setBasicInfo({
+        name: user?.name || "",
+        dateOfBirth: user?.dateOfBirth || "",
+        phoneNo: user?.phoneNo || "",
+        email: user?.email || "",
+      });
+    }
+    if (section === "details") {
+      setDetails({
+        nationalIdNo: user?.nationalIdNo || "",
+        drivingLicense: user?.drivingLicense || "",
+        address: user?.address || "",
+      });
+    }
+    if (section === "password") {
+      setPassWord({
+        password: "",
+        repassword: "",
+      });
+    }
   };
 
   return (
     <div className="big-container">
-
-
       <Container>
         <br />
         <h2>Edit Profile</h2>
@@ -71,8 +210,8 @@ const EditProfile = () => {
                     <td>
                       <Form.Control
                         type="text"
-                        name="fullName"
-                        value={basicInfo.fullName}
+                        name="name"
+                        value={basicInfo.name}
                         onChange={handleBasicInfoChange}
                       />
                     </td>
@@ -82,8 +221,8 @@ const EditProfile = () => {
                     <td>
                       <Form.Control
                         type="date"
-                        name="dob"
-                        value={basicInfo.dob}
+                        name="dateOfBirth"
+                        value={basicInfo.dateOfBirth}
                         onChange={handleBasicInfoChange}
                       />
                     </td>
@@ -93,8 +232,8 @@ const EditProfile = () => {
                     <td>
                       <Form.Control
                         type="text"
-                        name="phone"
-                        value={basicInfo.phone}
+                        name="phoneNo"
+                        value={basicInfo.phoneNo}
                         onChange={handleBasicInfoChange}
                       />
                     </td>
@@ -113,6 +252,14 @@ const EditProfile = () => {
                 </tbody>
               </Table>
               <Button
+                style={{ marginRight: "10px" }}
+                className="btn-submit"
+                variant="secondary"
+                onClick={() => handleDiscard("basic")}
+              >
+                Discard Changes
+              </Button>
+              <Button
                 className="btn-submit"
                 variant="warning"
                 onClick={() => handleSave("basic")}
@@ -128,8 +275,8 @@ const EditProfile = () => {
                   <Form.Label>National ID No.:</Form.Label>
                   <Form.Control
                     type="text"
-                    name="nationalId"
-                    value={details.nationalId}
+                    name="nationalIdNo"
+                    value={details.nationalIdNo}
                     onChange={handleDetailsChange}
                   />
                 </Form.Group>
@@ -151,14 +298,24 @@ const EditProfile = () => {
                     onChange={handleDetailsChange}
                   />
                 </Form.Group>
+                <div>
+                  <Button
+                    style={{ marginRight: "10px" }}
+                    className="btn-submit"
+                    variant="secondary"
+                    onClick={() => handleDiscard("details")}
+                  >
+                    Discard Changes
+                  </Button>
+                  <Button
+                    className="btn-submit"
+                    variant="warning"
+                    onClick={() => handleSave("details")}
+                  >
+                    Save Details
+                  </Button>
+                </div>
               </div>
-              <Button
-                className="btn-submit"
-                variant="warning"
-                secondaryonClick={() => handleSave("details")}
-              >
-                Save Details
-              </Button>
             </Tab>
 
             {/* Tab Security */}
@@ -177,6 +334,8 @@ const EditProfile = () => {
                       className="form-control"
                       id="newPassword"
                       placeholder="Enter new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
                     />
                   </div>
                   <div className="mb-3" style={{ width: "50%" }}>
@@ -188,20 +347,31 @@ const EditProfile = () => {
                       className="form-control"
                       id="confirmPassword"
                       placeholder="Confirm new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                   </div>
+                  {/* <Button
+                    style={{ marginRight: "10px" }}
+                    className="btn-submit"
+                    variant="secondary"
+                    onClick={() => handleDiscard("security")}
+                  >
+                    Discard Changes
+                  </Button> */}
                   <Button
                     className="btn-submit"
                     variant="warning"
                     onClick={() => handleSave("security")}
                   >
-                    Save Security
+                    Save Password
                   </Button>
                 </form>
               </div>
             </Tab>
           </Tabs>
         </div>
+        <br></br>
       </Container>
     </div>
   );

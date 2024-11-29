@@ -38,7 +38,7 @@ const ThanksForPayingPage = () => {
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
-      style={{ minHeight: "60vh" }}
+      style={{ minHeight: "90vh", paddingBottom: "50px" }}
     >
       <Row className="w-100">
         <Col md={6} className="mx-auto text-center">
@@ -57,7 +57,7 @@ const ThanksForPayingPage = () => {
             style={{
               backgroundColor: "#ffc107",
               color: "black",
-              fontStyle: "bold",
+              fontStyle: "bolder",
               border: "none",
             }}
           >
