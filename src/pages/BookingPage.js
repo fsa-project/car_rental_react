@@ -1,15 +1,27 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate để điều hướng
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"; // Import useNavigate để điều hướng
 import { Button, Container, ProgressBar } from "react-bootstrap";
 import "../pages/BookingPage.scss";
 import BookingDetail from "../components/Booking/BookingDetail";
 import Payment from "../components/Booking/Payment";
 import Finish from "../components/Booking/Finish";
 import BookingInfo from "../components/Booking/BookingInfo";
+import { getUserCarsDetail, postANewBooking } from "../service/apiService";
 
 const BookingPage = () => {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+  const { carId } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [carDetail, setCarDetail] = useState("");
+
+  const [requestBody, setRequestBody] = useState({
+    startDateTime: "2024-11-28T10:00:00Z",
+    endDateTime: "2024-11-28T14:00:00Z",
+    driversInformation: "John Doe, License No: ABC12345",
+    paymentMethod: "VNPAY",
+  });
 
   const handleNext = () => {
     if (step < 3) {
@@ -27,12 +39,85 @@ const BookingPage = () => {
     navigate("/carDetails");
   };
 
+  const handleSubmitBooking = async () => {
+    try {
+      const response = await postANewBooking(carId, requestBody);
+      console.log("Booking successful:", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Error setting up request:", error.message);
+      }
+    }
+  };
+
+  const [imageURLs, setImageURLs] = useState([]);
+
+  const fetchImages = async (imageApis) => {
+    try {
+      const imagePromises = imageApis.map((api) =>
+        fetch(`http://localhost:8386${api}`).then((res) => {
+          if (res.ok) {
+            return res.blob();
+          }
+
+          throw new Error("Failed to fetch image");
+        })
+      );
+      const blobs = await Promise.all(imagePromises);
+      const urls = blobs.map((blob) => URL.createObjectURL(blob));
+      setImageURLs(urls);
+
+      // Cleanup URLs on unmount
+      return () => {
+        urls.forEach((url) => URL.revokeObjectURL(url));
+      };
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCarDetail = async () => {
+      try {
+        const response = await getUserCarsDetail(carId);
+        if (response && response.statusCode === 200) {
+          setCarDetail(response.data);
+          if (response.data.images?.length) {
+            await fetchImages(response.data.images);
+          }
+        } else {
+          console.error("Failed to fetch car details.");
+        }
+      } catch (error) {
+        console.error("Error fetching car details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCarDetail();
+  }, [carId]);
+
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <BookingDetail />;
+        return <BookingDetail
+          carDetail={carDetail}
+          requestBody={requestBody}
+          setRequestBody={setRequestBody}
+          imageURLs={imageURLs}
+        />;
       case 2:
-        return <Payment />;
+        return <Payment
+          carDetail={carDetail}
+          requestBody={requestBody}
+          setRequestBody={setRequestBody}
+        />;
       case 3:
         return <Finish />;
       default:

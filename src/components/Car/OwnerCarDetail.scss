@@ -1,15 +1,17 @@
 .car-details-container {
   min-width: 700px;
+
   .d-flex {
     justify-content: space-between;
   }
 
   // Carousel styling
   .carousel {
-    width: 60%;
-    padding-right: 20px;
+    width: 100%;
 
     img {
+      width: 100%;
+      height: 500px;
       border-radius: 8px;
       object-fit: cover;
     }
@@ -62,6 +64,7 @@
         &:hover {
           background-color: #e7e7e7;
         }
+
         &.active {
           background-color: #ffc107;
           color: #fff;
@@ -120,6 +123,7 @@
       }
     }
   }
+
   .terms-of-use {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

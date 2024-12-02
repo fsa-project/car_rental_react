@@ -69,6 +69,11 @@ instance.interceptors.response.use(function (response) {
     // Kiểm tra nếu lỗi 401 và không phải là request refresh token
     console.log(error);
 
+    if (error.response?.status === 403) {
+        originalRequest._retry = true;
+        window.location.href = "/403";
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true; // Đánh dấu request đã xử lý retry
 

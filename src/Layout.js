@@ -6,7 +6,7 @@ import User from "./components/User/User";
 import App from "./App";
 import TermOfUse from "./pages/TermOfUse";
 import GuestPage from "./pages/GuestPage";
-import NotFoundPage from "./pages/NotFound/NotFoundPage";
+import NotFoundPage from "./pages/ErrorPage/NotFoundPage";
 import OwnerPage from "./pages/OwnerPage/OwnerPage";
 import ForgotPass from "./components/Auth/ForgotPass";
 import ResetPass from "./components/Auth/ResetPass";
@@ -27,6 +27,7 @@ import { ToastContainer } from "react-toastify";
 import ThanksForPayingPage from "./pages/ThanksForPayingPage";
 import OwnerCarDetail from "./components/Car/OwnerCarDetail";
 import UpdateCarDetail from "./components/Car/UpdateCarDetail";
+import Forbidden from "./pages/ErrorPage/Forbidden";
 const Layout = () => {
   return (
     <>
@@ -37,6 +38,7 @@ const Layout = () => {
           <Route path="/terms" element={<TermOfUse />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="*" element={<NotFoundPage />} />
+          <Route path="/403" element={<Forbidden />} />
           <Route path="/owner" element={<OwnerPage />} />
           <Route path="/forgot" element={<ForgotPass />} />
           <Route path="/reset" element={<ResetPass />} />
@@ -46,7 +48,7 @@ const Layout = () => {
           <Route path="/car-details/:carId" element={<CarDetails />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/search-car" element={<SearchCar />} />
-          <Route path="/booking" element={<BookingPage />} />
+          <Route path="/booking/:carId" element={<BookingPage />} />
           <Route path="/test" element={<BookingDetail />} />
           <Route path="/my-booking" element={<MyBooking />} />
           <Route path="/rate" element={<RateTrip />} />

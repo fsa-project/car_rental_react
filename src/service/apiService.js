@@ -46,6 +46,15 @@ const getUserCars = () => {
         },
     });
 };
+
+const getUserCarsPaginate = (page, size) => {
+    axios.defaults.withCredentials = true;
+    return axios.get(`cars/user-cars?page=${page}&size=${size}`, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+};
 const getUsersDetail = (userId) => {
     if (!userId) {
         throw new Error("userId is required to fetch car details");
@@ -155,6 +164,16 @@ const postAddNewCar = () => {
         },
     });
 };
+
+const postANewBooking = (carId, body) => {
+    axios.defaults.withCredentials = true;
+    return axios.post(`bookings/new-booking?carId=${carId}`, body, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+};
+
 export {
     postLogin,
     postRegister,
@@ -165,4 +184,6 @@ export {
     getUsersDetail,
     updateProfile,
     getTransaction,
+    postANewBooking,
+    getUserCarsPaginate
 };

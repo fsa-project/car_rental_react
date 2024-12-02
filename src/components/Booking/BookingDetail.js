@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import "./BookingDetail.scss";
 
-const BookingDetail = () => {
+const BookingDetail = (props) => {
+  const { carDetail, requestBody, setRequestBody, imageURLs } = props;
   const [isDifferentDriver, setIsDifferentDriver] = useState(false);
 
   const handleCheckboxChange = (e) => {
@@ -14,17 +15,22 @@ const BookingDetail = () => {
       <Row className="car-info mb-4">
         <Col md={4}>
           <div className="car-image">
-            <img src="/path-to-car-image.jpg" alt="Car" className="img-fluid" />
+            <img src={imageURLs[0]} alt="Car" className="img-fluid" />
           </div>
         </Col>
         <Col md={8}>
-          <h4>Nissan Navara El 2017</h4>
-          <p>Ratings: ⭐⭐⭐⭐⭐</p>
+          <h4>{carDetail.name}</h4>
           <p>No. of rides: 0</p>
-          <p>Price: 900k/day</p>
-          <p>Location: Cau Giay, Hanoi</p>
+          <p>Price: {carDetail.basePrice}/day</p>
+          <p>Location: {carDetail.address}</p>
           <p>
-            Status: <span className="status-available">Available</span>
+            Status: <span
+              style={{
+                color: carDetail.carStatus === "Available" ? "green" : "red",
+              }}
+            >
+              {carDetail.carStatus}
+            </span>
           </p>
         </Col>
       </Row>

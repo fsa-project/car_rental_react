@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Form, Button, Row, Col, Image } from "react-bootstrap";
 
-const Payment = () => {
+const Payment = (props) => {
+  const { carDetail, requestBody, setRequestBody } = props;
   const [paymentMethod, setPaymentMethod] = useState("");
 
   const handlePaymentSelection = (event) => {
     setPaymentMethod(event.target.value);
+    setRequestBody({
+      ...requestBody, [event.target.name]: event.target.value
+    });
+    //console.log(event.target.value);
   };
 
   const handleConfirmPayment = () => {
@@ -21,19 +26,19 @@ const Payment = () => {
       <h4>Step 2: Payment</h4>
       <Row className="mb-4">
         <Col md={4}>
-          <h5>Nissan Navara El 2017</h5>
+          <h5>{carDetail.name}</h5>
           <p>Rating: ★★★☆☆</p>
           <p>No. of rides: 0</p>
-          <p>Price: 900k/day</p>
-          <p>Location: Cau Giay, Hanoi</p>
+          <p>Price: {carDetail.basePrice}/day</p>
+          <p>Location: {carDetail.address}</p>
           <p style={{ color: "green" }}>Status: Available</p>
         </Col>
         <Col md={4}>
           <h5>Booking Summary</h5>
-          <p>Number of days: 15</p>
-          <p>Price per day: 900,000 VND</p>
-          <p>Total: 13,500,000 VND</p>
-          <p>Deposit: 15,000,000 VND</p>
+          <p>Number of days: 1</p>
+          <p>Price per day: {carDetail.basePrice} VND</p>
+          <p>Total: {carDetail.basePrice} VND</p>
+          <p>Deposit: {carDetail.deposit} VND</p>
         </Col>
         <Col md={4}></Col>
       </Row>
@@ -45,6 +50,7 @@ const Payment = () => {
               type="radio"
               id="my-wallet"
               name="paymentMethod"
+              value="wallet"
               label={
                 <>
                   My wallet <br />
@@ -53,7 +59,6 @@ const Payment = () => {
                   </span>
                 </>
               }
-              value="My wallet"
               onChange={handlePaymentSelection}
             />
             <Form.Check
@@ -75,6 +80,7 @@ const Payment = () => {
               type="radio"
               id="bank-transfer"
               name="paymentMethod"
+              value="vnpay"
               label={
                 <>
                   Bank transfer <br />
@@ -83,7 +89,6 @@ const Payment = () => {
                   </span>
                 </>
               }
-              value="Bank transfer"
               onChange={handlePaymentSelection}
             />
           </Form>
