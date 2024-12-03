@@ -1,3 +1,4 @@
+import { json } from "react-router-dom";
 import axios from "../utils/axiosCustomize";
 
 const postLogin = (userEmail, userPassword) => {
@@ -146,13 +147,78 @@ const getTransaction = (userId) => {
   }
 };
 
-const postAddNewCar = () => {
+const postAddNewCar = (metadata, documents, images) => {
   axios.defaults.withCredentials = true;
-  return axios.post(`cars/create`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
+
+  const formData = new FormData();
+  const imagesArray = Object.values(images).filter((file) => file !== null);
+
+  formData.append(
+    "metadata",
+    new Blob([JSON.stringify(metadata)], {
+      type: "application/json",
+    })
+  );
+  console.log(JSON.stringify(metadata));
+
+  if (Array.isArray(documents)) {
+    documents.forEach((file) => {
+      formData.append("documents", file);
+      console.log("tao la document");
+      console.log(file);
+    });
+  } else {
+    console.error("carImages is not an array:", images);
+    return;
+  }
+
+  if (Array.isArray(imagesArray)) {
+    imagesArray.forEach((file) => {
+      formData.append("images", file);
+      console.log("tao la file");
+      console.log(file);
+    });
+  } else {
+    console.error("carImages is not an array:", images);
+    return;
+  }
+
+  return axios.post(`cars/create`, formData, {
+    withCredentials: true,
   });
+};
+
+const postNewBooking = (carId, bookingInfo) => {
+  return axios.post(`bookings/new-booking`, bookingInfo, {
+    params: { carId: carId },
+  });
+};
+
+const initiateVnpayPayment = (amount) => {
+  if (!amount || amount <= 0) {
+    throw new Error("Amount is required and must be greater than 0");
+  }
+
+  return axios.post(`payment/vnpay`, { amount });
+};
+const searchRequest = async ({
+  startDate,
+  endDate,
+  address,
+  page = 1,
+  size = 2,
+}) => {
+  try {
+    const response = await axios.get(`/cars/search`, {
+      params: { startDate, endDate, address, page, size },
+    });
+    console.log(response.data.result);
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching cars: ", error);
+    throw error;
+  }
 };
 export {
   postLogin,
@@ -161,7 +227,9 @@ export {
   refreshToken,
   postAddNewCar,
   getUserCarsDetail,
+  initiateVnpayPayment,
   getUsersDetail,
   updateProfile,
   getTransaction,
+  searchRequest,
 };

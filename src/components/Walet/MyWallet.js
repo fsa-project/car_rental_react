@@ -110,7 +110,7 @@ function MyWallet() {
       } catch (error) {
         console.error("Error fetching user detail:", error);
       } finally {
-        setIsLoading(false); // Đảm bảo trạng thái loading luôn được cập nhật
+        setIsLoading(false);
       }
     };
 

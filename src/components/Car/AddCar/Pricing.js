@@ -2,14 +2,8 @@ import React, { useState } from "react";
 import "./Pricing.scss"; // Import file SCSS
 import { Col, Row } from "react-bootstrap";
 
-function Pricing() {
-  const [terms, setTerms] = useState({
-    noSmoking: false,
-    noFood: false,
-    noPet: false,
-    other: false,
-    otherDetails: "",
-  });
+const Pricing = (props) => {
+  const { formData, setFormData, setTerms, terms, otherDetail, setOtherDetail } = props;
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -21,10 +15,15 @@ function Pricing() {
 
   const handleOtherDetailsChange = (event) => {
     const { value } = event.target;
-    setTerms((prevTerms) => ({
-      ...prevTerms,
-      otherDetails: value,
-    }));
+    setOtherDetail(value);
+  };
+
+  const handleFormChange = (event) => {
+    const { name, value } = event.target;
+    if (name === "basePrice" || name === "deposit") {
+      if (value < 0) return alert("Value cannot be negative");
+    }
+    setFormData(event);
   };
 
   return (
@@ -38,6 +37,11 @@ function Pricing() {
             <input
               type="number"
               name="basePrice"
+              value={formData.basePrice}
+              onChange={handleFormChange}
+              min="0"
+              step="1"
+              pattern="^[0-9]"
               placeholder="0"
               className="input-field"
             />{" "}
@@ -56,6 +60,11 @@ function Pricing() {
             <input
               type="number"
               name="deposit"
+              value={formData.deposit}
+              onChange={handleFormChange}
+              min="0"
+              step="1"
+              pattern="^[0-9]"
               placeholder="0"
               className="input-field"
             />{" "}
@@ -68,6 +77,7 @@ function Pricing() {
       <div className="terms-group">
         <label>
           <input
+            checked={terms.noSmoking}
             type="checkbox"
             name="noSmoking"
             onChange={handleCheckboxChange}
@@ -76,6 +86,7 @@ function Pricing() {
         </label>
         <label>
           <input
+            checked={terms.noFood}
             type="checkbox"
             name="noFood"
             onChange={handleCheckboxChange}
@@ -83,11 +94,11 @@ function Pricing() {
           No food in car
         </label>
         <label>
-          <input type="checkbox" name="noPet" onChange={handleCheckboxChange} />{" "}
+          <input type="checkbox" name="noPet" checked={terms.noPet} onChange={handleCheckboxChange} />{" "}
           No pet
         </label>
         <label>
-          <input type="checkbox" name="other" onChange={handleCheckboxChange} />{" "}
+          <input type="checkbox" name="other" checked={terms.other} onChange={handleCheckboxChange} />{" "}
           Other
         </label>
         {terms.other && (
@@ -96,6 +107,7 @@ function Pricing() {
             placeholder="Please specify..."
             className="textarea-field"
             onChange={handleOtherDetailsChange}
+            value={otherDetail}
           ></textarea>
         )}
       </div>
