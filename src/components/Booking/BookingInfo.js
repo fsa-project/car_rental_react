@@ -1,13 +1,10 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const bookingInfo = () => {
-  const bookingInfo = {
-    pickupLocation: "Trung Kính, Cầu Giấy, Hà Nội",
-    pickupDateTime: "13/02/2022 - 12:00 PM",
-    returnDateTime: "23/02/2022 - 14:00 PM",
-  };
+const bookingInfo = (props) => {
+  const { handleSearch, pickupDate, dropoffDate, location } = props;
 
   const styles = {
     container: {
@@ -31,6 +28,7 @@ const bookingInfo = () => {
     },
   };
 
+
   return (
     <Container style={styles.container}>
       <Row>
@@ -38,20 +36,20 @@ const bookingInfo = () => {
           <h5>Booking Details</h5>
           <ul>
             <li>
-              <strong>Pick-up location:</strong> {bookingInfo.pickupLocation}
+              <strong>Pick-up location:</strong> {location}
             </li>
             <li>
               <strong>Pick-up date and time:</strong>{" "}
-              {bookingInfo.pickupDateTime}
+              {pickupDate}
             </li>
             <li>
               <strong>Return date and time:</strong>{" "}
-              {bookingInfo.returnDateTime}
+              {dropoffDate}
             </li>
           </ul>
         </Col>
       </Row>
-      <Button style={styles.editButton}>
+      <Button style={styles.editButton} onClick={handleSearch}>
         Change details
         <FaEdit style={styles.editIcon} />
       </Button>

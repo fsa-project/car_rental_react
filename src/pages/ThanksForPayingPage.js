@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import { postConfirmBooking2 } from "../service/apiService";
 
 const ThanksForPayingPage = () => {
   const [message, setMessage] = useState("");
@@ -7,19 +8,14 @@ const ThanksForPayingPage = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const status = queryParams.get("vnp_ResponseCode");
-    const orderId = queryParams.get("orderId");
+    const orderId = queryParams.get("vnp_OrderInfo");
 
     // Gửi trạng thái giao dịch về backend để cập nhật
     const updatePaymentStatus = async () => {
       try {
-        const response = await fetch("http://localhost:8080/payment/update", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId, status }),
-        });
+        const response = await postConfirmBooking2(orderId, "Confirmed")
 
-        const data = await response.json();
-        if (data.success) {
+        if (response.data.bookingStatus === "Confirmed") {
           setMessage("Payment status updated successfully!");
         } else {
           setMessage("Failed to update payment status.");
@@ -30,8 +26,11 @@ const ThanksForPayingPage = () => {
       }
     };
 
-    updatePaymentStatus();
-  }, []);
+    if (status === "00") {
+      updatePaymentStatus();
+    }
+
+  }, [message]);
 
 
 

@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 
 const ModalPickDate = (props) => {
 
-    const { show, setShow, setDateSelected } = props;
+    const { show, setShow, setDateSelected, setDropoffDate, setPickupDate } = props;
 
     const [startDate, setStartDate] = useState(new Date());
     const [startTime, setStartTime] = useState(new Date());
@@ -42,7 +42,7 @@ const ModalPickDate = (props) => {
         if (diffInHours >= 24) {
             return `${Math.ceil(diffInDays)} days`;
         } else {
-            return `${Math.ceil(diffInHours)} hours`;
+            return `1 day`;
         }
     };
     const time = `${calculateRentalDuration()}`;
@@ -60,10 +60,14 @@ const ModalPickDate = (props) => {
     const handleConfirm = () => {
         setDateSelected((startTime.getHours().toLocaleString().length === 1 ? "0" + startTime.getHours().toLocaleString() : startTime.getHours().toLocaleString()) + ":"
             + (startTime.getMinutes().toLocaleString() === "0" ? "00" : startTime.getMinutes().toLocaleString()) + ", "
-            + startDate.getDate().toLocaleString() + "/" + startDate.getMonth().toLocaleString() + "/" + startDate.getFullYear().toLocaleString() + " - "
+            + startDate.getDate().toLocaleString() + "/" + ((startDate.getMonth() + 1) < 10 ? `0${startDate.getMonth() + 1}` : (startDate.getMonth() + 1)) + "/" + startDate.getFullYear().toString() + " - "
             + (endTime.getHours().toLocaleString().length === 1 ? "0" + endTime.getHours().toLocaleString() : endTime.getHours().toLocaleString()) + ":"
             + (endTime.getMinutes().toLocaleString() === "0" ? "00" : endTime.getMinutes().toLocaleString()) + ", "
-            + endDate.getDate().toLocaleString() + "/" + endDate.getMonth().toLocaleString() + "/" + endDate.getFullYear().toLocaleString());
+            + endDate.getDate().toLocaleString() + "/" + ((endDate.getMonth() + 1) < 10 ? `0${endDate.getMonth() + 1}` : (endDate.getMonth() + 1)) + "/" + endDate.getFullYear().toString());
+        setPickupDate(startDate.getFullYear().toString() + "-" + ((startDate.getMonth() + 1) < 10 ? `0${startDate.getMonth() + 1}` : (startDate.getMonth() + 1))
+            + "-" + ((startDate.getDate()) < 10 ? `0${startDate.getDate()}` : (startDate.getDate())));
+        setDropoffDate(endDate.getFullYear().toString() + "-" + ((endDate.getMonth() + 1) < 10 ? `0${endDate.getMonth() + 1}` : (endDate.getMonth() + 1))
+            + "-" + ((endDate.getDate()) < 10 ? `0${endDate.getDate()}` : (endDate.getDate())));
         handleClose();
     }
 

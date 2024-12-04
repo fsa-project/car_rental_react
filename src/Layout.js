@@ -28,6 +28,7 @@ import ThanksForPayingPage from "./pages/ThanksForPayingPage";
 import OwnerCarDetail from "./components/Car/OwnerCarDetail";
 import UpdateCarDetail from "./components/Car/UpdateCarDetail";
 import Forbidden from "./pages/ErrorPage/Forbidden";
+import SearchPage from "./components/Search/SearchPage";
 const Layout = () => {
   return (
     <>
@@ -47,7 +48,7 @@ const Layout = () => {
           {/* <Route path="/car-details" element={<CarDetails />} /> */}
           <Route path="/car-details/:carId" element={<CarDetails />} />
           <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/search-car" element={<SearchCar />} />
+          <Route path="/search-car" element={<SearchPage />} />
           <Route path="/booking/:carId" element={<BookingPage />} />
           <Route path="/test" element={<BookingDetail />} />
           <Route path="/my-booking" element={<MyBooking />} />

@@ -5,7 +5,7 @@ import { SlLocationPin } from 'react-icons/sl';
 
 const SearchForm = (props) => {
 
-    const { activeTab, handleClickBtnLocation, locationSelected, handleClickBtnDate, dateSelected } = props;
+    const { activeTab, handleClickBtnLocation, locationSelected, handleClickBtnDate, dateSelected, handleSearch } = props;
 
     return (
         <div className="search-form">
@@ -46,7 +46,7 @@ const SearchForm = (props) => {
                             </div>
                         </div>
                     </div>
-                    <Button variant='warning btn-search'>Search</Button>
+                    <Button onClick={handleSearch} variant='warning btn-search'>Search</Button>
                 </div>
             )}
 

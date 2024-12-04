@@ -174,6 +174,33 @@ const postANewBooking = (carId, body) => {
     });
 };
 
+const getSearchCarsPaginate = (pickupDate, dropoffDate, location, page, size) => {
+    axios.defaults.withCredentials = true;
+    return axios.get(`cars/search?startDate=${pickupDate}&endDate=${dropoffDate}&address=${location}&page=${page}&size=${size}`, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+};
+
+const postConfirmBooking = (bookingId, paymentMethod) => {
+    axios.defaults.withCredentials = true;
+    return axios.post(`bookings/confirm/${bookingId}?paymentMethod=${paymentMethod}`, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+}
+
+const postConfirmBooking2 = (bookingId, bookingStatus) => {
+    axios.defaults.withCredentials = true;
+    return axios.post(`bookings/confirm2/${bookingId}?status=${bookingStatus}`, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+}
+
 export {
     postLogin,
     postRegister,
@@ -185,5 +212,8 @@ export {
     updateProfile,
     getTransaction,
     postANewBooking,
-    getUserCarsPaginate
+    getUserCarsPaginate,
+    getSearchCarsPaginate,
+    postConfirmBooking,
+    postConfirmBooking2
 };

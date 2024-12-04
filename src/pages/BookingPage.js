@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"; // Import useNavigate để điều hướng
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"; // Import useNavigate để điều hướng
 import { Button, Container, ProgressBar } from "react-bootstrap";
 import "../pages/BookingPage.scss";
 import BookingDetail from "../components/Booking/BookingDetail";
 import Payment from "../components/Booking/Payment";
 import Finish from "../components/Booking/Finish";
 import BookingInfo from "../components/Booking/BookingInfo";
-import { getUserCarsDetail, postANewBooking } from "../service/apiService";
+import { getUserCarsDetail, postANewBooking, postConfirmBooking } from "../service/apiService";
+import { toast } from "react-toastify";
 
 const BookingPage = () => {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
   const { carId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [location, setLocation] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
+  const [dropoffDate, setDropoffDate] = useState("");
+  const [searchParams] = useSearchParams();
+  const [bookingId, setBookingId] = useState("");
+
 
   const [carDetail, setCarDetail] = useState("");
 
@@ -39,12 +46,40 @@ const BookingPage = () => {
     navigate("/carDetails");
   };
 
+  const handleSetRequestBody = () => {
+    if (pickupDate && dropoffDate) {
+      setRequestBody((prev) => ({
+        ...prev,
+        startDateTime: `${pickupDate}T00:00:00Z`,
+        endDateTime: `${dropoffDate}T00:00:00Z`,
+      }));
+      console.log(requestBody);
+    }
+  };
+
+  const handleSearch = () => {
+    navigate(
+      `/search-car?pickupDate=${encodeURIComponent(pickupDate)}&dropoffDate=${encodeURIComponent(dropoffDate)}&location=${encodeURIComponent(location)}`
+    );
+  };
+
   const handleSubmitBooking = async () => {
     try {
       const response = await postANewBooking(carId, requestBody);
       console.log("Booking successful:", response.data);
+      setBookingId(response.data.id);
+      if (requestBody.paymentMethod === "vnpay") {
+        const confirmResponse = await postConfirmBooking(bookingId, requestBody.paymentMethod);
+        console.log(confirmResponse);
+        window.location.href = confirmResponse.data.vnPayUrl;
+      }
+
+
+      handleNext();
+
       return response.data;
     } catch (error) {
+      toast.error(error.message);
       if (error.response) {
         console.error("Error response:", error.response.data);
       } else if (error.request) {
@@ -82,6 +117,12 @@ const BookingPage = () => {
   };
 
   useEffect(() => {
+
+    setPickupDate(searchParams.get("pickupDate"));
+    setDropoffDate(searchParams.get("dropoffDate"));
+    setLocation(searchParams.get("location"));
+    handleSetRequestBody();
+
     const fetchCarDetail = async () => {
       try {
         const response = await getUserCarsDetail(carId);
@@ -101,7 +142,7 @@ const BookingPage = () => {
     };
 
     fetchCarDetail();
-  }, [carId]);
+  }, [carId, pickupDate, dropoffDate]);
 
   const renderStep = () => {
     switch (step) {
@@ -127,7 +168,13 @@ const BookingPage = () => {
 
   return (
     <Container>
-      <BookingInfo />
+      <BookingInfo
+        pickupDate={pickupDate}
+        dropoffDate={dropoffDate}
+        location={location}
+        requestBody={requestBody}
+        handleSearch={handleSearch}
+      />
       <div className="booking-page">
         {/* Process Bar */}
         <ProgressBar className="progress position-relative mb-4">
@@ -181,7 +228,7 @@ const BookingPage = () => {
                 border: "none",
                 fontWeight: "bold",
               }}
-              onClick={handleNext}
+              onClick={handleSubmitBooking}
             >
               Confirm
             </Button>

@@ -23,15 +23,6 @@ const BookingDetail = (props) => {
           <p>No. of rides: 0</p>
           <p>Price: {carDetail.basePrice}/day</p>
           <p>Location: {carDetail.address}</p>
-          <p>
-            Status: <span
-              style={{
-                color: carDetail.carStatus === "Available" ? "green" : "red",
-              }}
-            >
-              {carDetail.carStatus}
-            </span>
-          </p>
         </Col>
       </Row>
 
