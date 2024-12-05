@@ -190,7 +190,7 @@ const ListCar = () => {
                           : styles.booked
                       }
                     >
-                      {car.carStatus}
+                      "Available"
                     </span>
                   </td>
                   <td>
