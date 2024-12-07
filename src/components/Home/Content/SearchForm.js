@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Button } from "react-bootstrap";
-import { RxCalendar } from "react-icons/rx";
-import { SlLocationPin } from "react-icons/sl";
-import searchRequest from "../../../service/apiService"; // Import apiService
+
+import React from 'react';
+import { Button } from 'react-bootstrap';
+import { RxCalendar } from 'react-icons/rx';
+import { SlLocationPin } from 'react-icons/sl';
 
 const SearchForm = (props) => {
 
@@ -51,20 +51,29 @@ const SearchForm = (props) => {
         </div>
       )}
 
-      {/* Hiển thị danh sách xe */}
-      <div className="car-list">
-        {carList.length > 0 ? (
-          carList.map((car, index) => (
-            <div key={index} className="car-item">
-              <p>{car.name}</p>
-              <p>{car.description}</p>
-              {/* Hiển thị thêm thông tin xe nếu cần */}
-            </div>
-          ))
-        ) : (
-          <p>No cars found</p>
-        )}
-      </div>
+      {activeTab === "withDriver" && (
+        <form>
+          {/* Form content for "Xe có tài xế" */}
+          <div className="mb-3">
+            <label className="form-label fw-bold">Lộ trình</label>
+            {/* Inner form elements for with driver */}
+            <input type="text" className="form-control" placeholder="Nhập địa điểm có tài xế" />
+          </div>
+          <button type="submit" className="btn btn-search w-100">Tìm Xe</button>
+        </form>
+      )}
+
+      {activeTab === "longTerm" && (
+        <form>
+          {/* Form content for "Thuê xe dài hạn" */}
+          <div className="mb-3">
+            <label className="form-label fw-bold">Lộ trình</label>
+            {/* Inner form elements for long term */}
+            <input type="text" className="form-control" placeholder="Nhập địa điểm dài hạn" />
+          </div>
+          <button type="submit" className="btn btn-search w-100">Tìm Xe</button>
+        </form>
+      )}
     </div>
   );
 };

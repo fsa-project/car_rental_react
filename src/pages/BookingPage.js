@@ -30,6 +30,26 @@ const BookingPage = () => {
     paymentMethod: "VNPAY",
   });
 
+  const [requestRenter, setRequestRenter] = useState({
+    fullName: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    drivingLicense: "",
+    address: "",
+    nationalId: "",
+    email: ""
+  });
+
+  const [requestDriver, setRequestDriver] = useState({
+    fullName: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    drivingLicense: "",
+    address: "",
+    nationalId: "",
+    email: ""
+  });
+
   const handleNext = () => {
     if (step < 3) {
       setStep(step + 1);
@@ -65,30 +85,37 @@ const BookingPage = () => {
 
   const handleSubmitBooking = async () => {
     try {
-      const response = await postANewBooking(carId, requestBody);
+      const response = await postANewBooking(carId, requestBody, requestRenter, requestDriver);
       console.log("Booking successful:", response.data);
-      setBookingId(response.data.id);
+
+      const bookingId = response.data.id;
+      setBookingId(bookingId);
       if (requestBody.paymentMethod === "vnpay") {
-        const confirmResponse = await postConfirmBooking(bookingId, requestBody.paymentMethod);
-        console.log(confirmResponse);
+        const confirmResponse = await postConfirmBooking(response.data.id, requestBody.paymentMethod);
+        console.log("VNPay confirmation response:", confirmResponse);
+
         window.location.href = confirmResponse.data.vnPayUrl;
+        return;
       }
 
-
       handleNext();
-
       return response.data;
+
     } catch (error) {
-      toast.error(error.message);
+      console.error("Error in booking process:", error);
       if (error.response) {
-        console.error("Error response:", error.response.data);
+        toast.error(error.response.data.message || "Có lỗi xảy ra khi xử lý yêu cầu.");
+        console.error("Error response data:", error.response.data);
       } else if (error.request) {
-        console.error("No response received:", error.request);
+        toast.error("Không nhận được phản hồi từ server.");
+        console.error("Error request details:", error.request);
       } else {
-        console.error("Error setting up request:", error.message);
+        toast.error("Lỗi không mong muốn: " + error.message);
+        console.error("Error details:", error.message);
       }
     }
   };
+
 
   const [imageURLs, setImageURLs] = useState([]);
 
@@ -121,6 +148,7 @@ const BookingPage = () => {
     setPickupDate(searchParams.get("pickupDate"));
     setDropoffDate(searchParams.get("dropoffDate"));
     setLocation(searchParams.get("location"));
+
     handleSetRequestBody();
 
     const fetchCarDetail = async () => {
@@ -152,6 +180,10 @@ const BookingPage = () => {
           requestBody={requestBody}
           setRequestBody={setRequestBody}
           imageURLs={imageURLs}
+          requestRenter={requestRenter}
+          requestDriver={requestDriver}
+          setRequestDriver={setRequestDriver}
+          setRequestRenter={setRequestRenter}
         />;
       case 2:
         return <Payment

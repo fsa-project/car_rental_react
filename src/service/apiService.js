@@ -156,21 +156,74 @@ const getTransaction = (userId) => {
   }
 };
 
-const postAddNewCar = () => {
+const postAddNewCar = (metadata, documents, images) => {
   axios.defaults.withCredentials = true;
-  return axios.post(`cars/create`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
+
+  const formData = new FormData();
+  const imagesArray = Object.values(images).filter((file) => file !== null);
+
+
+  formData.append(
+    "metadata",
+    new Blob([JSON.stringify(metadata)], {
+      type: "application/json"
+    }));
+  console.log(JSON.stringify(metadata));
+
+  if (Array.isArray(documents)) {
+    documents.forEach((file) => {
+      formData.append("documents", file);
+      console.log("tao la document");
+      console.log(file)
+    });
+  } else {
+    console.error("carImages is not an array:", images);
+    return;
+  }
+
+  if (Array.isArray(imagesArray)) {
+    imagesArray.forEach((file) => {
+      formData.append("images", file);
+    });
+  } else {
+    console.error("carImages is not an array:", images);
+    return;
+  }
+
+  return axios.post(`cars/create`, formData, {
+    withCredentials: true
   });
 };
 
-const postANewBooking = (carId, body) => {
+const postANewBooking = (carId, bookingInfo, renter, driver) => {
   axios.defaults.withCredentials = true;
-  return axios.post(`bookings/new-booking?carId=${carId}`, body, {
-    headers: {
-      "Content-Type": "application/json",
-    },
+
+  const formData = new FormData();
+  console.log(carId);
+  console.log(renter);
+  console.log(driver);
+  console.log(bookingInfo);
+
+  formData.append(
+    "bookingInfo",
+    new Blob([JSON.stringify(bookingInfo)], {
+      type: "application/json"
+    }));
+
+  formData.append(
+    "renter",
+    new Blob([JSON.stringify(renter)], {
+      type: "application/json"
+    }));
+
+  formData.append(
+    "driver",
+    new Blob([JSON.stringify(driver)], {
+      type: "application/json"
+    }));
+
+  return axios.post(`bookings/new-booking?carId=${carId}`, formData, {
+    withCredentials: true
   });
 };
 
