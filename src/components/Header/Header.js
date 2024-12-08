@@ -12,6 +12,7 @@ import Avatar from "../../assets/static/image/avatar-default.jpg";
 import "./Header.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/action/userAction";
+import { postLogout } from "../../service/apiService";
 
 const Header = () => {
   // const account = useSelector((state) => state.user.account); // Trỏ đến state.user
@@ -36,8 +37,10 @@ const Header = () => {
   const handleRegister = () => {
     navigate("/auth");
   };
-  const handleLogout = () => {
+  const handleLogout = async () => {
+
     dispatch(logoutUser());
+    postLogout();
     navigate("/");
   };
   const handleProfile = () => {

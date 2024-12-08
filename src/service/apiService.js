@@ -13,6 +13,18 @@ const postLogin = (userEmail, userPassword) => {
     }
   );
 };
+
+const postLogout = () => {
+  axios.defaults.withCredentials = true;
+  return axios.post(
+    `auth/logout`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+}
 const postRegister = (
   userEmail,
   userPassword,
@@ -256,6 +268,7 @@ const postConfirmBooking2 = (bookingId, bookingStatus) => {
 
 export {
   postLogin,
+  postLogout,
   postRegister,
   getUserCars,
   refreshToken,
