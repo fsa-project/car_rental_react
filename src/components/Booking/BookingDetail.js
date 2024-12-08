@@ -27,6 +27,14 @@ const BookingDetail = (props) => {
     console.log(requestRenter);
   };
 
+  // Format số tiền hiển thị
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+
   return (
     <div className="booking-detail">
       <Row className="car-info mb-4">
@@ -38,7 +46,7 @@ const BookingDetail = (props) => {
         <Col md={8}>
           <h4>{carDetail.name}</h4>
           <p>No. of rides: 0</p>
-          <p>Price: {carDetail.basePrice}/day</p>
+          <p>Price: {formatCurrency(carDetail.basePrice)}/day</p>
           <p>Location: {carDetail.address}</p>
         </Col>
       </Row>

@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-const Finish = () => {
-  const bookingDetails = {
-    carName: "Nissan Navara El 2017",
-    startDate: "13/02/2022 - 12:00 PM",
-    endDate: "23/02/2022 - 14:00 PM",
-    bookingNumber: "012345",
-  };
+const Finish = (props) => {
+  const { carDetail, bookingResponse, pickupDate, dropoffDate } = props
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("/");
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
     <Container className="text-center">
-      <h4>You’ve successfully booked {bookingDetails.carName}</h4>
+      <h4>You’ve successfully booked {carDetail.name}</h4>
       <p>
-        From <strong>{bookingDetails.startDate}</strong> to{" "}
-        <strong>{bookingDetails.endDate}</strong>.
+        From <strong>{pickupDate}</strong> to{" "}
+        <strong>{dropoffDate}</strong>.
       </p>
       <p>
-        Your booking number is: <strong>{bookingDetails.bookingNumber}</strong>
+        Your booking number is: <strong>{bookingResponse.id}</strong>
       </p>
       <p>Our operator will contact you with further guidance about pickup.</p>
 

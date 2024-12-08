@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button, Row, Col, Image } from "react-bootstrap";
 
 const Payment = (props) => {
-  const { carDetail, requestBody, setRequestBody } = props;
+  const { carDetail, requestBody, setRequestBody, wallet, nODay } = props;
   const [paymentMethod, setPaymentMethod] = useState("");
 
   const handlePaymentSelection = (event) => {
@@ -13,12 +13,13 @@ const Payment = (props) => {
     //console.log(event.target.value);
   };
 
-  const handleConfirmPayment = () => {
-    if (!paymentMethod) {
-      alert("Please select a payment method.");
-    } else {
-      alert(`You selected: ${paymentMethod}`);
-    }
+
+  // Format số tiền hiển thị
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
   };
 
   return (
@@ -27,18 +28,16 @@ const Payment = (props) => {
       <Row className="mb-4">
         <Col md={4}>
           <h5>{carDetail.name}</h5>
-          <p>Rating: ★★★☆☆</p>
-          <p>No. of rides: 0</p>
-          <p>Price: {carDetail.basePrice}/day</p>
+          <p>Price: {formatCurrency(carDetail?.basePrice || 0)}/day</p>
           <p>Location: {carDetail.address}</p>
           <p style={{ color: "green" }}>Status: Available</p>
         </Col>
         <Col md={4}>
           <h5>Booking Summary</h5>
-          <p>Number of days: 1</p>
-          <p>Price per day: {carDetail.basePrice} VND</p>
-          <p>Total: {carDetail.basePrice} VND</p>
-          <p>Deposit: {carDetail.deposit} VND</p>
+          <p>Number of days: {nODay}</p>
+          <p>Price per day: {formatCurrency(carDetail?.basePrice || 0)} VND</p>
+          <p>Total: {formatCurrency(carDetail?.basePrice * nODay || 0)}</p>
+          <p>Deposit: {formatCurrency(carDetail?.deposit || 0)}</p>
         </Col>
         <Col md={4}></Col>
       </Row>
@@ -55,13 +54,13 @@ const Payment = (props) => {
                 <>
                   My wallet <br />
                   <span style={{ color: "green" }}>
-                    Current balance: 20,000,000 VND
+                    Current balance: {formatCurrency(wallet || 0)}
                   </span>
                 </>
               }
               onChange={handlePaymentSelection}
             />
-            <Form.Check
+            {/* <Form.Check
               type="radio"
               id="cash"
               name="paymentMethod"
@@ -75,7 +74,7 @@ const Payment = (props) => {
               }
               value="Cash"
               onChange={handlePaymentSelection}
-            />
+            /> */}
             <Form.Check
               type="radio"
               id="bank-transfer"
@@ -85,7 +84,7 @@ const Payment = (props) => {
                 <>
                   Bank transfer <br />
                   <span style={{ fontStyle: "italic" }}>
-                    Our operator will contact you for further instructions
+                    Pay by VNPAY
                   </span>
                 </>
               }

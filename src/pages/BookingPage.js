@@ -6,8 +6,9 @@ import BookingDetail from "../components/Booking/BookingDetail";
 import Payment from "../components/Booking/Payment";
 import Finish from "../components/Booking/Finish";
 import BookingInfo from "../components/Booking/BookingInfo";
-import { getUserCarsDetail, postANewBooking, postConfirmBooking } from "../service/apiService";
+import { getTransaction, getUserCarsDetail, getUsersDetail, postANewBooking, postConfirmBooking } from "../service/apiService";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const BookingPage = () => {
   const [step, setStep] = useState(1);
@@ -19,13 +20,18 @@ const BookingPage = () => {
   const [dropoffDate, setDropoffDate] = useState("");
   const [searchParams] = useSearchParams();
   const [bookingId, setBookingId] = useState("");
+  const [wallet, setWallet] = useState("");
+  const { account } = useSelector((state) => state.user);
+  const userId = account?.id || localStorage.getItem("userId");
+  const [nODay, setNODay] = useState("");
+  const [bookingResponse, setBookingResponse] = useState("");
 
 
   const [carDetail, setCarDetail] = useState("");
 
   const [requestBody, setRequestBody] = useState({
     startDateTime: "2024-11-28T10:00:00Z",
-    endDateTime: "2024-11-28T14:00:00Z",
+    endDateTime: "2024-11-29T14:00:00Z",
     driversInformation: "John Doe, License No: ABC12345",
     paymentMethod: "VNPAY",
   });
@@ -83,6 +89,7 @@ const BookingPage = () => {
     );
   };
 
+
   const handleSubmitBooking = async () => {
     try {
       const response = await postANewBooking(carId, requestBody, requestRenter, requestDriver);
@@ -96,6 +103,18 @@ const BookingPage = () => {
 
         window.location.href = confirmResponse.data.vnPayUrl;
         return;
+      }
+
+      if (requestBody.paymentMethod === "wallet") {
+        const confirmResponse = await postConfirmBooking(response.data.id, requestBody.paymentMethod);
+        console.log("Wallet confirmation response:", confirmResponse);
+        setBookingResponse(confirmResponse.data)
+        if (confirmResponse.statusCode === 200) {
+          console.log("Payment successfully");
+          toast.success("Payment successfully")
+        } else {
+          toast.error("Payment failure")
+        }
       }
 
       handleNext();
@@ -115,6 +134,17 @@ const BookingPage = () => {
       }
     }
   };
+
+  const calculateDays = (pickupDate, dropoffDate) => {
+    if (pickupDate && dropoffDate) {
+      const start = new Date(pickupDate);
+      const end = new Date(dropoffDate);
+      const difference = Math.abs(end - start); // Chênh lệch thời gian (ms)
+      return Math.ceil(difference / (1000 * 60 * 60 * 24)); // Chuyển sang ngày
+    }
+    return 0;
+  };
+
 
 
   const [imageURLs, setImageURLs] = useState([]);
@@ -143,11 +173,35 @@ const BookingPage = () => {
     }
   };
 
+  // Fetch thông tin người dùng
+  useEffect(() => {
+    const fetchUserDetail = async () => {
+      try {
+        const response = await getUsersDetail(userId);
+
+        if (response?.statusCode === 200 && response.data) {
+          setWallet(response.data?.wallet);
+        } else {
+          console.error("Failed to fetch user detail.");
+        }
+      } catch (error) {
+        console.error("Error fetching user detail:", error);
+      } finally {
+      }
+    };
+
+    fetchUserDetail();
+  }, [userId]);
+
+
   useEffect(() => {
 
     setPickupDate(searchParams.get("pickupDate"));
     setDropoffDate(searchParams.get("dropoffDate"));
     setLocation(searchParams.get("location"));
+
+    const days = calculateDays(pickupDate, dropoffDate);
+    setNODay(days);
 
     handleSetRequestBody();
 
@@ -190,9 +244,17 @@ const BookingPage = () => {
           carDetail={carDetail}
           requestBody={requestBody}
           setRequestBody={setRequestBody}
+          wallet={wallet}
+          nODay={nODay}
         />;
       case 3:
-        return <Finish />;
+        return <Finish
+          carDetail={carDetail}
+          bookingResponse={bookingResponse}
+          pickupDate={pickupDate}
+          dropoffDate={dropoffDate}
+          location={location}
+        />;
       default:
         return null;
     }
