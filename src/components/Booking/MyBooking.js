@@ -22,7 +22,7 @@ function MyBooking() {
       "Pending payment",
       "Completed",
       "Cancelled",
-    ][i], // Tạo các trạng thái khác nhau để kiểm tra
+    ][i],
   }));
 
   const renderActionButtons = (status) => {
