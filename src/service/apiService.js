@@ -46,6 +46,15 @@ const getUserCars = () => {
     },
   });
 };
+
+const getUserCarsPaginate = (page, size) => {
+  axios.defaults.withCredentials = true;
+  return axios.get(`cars/user-cars?page=${page}&size=${size}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
 const getUsersDetail = (userId) => {
   if (!userId) {
     throw new Error("userId is required to fetch car details");
@@ -153,19 +162,19 @@ const postAddNewCar = (metadata, documents, images) => {
   const formData = new FormData();
   const imagesArray = Object.values(images).filter((file) => file !== null);
 
+
   formData.append(
     "metadata",
     new Blob([JSON.stringify(metadata)], {
-      type: "application/json",
-    })
-  );
+      type: "application/json"
+    }));
   console.log(JSON.stringify(metadata));
 
   if (Array.isArray(documents)) {
     documents.forEach((file) => {
       formData.append("documents", file);
       console.log("tao la document");
-      console.log(file);
+      console.log(file)
     });
   } else {
     console.error("carImages is not an array:", images);
@@ -175,8 +184,6 @@ const postAddNewCar = (metadata, documents, images) => {
   if (Array.isArray(imagesArray)) {
     imagesArray.forEach((file) => {
       formData.append("images", file);
-      console.log("tao la file");
-      console.log(file);
     });
   } else {
     console.error("carImages is not an array:", images);
@@ -184,42 +191,69 @@ const postAddNewCar = (metadata, documents, images) => {
   }
 
   return axios.post(`cars/create`, formData, {
-    withCredentials: true,
+    withCredentials: true
   });
 };
 
-const postNewBooking = (carId, bookingInfo) => {
-  return axios.post(`bookings/new-booking`, bookingInfo, {
-    params: { carId: carId },
+const postANewBooking = (carId, bookingInfo, renter, driver) => {
+  axios.defaults.withCredentials = true;
+
+  const formData = new FormData();
+  console.log(carId);
+  console.log(renter);
+  console.log(driver);
+  console.log(bookingInfo);
+
+  formData.append(
+    "bookingInfo",
+    new Blob([JSON.stringify(bookingInfo)], {
+      type: "application/json"
+    }));
+
+  formData.append(
+    "renter",
+    new Blob([JSON.stringify(renter)], {
+      type: "application/json"
+    }));
+
+  formData.append(
+    "driver",
+    new Blob([JSON.stringify(driver)], {
+      type: "application/json"
+    }));
+
+  return axios.post(`bookings/new-booking?carId=${carId}`, formData, {
+    withCredentials: true
   });
 };
 
-const initiateVnpayPayment = (amount) => {
-  if (!amount || amount <= 0) {
-    throw new Error("Amount is required and must be greater than 0");
-  }
-
-  return axios.post(`payment/vnpay`, { amount });
+const getSearchCarsPaginate = (pickupDate, dropoffDate, location, page, size) => {
+  axios.defaults.withCredentials = true;
+  return axios.get(`cars/search?startDate=${pickupDate}&endDate=${dropoffDate}&address=${location}&page=${page}&size=${size}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
-const searchRequest = async ({
-  startDate,
-  endDate,
-  address,
-  page = 1,
-  size = 2,
-}) => {
-  try {
-    const response = await axios.get(`/cars/search`, {
-      params: { startDate, endDate, address, page, size },
-    });
-    console.log(response.data.result);
 
-    return response.data.result;
-  } catch (error) {
-    console.error("Error fetching cars: ", error);
-    throw error;
-  }
-};
+const postConfirmBooking = (bookingId, paymentMethod) => {
+  axios.defaults.withCredentials = true;
+  return axios.post(`bookings/confirm/${bookingId}?paymentMethod=${paymentMethod}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+const postConfirmBooking2 = (bookingId, bookingStatus) => {
+  axios.defaults.withCredentials = true;
+  return axios.post(`bookings/confirm2/${bookingId}?status=${bookingStatus}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
 export {
   postLogin,
   postRegister,
@@ -227,9 +261,12 @@ export {
   refreshToken,
   postAddNewCar,
   getUserCarsDetail,
-  initiateVnpayPayment,
   getUsersDetail,
   updateProfile,
   getTransaction,
-  searchRequest,
+  postANewBooking,
+  getUserCarsPaginate,
+  getSearchCarsPaginate,
+  postConfirmBooking,
+  postConfirmBooking2
 };

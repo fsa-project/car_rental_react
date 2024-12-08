@@ -1,15 +1,60 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate để điều hướng
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"; // Import useNavigate để điều hướng
 import { Button, Container, ProgressBar } from "react-bootstrap";
 import "../pages/BookingPage.scss";
 import BookingDetail from "../components/Booking/BookingDetail";
 import Payment from "../components/Booking/Payment";
 import Finish from "../components/Booking/Finish";
 import BookingInfo from "../components/Booking/BookingInfo";
+import { getTransaction, getUserCarsDetail, getUsersDetail, postANewBooking, postConfirmBooking } from "../service/apiService";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const BookingPage = () => {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+  const { carId } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [location, setLocation] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
+  const [dropoffDate, setDropoffDate] = useState("");
+  const [searchParams] = useSearchParams();
+  const [bookingId, setBookingId] = useState("");
+  const [wallet, setWallet] = useState("");
+  const { account } = useSelector((state) => state.user);
+  const userId = account?.id || localStorage.getItem("userId");
+  const [nODay, setNODay] = useState("");
+  const [bookingResponse, setBookingResponse] = useState("");
+
+
+  const [carDetail, setCarDetail] = useState("");
+
+  const [requestBody, setRequestBody] = useState({
+    startDateTime: "2024-11-28T10:00:00Z",
+    endDateTime: "2024-11-29T14:00:00Z",
+    driversInformation: "John Doe, License No: ABC12345",
+    paymentMethod: "VNPAY",
+  });
+
+  const [requestRenter, setRequestRenter] = useState({
+    fullName: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    drivingLicense: "",
+    address: "",
+    nationalId: "",
+    email: ""
+  });
+
+  const [requestDriver, setRequestDriver] = useState({
+    fullName: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    drivingLicense: "",
+    address: "",
+    nationalId: "",
+    email: ""
+  });
 
   const handleNext = () => {
     if (step < 3) {
@@ -27,14 +72,189 @@ const BookingPage = () => {
     navigate("/carDetails");
   };
 
+  const handleSetRequestBody = () => {
+    if (pickupDate && dropoffDate) {
+      setRequestBody((prev) => ({
+        ...prev,
+        startDateTime: `${pickupDate}T00:00:00Z`,
+        endDateTime: `${dropoffDate}T00:00:00Z`,
+      }));
+      console.log(requestBody);
+    }
+  };
+
+  const handleSearch = () => {
+    navigate(
+      `/search-car?pickupDate=${encodeURIComponent(pickupDate)}&dropoffDate=${encodeURIComponent(dropoffDate)}&location=${encodeURIComponent(location)}`
+    );
+  };
+
+
+  const handleSubmitBooking = async () => {
+    try {
+      const response = await postANewBooking(carId, requestBody, requestRenter, requestDriver);
+      console.log("Booking successful:", response.data);
+
+      const bookingId = response.data.id;
+      setBookingId(bookingId);
+      if (requestBody.paymentMethod === "vnpay") {
+        const confirmResponse = await postConfirmBooking(response.data.id, requestBody.paymentMethod);
+        console.log("VNPay confirmation response:", confirmResponse);
+
+        window.location.href = confirmResponse.data.vnPayUrl;
+        return;
+      }
+
+      if (requestBody.paymentMethod === "wallet") {
+        const confirmResponse = await postConfirmBooking(response.data.id, requestBody.paymentMethod);
+        console.log("Wallet confirmation response:", confirmResponse);
+        setBookingResponse(confirmResponse.data)
+        if (confirmResponse.statusCode === 200) {
+          console.log("Payment successfully");
+          toast.success("Payment successfully")
+        } else {
+          toast.error("Payment failure")
+        }
+      }
+
+      handleNext();
+      return response.data;
+
+    } catch (error) {
+      console.error("Error in booking process:", error);
+      if (error.response) {
+        toast.error(error.response.data.message || "Có lỗi xảy ra khi xử lý yêu cầu.");
+        console.error("Error response data:", error.response.data);
+      } else if (error.request) {
+        toast.error("Không nhận được phản hồi từ server.");
+        console.error("Error request details:", error.request);
+      } else {
+        toast.error("Lỗi không mong muốn: " + error.message);
+        console.error("Error details:", error.message);
+      }
+    }
+  };
+
+  const calculateDays = (pickupDate, dropoffDate) => {
+    if (pickupDate && dropoffDate) {
+      const start = new Date(pickupDate);
+      const end = new Date(dropoffDate);
+      const difference = Math.abs(end - start); // Chênh lệch thời gian (ms)
+      return Math.ceil(difference / (1000 * 60 * 60 * 24)); // Chuyển sang ngày
+    }
+    return 0;
+  };
+
+
+
+  const [imageURLs, setImageURLs] = useState([]);
+
+  const fetchImages = async (imageApis) => {
+    try {
+      const imagePromises = imageApis.map((api) =>
+        fetch(`http://localhost:8386${api}`).then((res) => {
+          if (res.ok) {
+            return res.blob();
+          }
+
+          throw new Error("Failed to fetch image");
+        })
+      );
+      const blobs = await Promise.all(imagePromises);
+      const urls = blobs.map((blob) => URL.createObjectURL(blob));
+      setImageURLs(urls);
+
+      // Cleanup URLs on unmount
+      return () => {
+        urls.forEach((url) => URL.revokeObjectURL(url));
+      };
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
+
+  // Fetch thông tin người dùng
+  useEffect(() => {
+    const fetchUserDetail = async () => {
+      try {
+        const response = await getUsersDetail(userId);
+
+        if (response?.statusCode === 200 && response.data) {
+          setWallet(response.data?.wallet);
+        } else {
+          console.error("Failed to fetch user detail.");
+        }
+      } catch (error) {
+        console.error("Error fetching user detail:", error);
+      } finally {
+      }
+    };
+
+    fetchUserDetail();
+  }, [userId]);
+
+
+  useEffect(() => {
+
+    setPickupDate(searchParams.get("pickupDate"));
+    setDropoffDate(searchParams.get("dropoffDate"));
+    setLocation(searchParams.get("location"));
+
+    const days = calculateDays(pickupDate, dropoffDate);
+    setNODay(days);
+
+    handleSetRequestBody();
+
+    const fetchCarDetail = async () => {
+      try {
+        const response = await getUserCarsDetail(carId);
+        if (response && response.statusCode === 200) {
+          setCarDetail(response.data);
+          if (response.data.images?.length) {
+            await fetchImages(response.data.images);
+          }
+        } else {
+          console.error("Failed to fetch car details.");
+        }
+      } catch (error) {
+        console.error("Error fetching car details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCarDetail();
+  }, [carId, pickupDate, dropoffDate]);
+
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <BookingDetail />;
+        return <BookingDetail
+          carDetail={carDetail}
+          requestBody={requestBody}
+          setRequestBody={setRequestBody}
+          imageURLs={imageURLs}
+          requestRenter={requestRenter}
+          requestDriver={requestDriver}
+          setRequestDriver={setRequestDriver}
+          setRequestRenter={setRequestRenter}
+        />;
       case 2:
-        return <Payment />;
+        return <Payment
+          carDetail={carDetail}
+          requestBody={requestBody}
+          setRequestBody={setRequestBody}
+          wallet={wallet}
+          nODay={nODay}
+        />;
       case 3:
-        return <Finish />;
+        return <Finish
+          carDetail={carDetail}
+          bookingResponse={bookingResponse}
+          pickupDate={pickupDate}
+          dropoffDate={dropoffDate}
+          location={location}
+        />;
       default:
         return null;
     }
@@ -42,7 +262,13 @@ const BookingPage = () => {
 
   return (
     <Container>
-      <BookingInfo />
+      <BookingInfo
+        pickupDate={pickupDate}
+        dropoffDate={dropoffDate}
+        location={location}
+        requestBody={requestBody}
+        handleSearch={handleSearch}
+      />
       <div className="booking-page">
         {/* Process Bar */}
         <ProgressBar className="progress position-relative mb-4">
@@ -96,7 +322,7 @@ const BookingPage = () => {
                 border: "none",
                 fontWeight: "bold",
               }}
-              onClick={handleNext}
+              onClick={handleSubmitBooking}
             >
               Confirm
             </Button>

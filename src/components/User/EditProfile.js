@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import "./EditProfile.scss";
 import { getUsersDetail, updateProfile } from "../../service/apiService"; // API service
 import LoadingIcon from "../Loading";
+import { toast } from "react-toastify";
 
 const EditProfile = () => {
   const [key, setKey] = useState("basic");
@@ -126,19 +127,18 @@ const EditProfile = () => {
         const response = await updateProfile(userId, basicInfo, details);
 
         if (response.statusCode === 200) {
-          alert(
-            `${
-              section.charAt(0).toUpperCase() + section.slice(1)
+          toast.success(
+            `${section.charAt(0).toUpperCase() + section.slice(1)
             } information saved!`
           );
           setUser(response.data);
         } else {
           console.error(response.data?.message || "Failed to update profile.");
-          alert("Failed to save information. Please try again.");
+          toast.error("Failed to save information. Please try again.");
         }
       } else if (section === "security") {
         if (newPassword !== confirmPassword) {
-          alert("Passwords do not match!");
+          toast.error("Passwords do not match!");
           return;
         }
 
@@ -150,17 +150,17 @@ const EditProfile = () => {
         );
 
         if (response.statusCode === 200) {
-          alert("Password updated successfully!");
+          toast.success("Password updated successfully!");
           setNewPassword("");
           setConfirmPassword("");
         } else {
           console.error(response.data?.message || "Failed to update password.");
-          alert("Failed to update password. Please try again.");
+          toast.error("Failed to update password. Please try again.");
         }
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
 

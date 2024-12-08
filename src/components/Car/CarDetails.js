@@ -1,22 +1,55 @@
 import React, { useEffect, useState } from "react";
 import { Carousel, Tab, Tabs, Table, Button, Container } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getUserCarsDetail } from "../../service/apiService"; // API service
 
 function CarDetails() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [location, setLocation] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
+  const [dropoffDate, setDropoffDate] = useState("");
   const { carId } = useParams();
 
   const [carDetail, setCarDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [imageURLs, setImageURLs] = useState([]);
+
+  const fetchImages = async (imageApis) => {
+    try {
+      const imagePromises = imageApis.map((api) =>
+        fetch(`http://localhost:8386${api}`).then((res) => {
+          if (res.ok) {
+            return res.blob();
+          }
+
+          throw new Error("Failed to fetch image");
+        })
+      );
+      const blobs = await Promise.all(imagePromises);
+      const urls = blobs.map((blob) => URL.createObjectURL(blob));
+      setImageURLs(urls);
+
+      // Cleanup URLs on unmount
+      return () => {
+        urls.forEach((url) => URL.revokeObjectURL(url));
+      };
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
 
   const handleBooking = () => {
-    navigate("/booking");
+    navigate(`/booking/${carId}?pickupDate=${encodeURIComponent(pickupDate)}&dropoffDate=${encodeURIComponent(dropoffDate)}&location=${encodeURIComponent(location)}`);
   };
 
   useEffect(() => {
     const fetchCarDetail = async () => {
       console.log(carId);
+      setPickupDate(searchParams.get("pickupDate"));
+      setDropoffDate(searchParams.get("dropoffDate"));
+      setLocation(searchParams.get("location"));
+
       try {
         const response = await getUserCarsDetail(carId);
         console.log(response.statusCode);
@@ -24,6 +57,9 @@ function CarDetails() {
 
         if (response && response.statusCode === 200) {
           setCarDetail(response.data);
+          if (response.data.images?.length) {
+            await fetchImages(response.data.images);
+          }
         } else {
           console.error("Failed to fetch car details.");
         }
@@ -49,33 +85,38 @@ function CarDetails() {
     <Container>
       <div
         className="car-details-container"
-        style={{ maxWidth: "700px", margin: "0 auto", padding: "20px" }}
       >
         <div className="d-flex justify-content-between">
           {/* Carousel */}
           <div style={{ width: "60%", paddingRight: "20px" }}>
             <Carousel>
-              {carDetail.images.map((image, index) => (
-                <Carousel.Item key={index}>
+              {imageURLs.length > 0 ? (
+                imageURLs.map((url, index) => (
+                  <Carousel.Item key={index}>
+                    <img
+                      className="d-block"
+                      src={url}
+                      alt={`Car Image ${index + 1}`}
+                      onError={(e) => {
+                        e.target.src = "/no-image-available.jpg"; // Ảnh dự phòng
+                      }}
+                    />
+                  </Carousel.Item>
+                ))
+              ) : (
+                <Carousel.Item>
                   <img
-                    className="d-block w-100"
-                    src={image}
-                    alt={`Car Image ${index + 1}`}
+                    className="d-block"
+                    src="/no-image-available.jpg" // Ảnh mặc định
+                    alt="No Images Available"
                   />
                 </Carousel.Item>
-              ))}
+              )}
             </Carousel>
           </div>
 
           <div style={{ width: "40%" }}>
             <h2>{carDetail.name}</h2>
-            {/* <p>
-              Ratings: <span>☆☆☆☆☆</span> (
-              {carDetail.ratings || "No ratings yet"})
-            </p> */}
-            {/* <p>
-              No. of rides: <strong>{carDetail.rides || 0}</strong>
-            </p> */}
             <p>
               Price: <strong>{carDetail.basePrice}/day</strong>
             </p>
@@ -86,23 +127,15 @@ function CarDetails() {
               Status:{" "}
               <span
                 style={{
-                  color: carDetail.status === "Available" ? "green" : "red",
+                  color: "green",
                 }}
               >
-                {carDetail.carStatus}
+                Available
               </span>
             </p>
             <Button
               onClick={handleBooking}
-              style={{
-                backgroundColor: "#ffc107",
-                border: "none",
-                borderRadius: "5px",
-                padding: "10px 20px",
-                color: "#070707",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
+              variant="warning"
             >
               Rent Now
             </Button>
