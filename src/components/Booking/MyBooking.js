@@ -1,162 +1,177 @@
-import React from "react";
-import { Container, Button, Dropdown, Col, Row } from "react-bootstrap";
-import "./MyBooking.scss"; // Import file SCSS
+import React, { useEffect, useState } from "react";
+import { Container, Button, Col, Row } from "react-bootstrap";
+import "./MyBooking.scss";
+import {
+  getUserCarsDetail,
+  getUsersBooking,
+  cancelBooking,
+} from "../../service/apiService";
+import LoadingIcon from "../Loading";
 
 function MyBooking() {
-  const cars = Array.from({ length: 6 }, (_, i) => ({
-    id: i + 1,
-    image:
-      "https://cmu-cdn.vinfast.vn/2024/11/fd50e666-vinfastso1-1536x864.jpg",
-    name: "Nissan Navara El 2017",
-    from: "13/02/2022 - 12:00 PM",
-    to: "23/02/2022 - 14:00 PM",
-    days: 10,
-    basePrice: "900K/day",
-    total: "9M",
-    deposit: "3M",
-    bookingNo: `0123456`,
-    status: [
-      "Confirmed",
-      "Pending deposit",
-      "In-progress",
-      "Pending payment",
-      "Completed",
-      "Cancelled",
-    ][i],
-  }));
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const renderActionButtons = (status) => {
+  useEffect(() => {
+    const fetchBookingsAndCars = async () => {
+      try {
+        const bookingResponse = await getUsersBooking();
+        if (bookingResponse && bookingResponse.statusCode === 200) {
+          const bookings = bookingResponse.data.result;
+
+          const carPromises = bookings.map((booking) =>
+            booking.carId
+              ? getUserCarsDetail(booking.carId)
+              : Promise.resolve(null)
+          );
+
+          const carDetails = await Promise.all(carPromises);
+
+          const combinedData = bookings.map((booking, index) => {
+            const carDetail = carDetails[index];
+            return {
+              ...booking,
+              car: carDetail?.data || null,
+            };
+          });
+
+          setData(combinedData);
+        } else {
+          console.error("Failed to fetch bookings");
+          setData([]);
+        }
+      } catch (error) {
+        console.error("Error fetching bookings and cars:", error);
+        setData([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBookingsAndCars();
+  }, []);
+
+  const calculateDays = (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    return Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+  };
+
+  const calculateTotal = (days, basePrice) => {
+    return days * basePrice;
+  };
+
+  const handleCancel = async (bookingId) => {
+    try {
+      // Call
+      cancelBooking(bookingId);
+      alert(`Booking ${bookingId} has been cancelled!`);
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === bookingId ? { ...item, bookingStatus: "CANCELLED" } : item
+        )
+      );
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+      alert("Failed to cancel booking. Please try again.");
+    }
+  };
+
+  const renderActionButtons = (status, bookingId) => {
     switch (status) {
-      case "Confirmed":
+      case "CONFIRMED":
         return (
           <>
             <Button className="btn-detail">View details</Button>
             <Button className="btn-pickup">Confirm pick-up</Button>
-            <Button className="btn-danger">Cancel</Button>
+            <Button
+              onClick={() => handleCancel(bookingId)}
+              className="btn-danger"
+            >
+              Cancel
+            </Button>
           </>
         );
-      case "Pending deposit":
-        return (
-          <>
-            <Button className="btn-detail">View details</Button>
-            <Button className="btn-danger">Cancel</Button>
-          </>
-        );
-      case "In-progress":
-        return (
-          <>
-            <Button className="btn-detail">View details</Button>
-            <Button className="btn-return">Return car</Button>
-          </>
-        );
-      case "Pending payment":
-        return (
-          <>
-            <Button className="btn-detail">View details</Button>
-          </>
-        );
-      case "Completed":
-        return (
-          <>
-            <Button className="btn-detail">View details</Button>
-          </>
-        );
-      case "Cancelled":
-        return (
-          <>
-            <Button className="btn-detail">View details</Button>
-          </>
-        );
+      case "CANCELLED":
+        return <Button className="btn-detail">View details</Button>;
       default:
-        return null;
+        return <Button className="btn-detail">View details</Button>;
     }
   };
 
   return (
     <Container>
       <h1 className="text-center">My Bookings</h1>
-      <div className="d-flex justify-content-between align-items-center">
-        <p className="mb-0">You have {cars.length} on-going bookings</p>
-        <Dropdown>
-          <Dropdown.Toggle variant="outline-secondary">
-            Newest to Latest
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item>Newest</Dropdown.Item>
-            <Dropdown.Item>Latest</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
 
-      {/* Table container */}
-      <div className="table-container">
-        {cars.map((car) => (
-          <div key={car.id} className="row-item">
-            <div className="action-column">
-              <div className="image-column">
-                <img src={car.image} alt={car.name} className="car-image" />
+      {isLoading ? (
+        <LoadingIcon />
+      ) : (
+        <div className="table-container">
+          {data.map((item) => {
+            const days = calculateDays(item.startDateTime, item.endDateTime);
+            const basePrice = item.car?.basePrice || 0;
+            const total = calculateTotal(days, basePrice);
+            const deposit = item.car?.deposit || "N/A";
+            return (
+              <div key={item.id} className="row-item">
+                <div className="image-column">
+                  {item.car?.images?.[0] ? (
+                    <img
+                      src={item.car.images[0]}
+                      alt={item.car.name || "Car"}
+                      className="car-image"
+                    />
+                  ) : (
+                    <p>No image available</p>
+                  )}
+                </div>
+                <div className="details-column">
+                  <Row>
+                    <Col md={6}>
+                      <h5 className="car-title">
+                        {item.car?.name || "Unknown Car"}
+                      </h5>
+                      <p className="car-info">
+                        <strong>From:</strong>{" "}
+                        {new Date(item.startDateTime).toLocaleString()}
+                      </p>
+                      <p className="car-info">
+                        <strong>To:</strong>{" "}
+                        {new Date(item.endDateTime).toLocaleString()}
+                      </p>
+                      <p className="car-info">
+                        <strong>Number of days:</strong> {days}
+                      </p>
+                    </Col>
+                    <Col md={6}>
+                      <p className="car-info">
+                        <strong>Base price:</strong> {basePrice} đ
+                      </p>
+                      <p className="car-info">
+                        <strong>Total:</strong> {total} đ
+                      </p>
+                      <p className="car-info">
+                        <strong>Deposit:</strong> {deposit}
+                      </p>
+                      <p className="car-info">
+                        <strong>Booking No:</strong> {item.id}
+                      </p>
+                      <p
+                        className={`car-info status-${item.bookingStatus.toLowerCase()}`}
+                      >
+                        <strong>Status:</strong> {item.bookingStatus}
+                      </p>
+                    </Col>
+                  </Row>
+                </div>
+                <div className="action-column">
+                  {renderActionButtons(item.bookingStatus, item.id)}
+                </div>
               </div>
-            </div>
-            {/* Details column */}
-
-            <div className="details-column">
-              <Row>
-                <Col md={6}>
-                  <h5 className="car-title">{car.name}</h5>
-                  <p className="car-info">
-                    <strong>From:</strong> {car.from}
-                  </p>
-                  <p className="car-info">
-                    <strong>To:</strong> {car.to}
-                  </p>
-                  <p className="car-info">
-                    <strong>Number of days:</strong> {car.days}
-                  </p>
-                </Col>
-                <Col md={6}>
-                  <p className="car-info">
-                    <strong>Base price:</strong> {car.basePrice}
-                  </p>
-                  <p className="car-info">
-                    <strong>Total:</strong> {car.total}
-                  </p>
-                  <p className="car-info">
-                    <strong>Deposit:</strong> {car.deposit}
-                  </p>
-                  <p className="car-info">
-                    <strong>Booking No:</strong> {car.bookingNo}
-                  </p>
-                  <p className="car-info">
-                    <strong>Status:</strong>{" "}
-                    <span
-                      className={
-                        car.status === "Confirmed"
-                          ? "status-confirmed"
-                          : car.status === "In-progress"
-                          ? "status-in-progress"
-                          : car.status === "Pending deposit"
-                          ? "status-pending"
-                          : car.status === "Completed"
-                          ? "status-completed"
-                          : car.status === "Cancelled"
-                          ? "status-cancelled"
-                          : ""
-                      }
-                    >
-                      {car.status}
-                    </span>
-                  </p>
-                </Col>
-              </Row>
-            </div>
-
-            {/* Action column */}
-            <div className="action-column">
-              {renderActionButtons(car.status)}
-            </div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </Container>
   );
 }

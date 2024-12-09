@@ -82,9 +82,7 @@ function OwnerCarDetail() {
 
   return (
     <Container>
-      <div
-        className="car-details-container"
-      >
+      <div className="car-details-container">
         <div className="d-flex justify-content-between">
           {/* Carousel */}
           <div style={{ width: "60%", paddingRight: "20px" }}>
@@ -169,7 +167,6 @@ function OwnerCarDetail() {
           </div>
         </div>
 
-        {/* Tabs Section */}
         <Tabs defaultActiveKey="basic" id="car-details-tabs" className="mt-4">
           <Tab eventKey="basic" title="Basic Information">
             <Table striped bordered hover className="mt-3">
@@ -200,8 +197,75 @@ function OwnerCarDetail() {
                 </tr>
               </tbody>
             </Table>
+            <h4 className="mt-4">Documents:</h4>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Name</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {carDetail.documents && carDetail.documents.length > 0 ? (
+                  carDetail.documents.map((doc, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{doc.name}</td>
+                      <td>{doc.note}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="text-center">
+                      No documents available.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
           </Tab>
-          {/* Other tabs remain unchanged */}
+          <Tab eventKey="details" title="Details">
+            <div className="mt-3">
+              <p>
+                <strong>Mileage:</strong> {carDetail.mileage} km
+              </p>
+              <p>
+                <strong>Fuel consumption:</strong> {carDetail.fuelConsumption}{" "}
+                liter/100 km
+              </p>
+              <p>
+                <strong>Address:</strong> <br></br>
+                <span className="text-muted">
+                  Note: Full address will be available after you’ve paid the
+                  deposit to rent.
+                </span>
+              </p>
+              <p>
+                <strong>Description:</strong>
+              </p>
+              <p>{carDetail.description}</p>
+
+              <p>
+                <strong>Additional Function:</strong>{" "}
+                {carDetail.additionalFunctions}
+              </p>
+            </div>
+          </Tab>
+          <Tab eventKey="terms" title="Terms of use">
+            <div className="mt-3">
+              <p>
+                <strong>Base price:</strong> {carDetail.basePrice} VND/Day
+              </p>
+              <p>
+                <strong>Required Deposit:</strong> {carDetail.deposit} VND
+              </p>
+              <p>
+                <strong>Term of use: </strong>
+                {carDetail.termsOfUse}
+              </p>
+            </div>
+          </Tab>
         </Tabs>
 
         {/* Nút cập nhật thông tin chi tiết xe */}
@@ -222,6 +286,7 @@ function OwnerCarDetail() {
           </Button>
         </div>
       </div>
+      <br></br>
     </Container>
   );
 }

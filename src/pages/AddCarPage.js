@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Container, ProgressBar } from "react-bootstrap";
 import "../pages/AddCarPage.scss";
@@ -8,6 +8,7 @@ import Pricing from "../components/Car/AddCar/Pricing";
 import Detail from "../components/Car/AddCar/Detail";
 import { postAddNewCar } from "../service/apiService";
 import { toast } from "react-toastify";
+import LoadingIcon from "../components/Loading";
 
 const AddCarPage = () => {
   const [formData, setFormData] = useState({
@@ -47,6 +48,7 @@ const AddCarPage = () => {
     noPet: false,
     other: false,
   });
+  const [loading, setLoading] = useState(true);
 
   const [otherDetail, setOtherDetail] = useState("");
 
@@ -207,7 +209,15 @@ const AddCarPage = () => {
         return null;
     }
   };
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 700);
+  }, []);
 
+  if (loading) {
+    return <LoadingIcon />;
+  }
   return (
     <Container>
       <h2>Add a car</h2>
