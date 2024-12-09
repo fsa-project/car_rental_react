@@ -162,15 +162,11 @@ const cancelBooking = (bookingId) => {
   try {
     axios.defaults.withCredentials = true;
     console.log(`/cancel/${bookingId}`);
-    const response = axios.post(
-      `bookings/cancel/${bookingId}`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = axios.post(`bookings/cancel/${bookingId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return response;
   } catch (e) {
     console.error("Error in cancelBooking:", e.message);

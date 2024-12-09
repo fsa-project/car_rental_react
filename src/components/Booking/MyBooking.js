@@ -79,7 +79,7 @@ function MyBooking() {
 
   const renderActionButtons = (status, bookingId) => {
     switch (status) {
-      case "CONFIRMED":
+      case "Awaiting Pickup Confirmation":
         return (
           <>
             <Button className="btn-detail">View details</Button>
