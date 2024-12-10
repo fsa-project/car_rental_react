@@ -5,12 +5,50 @@ import {
   getUserCarsDetail,
   getUsersBooking,
   cancelBooking,
+  confirmDeposit,
+  completeBooking,
 } from "../../service/apiService";
 import LoadingIcon from "../Loading";
+import { useNavigate } from "react-router-dom";
 
 function MyBooking() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const handleBookingDetail = (bookingId) => {
+    navigate(`/booking-detail/${bookingId}`);
+  };
+  const handleComplete = async (bookingId, paymentMethod) => {
+    try {
+      await completeBooking(bookingId, paymentMethod);
+      alert(`Booking ${bookingId} has been complete!`);
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === bookingId ? { ...item, bookingStatus: "Available" } : item
+        )
+      );
+    } catch (error) {
+      console.error("Error conplete booking:", error);
+      alert("Failed to complete booking. Please try again.");
+    }
+  };
+  const handleConfirm = async (bookingId, paymentMethod) => {
+    try {
+      await confirmDeposit(bookingId, paymentMethod);
+      alert(`Booking ${bookingId} has been confirmed!`);
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === bookingId
+            ? { ...item, bookingStatus: "Awaiting Pickup Confirmation" }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      alert("Failed to confirm booking. Please try again.");
+    }
+  };
 
   useEffect(() => {
     const fetchBookingsAndCars = async () => {
@@ -77,13 +115,18 @@ function MyBooking() {
     }
   };
 
-  const renderActionButtons = (status, bookingId) => {
+  const renderActionButtons = (status, bookingId, paymentMethod) => {
     switch (status) {
       case "Awaiting Pickup Confirmation":
         return (
           <>
-            <Button className="btn-detail">View details</Button>
-            <Button className="btn-pickup">Confirm pick-up</Button>
+            <Button
+              className="btn-detail"
+              onClick={() => handleBookingDetail(bookingId)}
+            >
+              View details
+            </Button>
+
             <Button
               onClick={() => handleCancel(bookingId)}
               className="btn-danger"
@@ -92,10 +135,82 @@ function MyBooking() {
             </Button>
           </>
         );
-      case "CANCELLED":
-        return <Button className="btn-detail">View details</Button>;
+      case "Canceled":
+        return (
+          <Button
+            className="btn-detail"
+            onClick={() => handleBookingDetail(bookingId)}
+          >
+            View details
+          </Button>
+        );
+      case "Pending Deposit":
+        return (
+          <>
+            <Button
+              className="btn-detail"
+              onClick={() => handleBookingDetail(bookingId)}
+            >
+              View details
+            </Button>
+            <Button
+              className="btn-pickup"
+              onClick={() => handleConfirm(bookingId, paymentMethod)}
+            >
+              Confirm deposit
+            </Button>
+            <Button
+              onClick={() => handleCancel(bookingId)}
+              className="btn-danger"
+            >
+              Cancel
+            </Button>
+          </>
+        );
+      case "Pending Payment":
+        return (
+          <Button
+            className="btn-detail"
+            onClick={() => handleBookingDetail(bookingId)}
+          >
+            View details
+          </Button>
+        );
+      case "Completed":
+        return (
+          <Button
+            className="btn-detail"
+            onClick={() => handleBookingDetail(bookingId)}
+          >
+            View details
+          </Button>
+        );
+      case "In Progress":
+        return (
+          <>
+            <Button
+              className="btn-detail"
+              onClick={() => handleBookingDetail(bookingId)}
+            >
+              View details
+            </Button>
+            <Button
+              className="btn-return"
+              onClick={() => handleComplete(bookingId, paymentMethod)}
+            >
+              Return car
+            </Button>
+          </>
+        );
       default:
-        return <Button className="btn-detail">View details</Button>;
+        return (
+          <Button
+            className="btn-detail"
+            onClick={() => handleBookingDetail(bookingId)}
+          >
+            View details
+          </Button>
+        );
     }
   };
 
@@ -157,7 +272,7 @@ function MyBooking() {
                         <strong>Booking No:</strong> {item.id}
                       </p>
                       <p
-                        className={`car-info status-${item.bookingStatus.toLowerCase()}`}
+                        className={`car-info status-${item.bookingStatus.toLowerCase}`}
                       >
                         <strong>Status:</strong> {item.bookingStatus}
                       </p>
@@ -165,7 +280,11 @@ function MyBooking() {
                   </Row>
                 </div>
                 <div className="action-column">
-                  {renderActionButtons(item.bookingStatus, item.id)}
+                  {renderActionButtons(
+                    item.bookingStatus,
+                    item.id,
+                    item.paymentMethod
+                  )}
                 </div>
               </div>
             );

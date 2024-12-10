@@ -91,30 +91,74 @@ const updateProfile = (userId, basicInfo, details, newPassword = null) => {
 
   return axios.put(`users/update/${userId}`, payload);
 };
+const confirmDeposit = async (bookingId, paymentMethod) => {
+  try {
+    const url = `/bookings/confirm/${bookingId}?paymentMethod=${paymentMethod}`;
+    const response = await axios.post(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API confirmDeposit:", error);
+    throw error;
+  }
+};
+const confirmPickup = async (bookingId) => {
+  try {
+    const url = `bookings/${bookingId}/confirm-pickup`;
+    const response = await axios.patch(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API confirmDeposit:", error);
+    throw error;
+  }
+};
+const completeBooking = async (bookingId, paymentMethod) => {
+  try {
+    const url = `/bookings/complete/${bookingId}?paymentMethod=${paymentMethod}`;
+    const response = await axios.post(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API completeBooking:", error);
+    throw error;
+  }
+};
+const getBookingDetail = (bookingId) => {
+  if (!bookingId) {
+    throw new Error("bookingId is required to fetch car details");
+  }
 
-export const updateCarDetail = (carId, basicInfo, details, status) => {
+  try {
+    axios.defaults.withCredentials = true;
+    console.log(`/bookings/booking-detail/${bookingId}`);
+    const response = axios.get(`/bookings/booking-detail/${bookingId}`);
+    return response;
+  } catch (error) {
+    console.error("Error in get booking detail:", error.message);
+    throw error;
+  }
+};
+
+const updateCarDetail = (carId, formData) => {
   const payload = {
-    name: basicInfo.name,
-    basePrice: basicInfo.basePrice,
-    address: basicInfo.address,
-    licensePlate: details.licensePlate,
-    color: details.color,
-    brand: details.brand,
-    model: details.model,
-    productionYears: details.productionYears,
-    numberOfSeats: details.numberOfSeats,
-    transmissionType: details.transmissionType,
-    fuelType: details.fuelType,
-    mileage: details.mileage,
-    fuelConsumption: details.fuelConsumption,
-    description: details.description,
-    additionalFunctions: details.additionalFunctions,
-    documents: details.documents,
-    termsOfUse: details.termsOfUse,
-    status: status,
+    name: formData.name,
+    basePrice: formData.basePrice,
+    address: formData.address,
+    licensePlate: formData.licensePlate,
+    color: formData.color,
+    brand: formData.brand,
+    model: formData.model,
+    productionYears: formData.productionYears,
+    numberOfSeats: formData.numberOfSeats,
+    transmissionType: formData.transmissionType,
+    fuelType: formData.fuelType,
+    mileage: formData.mileage,
+    fuelConsumption: formData.fuelConsumption,
+    description: formData.description,
+    additionalFunctions: formData.additionalFunctions || "",
+    termsOfUse: formData.termsOfUse || "",
+    status: formData.carStatus,
   };
 
-  return axios.put(`cars/update/${carId}`, payload);
+  return axios.put(`/cars/update/${carId}`, payload);
 };
 
 const getUserCarsDetail = (carId) => {
@@ -315,4 +359,9 @@ export {
   postConfirmBooking2,
   getUsersBooking,
   cancelBooking,
+  updateCarDetail,
+  confirmDeposit,
+  confirmPickup,
+  completeBooking,
+  getBookingDetail,
 };

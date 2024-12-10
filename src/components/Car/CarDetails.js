@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Carousel, Tab, Tabs, Table, Button, Container } from "react-bootstrap";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getUserCarsDetail } from "../../service/apiService"; // API service
+import LoadingIcon from "../Loading";
 
 function CarDetails() {
   const navigate = useNavigate();
@@ -40,7 +41,13 @@ function CarDetails() {
   };
 
   const handleBooking = () => {
-    navigate(`/booking/${carId}?pickupDate=${encodeURIComponent(pickupDate)}&dropoffDate=${encodeURIComponent(dropoffDate)}&location=${encodeURIComponent(location)}`);
+    navigate(
+      `/booking/${carId}?pickupDate=${encodeURIComponent(
+        pickupDate
+      )}&dropoffDate=${encodeURIComponent(
+        dropoffDate
+      )}&location=${encodeURIComponent(location)}`
+    );
   };
 
   useEffect(() => {
@@ -74,7 +81,7 @@ function CarDetails() {
   }, [carId]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <LoadingIcon />;
   }
 
   if (!carDetail) {
@@ -83,9 +90,7 @@ function CarDetails() {
 
   return (
     <Container>
-      <div
-        className="car-details-container"
-      >
+      <div className="car-details-container">
         <div className="d-flex justify-content-between">
           {/* Carousel */}
           <div style={{ width: "60%", paddingRight: "20px" }}>
@@ -133,10 +138,7 @@ function CarDetails() {
                 Available
               </span>
             </p>
-            <Button
-              onClick={handleBooking}
-              variant="warning"
-            >
+            <Button onClick={handleBooking} variant="warning">
               Rent Now
             </Button>
           </div>
@@ -183,13 +185,17 @@ function CarDetails() {
                 </tr>
               </thead>
               <tbody>
-                {/* {carDetail.documents.map((doc, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{doc.name}</td>
-                    <td>{doc.note}</td>
-                  </tr>
-                ))} */}
+                {carDetail.documents.map((doc, index) => {
+                  const fileName = doc.split("/").pop();
+
+                  return (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{fileName}</td>
+                      <td>None</td>{" "}
+                    </tr>
+                  );
+                })}
               </tbody>
             </Table>
             <p className="text-muted">
