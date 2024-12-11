@@ -200,9 +200,7 @@ const OwnerListCar = (props) => {
               <Dropdown.Item onClick={() => filterCarsByStatus("Available")}>
                 Available
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => filterCarsByStatus("Booked")}>
-                Booked
-              </Dropdown.Item>
+
               <Dropdown.Item onClick={() => filterCarsByStatus("Stopped")}>
                 Stopped
               </Dropdown.Item>
@@ -221,8 +219,8 @@ const OwnerListCar = (props) => {
               <th>Price</th>
               <th>Location</th>
               <th>Status</th>
-              <th>Confirm</th>
-              <th>Action</th>
+              {/* <th>Confirm</th> */}
+              <th>View details</th>
             </tr>
           </thead>
           <tbody>
@@ -257,23 +255,23 @@ const OwnerListCar = (props) => {
                       {car.carStatus}
                     </span>
                   </td>
-                  <td>
-                    {/* {car.carStatus === "Booked" && (
+                  {/* <td> */}
+                  {/* {car.carStatus === "Booked" && (
                       <Button style={styles.primaryButton}>
                         Confirm Payment
                       </Button>
                     )} */}
-                    {car.carStatus === "Available" && (
+                  {/* {car.carStatus === "Available" && (
                       <Button style={styles.primaryButton}>
                         Confirm Pick - up
                       </Button>
-                    )}
-                    {/* {car.carStatus === "Stopped" && (
+                    )} */}
+                  {/* {car.carStatus === "Stopped" && (
                       <Button style={styles.primaryButton}>
                         Confirm Deposit
                       </Button>
                     )} */}
-                  </td>
+                  {/* </td> */}
                   <td>
                     <Button
                       onClick={() => handleCarDetail(car.id)}

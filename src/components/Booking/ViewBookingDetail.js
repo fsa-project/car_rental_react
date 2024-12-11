@@ -151,13 +151,13 @@ function BookingDetails() {
 
         setBookingDetail((prev) => ({
           ...prev,
-          bookingStatus: "Cancelled",
+          bookingStatus: "Canceled",
         }));
       } else {
         throw new Error("Failed to cancel booking");
       }
     } catch (error) {
-      console.error("Error cancelling booking:", error);
+      console.error("Error canceling booking:", error);
       alert("Failed to cancel booking. Please try again later.");
     }
   };

@@ -12,7 +12,7 @@ import {
 import LoadingIcon from "../Loading";
 import { useNavigate } from "react-router-dom";
 
-function MyBooking() {
+function OwnerViewListBooking() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -399,4 +399,4 @@ function MyBooking() {
   );
 }
 
-export default MyBooking;
+export default OwnerViewListBooking;
