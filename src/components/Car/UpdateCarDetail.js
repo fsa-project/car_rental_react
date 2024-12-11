@@ -5,9 +5,15 @@ import { getUserCarsDetail, updateCarDetail } from "../../service/apiService";
 import LoadingIcon from "../Loading";
 
 function UpdateCarDetail() {
+  const [imageURLs, setImageURLs] = useState([]);
+  const [newImageURLs, setNewImageURLs] = useState([]);
   const { carId } = useParams();
   const navigate = useNavigate();
-
+  const handleImageChange = (index, value) => {
+    const updatedImageURLs = [...newImageURLs];
+    updatedImageURLs[index] = value;
+    setNewImageURLs(updatedImageURLs);
+  };
   const [carDetail, setCarDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -30,6 +36,50 @@ function UpdateCarDetail() {
     termsOfUse: "",
     additionalFunctions: "",
   });
+  const fetchImages = async (imageApis) => {
+    try {
+      const imagePromises = imageApis.map((api) =>
+        fetch(`http://localhost:8386${api}`).then((res) => {
+          if (res.ok) {
+            return res.blob();
+          }
+
+          throw new Error("Failed to fetch image");
+        })
+      );
+      const blobs = await Promise.all(imagePromises);
+      const urls = blobs.map((blob) => URL.createObjectURL(blob));
+      setImageURLs(urls);
+
+      // Cleanup URLs on unmount
+      return () => {
+        urls.forEach((url) => URL.revokeObjectURL(url));
+      };
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
+  useEffect(() => {
+    const fetchCarDetail = async () => {
+      try {
+        const response = await getUserCarsDetail(carId);
+        if (response && response.statusCode === 200) {
+          setCarDetail(response.data);
+          if (response.data.images?.length) {
+            await fetchImages(response.data.images);
+          }
+        } else {
+          console.error("Failed to fetch car details.");
+        }
+      } catch (error) {
+        console.error("Error fetching car details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCarDetail();
+  }, [carId]);
 
   useEffect(() => {
     const fetchCarDetail = async () => {
@@ -37,6 +87,9 @@ function UpdateCarDetail() {
         const response = await getUserCarsDetail(carId);
         if (response && response.statusCode === 200) {
           setCarDetail(response.data);
+          if (response.data.images?.length) {
+            await fetchImages(response.data.images);
+          }
           setFormData({
             ...response.data,
             termsOfUse: response.data.termsOfUse || [],
@@ -58,12 +111,11 @@ function UpdateCarDetail() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await updateCarDetail(carId, formData);
-      if (response && response.statusCode === 200) {
+      if (response && response.status === 200) {
         alert("Car details updated successfully!");
         navigate(`/owner/car-detail/${carId}`);
       } else {
@@ -321,6 +373,32 @@ function UpdateCarDetail() {
                   />
                 </Form.Group>
               </Col>
+            </Row>
+          </Tab>
+          {/*  Image tab */}
+          <Tab eventKey="images" title="Images">
+            <Row>
+              {imageURLs.map((url, index) => (
+                <Col md={3} key={index}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Image {index + 1}</Form.Label>
+                    <div className="mb-2">
+                      <img
+                        src={url}
+                        alt={`Car Image ${index + 1}`}
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </div>
+                    <Form.Control
+                      type="file"
+                      accept=".jpg,.jpeg,.png,.gif"
+                      placeholder="Up new Image"
+                      value={newImageURLs[index]}
+                      onChange={(e) => handleImageChange(index, e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+              ))}
             </Row>
           </Tab>
         </Tabs>

@@ -14,6 +14,7 @@ import { FiList } from "react-icons/fi";
 import { MdGridOn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import LoadingIcon from "../../Loading";
+import { confirmPickup } from "../../../service/apiService";
 
 const OwnerListCar = (props) => {
   const { cars, setCars, pageCount, currentPage, setCurrentPage, fetchCar } =
@@ -62,6 +63,15 @@ const OwnerListCar = (props) => {
   const filteredCars = filterStatus
     ? cars.filter((car) => car.carStatus === filterStatus)
     : cars;
+  const handlePickup = async (bookingId) => {
+    try {
+      await confirmPickup(bookingId);
+      alert(`Booking ${bookingId} has been confirmed pickup!`);
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      alert("Failed to confirm booking. Please try again.");
+    }
+  };
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -248,21 +258,21 @@ const OwnerListCar = (props) => {
                     </span>
                   </td>
                   <td>
-                    {car.carStatus === "Booked" && (
+                    {/* {car.carStatus === "Booked" && (
                       <Button style={styles.primaryButton}>
                         Confirm Payment
                       </Button>
-                    )}
+                    )} */}
                     {car.carStatus === "Available" && (
-                      <Button style={styles.primaryButton} disabled>
-                        Confirm Deposit
+                      <Button style={styles.primaryButton}>
+                        Confirm Pick - up
                       </Button>
                     )}
-                    {car.carStatus === "Stopped" && (
+                    {/* {car.carStatus === "Stopped" && (
                       <Button style={styles.primaryButton}>
                         Confirm Deposit
                       </Button>
-                    )}
+                    )} */}
                   </td>
                   <td>
                     <Button

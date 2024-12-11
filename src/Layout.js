@@ -29,6 +29,7 @@ import OwnerCarDetail from "./components/Car/OwnerCarDetail";
 import UpdateCarDetail from "./components/Car/UpdateCarDetail";
 import Forbidden from "./pages/ErrorPage/Forbidden";
 import SearchPage from "./components/Search/SearchPage";
+import ViewBookingDetail from "./components/Booking/ViewBookingDetail";
 const Layout = () => {
   return (
     <>
@@ -58,6 +59,10 @@ const Layout = () => {
           <Route path="/add-car" element={<AddCarPage />} />
           <Route path="/tkspaying" element={<ThanksForPayingPage />} />
           <Route path="/owner-list-car" element={<OwnerListCarPage />} />
+          <Route
+            path="/booking-detail/:bookingId"
+            element={<ViewBookingDetail />}
+          />
           <Route
             path="/owner-car-details/:carId"
             element={<OwnerCarDetail />}

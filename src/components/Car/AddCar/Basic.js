@@ -23,7 +23,7 @@ const Basic = (props) => {
 
     setDocuments(updatedDocuments);
     onDocumentsChange(updatedDocuments); // Gửi toàn bộ mảng file về parent
-  }
+  };
 
   return (
     <form className="basic-form" onSubmit={handleSubmit}>
@@ -47,11 +47,7 @@ const Basic = (props) => {
           </div>
           <div className="form-group">
             <label>Color *</label>
-            <select
-              name="color"
-              value={formData.color}
-              onChange={setFormData}
-            >
+            <select name="color" value={formData.color} onChange={setFormData}>
               <option value="Black">Black</option>
               <option value="White">White</option>
               <option value="Blue">Blue</option>
@@ -80,15 +76,13 @@ const Basic = (props) => {
           </div>
           <div className="form-group">
             <label>Production year *</label>
-            <select
-              name="productionYears"
-              value={formData.productionYears}
+            <input
+              type="text"
+              name="productionYear"
+              value={formData.productionYear}
               onChange={setFormData}
-            >
-              <option value="2022">2022</option>
-              <option value="2021">2021</option>
-              <option value="2020">2020</option>
-            </select>
+              required
+            />
           </div>
           <div className="form-group">
             <label>No. of seats *</label>
@@ -192,6 +186,6 @@ const Basic = (props) => {
       </div>
     </form>
   );
-}
+};
 
 export default Basic;
