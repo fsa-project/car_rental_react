@@ -55,6 +55,9 @@ const Header = () => {
   const handleMyCars = () => {
     navigate("/owner-list-car");
   };
+  const handleBooking = () => {
+    navigate("/owner-list-booking");
+  };
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
@@ -139,6 +142,9 @@ const Header = () => {
                           </NavDropdown.Item>
                           <NavDropdown.Item onClick={handleReport}>
                             My Report
+                          </NavDropdown.Item>
+                          <NavDropdown.Item onClick={handleBooking}>
+                            My Booking list
                           </NavDropdown.Item>
                         </>
                       ) : (
