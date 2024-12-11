@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Container, ProgressBar } from "react-bootstrap";
 import "../pages/AddCarPage.scss";
@@ -8,9 +8,9 @@ import Pricing from "../components/Car/AddCar/Pricing";
 import Detail from "../components/Car/AddCar/Detail";
 import { postAddNewCar } from "../service/apiService";
 import { toast } from "react-toastify";
+import LoadingIcon from "../components/Loading";
 
 const AddCarPage = () => {
-
   const [formData, setFormData] = useState({
     name: "",
     licensePlate: "",
@@ -28,7 +28,7 @@ const AddCarPage = () => {
     address: "",
     additionalFunctions: "",
     description: "",
-    termsOfUse: ""
+    termsOfUse: "",
   });
 
   const [addFunc, setAddFunc] = useState({
@@ -39,7 +39,7 @@ const AddCarPage = () => {
     childLock: false,
     childSeat: false,
     dvd: false,
-    usb: false
+    usb: false,
   });
 
   const [terms, setTerms] = useState({
@@ -48,6 +48,7 @@ const AddCarPage = () => {
     noPet: false,
     other: false,
   });
+  const [loading, setLoading] = useState(true);
 
   const [otherDetail, setOtherDetail] = useState("");
 
@@ -57,7 +58,7 @@ const AddCarPage = () => {
     front: null,
     back: null,
     left: null,
-    right: null
+    right: null,
   });
 
   const [previewImage, setPreviewImage] = useState(null);
@@ -65,7 +66,6 @@ const AddCarPage = () => {
   const handleImagesChange = (images) => {
     setCarImages(images);
   };
-
 
   const handleFormDataChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -78,7 +78,8 @@ const AddCarPage = () => {
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setAddFunc({
-      ...addFunc, [name]: checked
+      ...addFunc,
+      [name]: checked,
     });
   };
   const [step, setStep] = useState(1);
@@ -103,7 +104,9 @@ const AddCarPage = () => {
   };
 
   const onActiveChange = () => {
-    const carName = `${formData.brand + " " + formData.model + " " + formData.productionYears}`;
+    const carName = `${
+      formData.brand + " " + formData.model + " " + formData.productionYears
+    }`;
     // Derive the active functions and terms
     const activeFunc = Object.keys(addFunc)
       .filter((key) => addFunc[key])
@@ -131,9 +134,7 @@ const AddCarPage = () => {
     });
   };
 
-
   const handleSubmit = async () => {
-
     onActiveChange();
     try {
       console.log(carImages);
@@ -144,14 +145,13 @@ const AddCarPage = () => {
         toast.success(response.message);
         navigate("/owner-list-car");
       } else {
-        toast.error(response.error)
+        toast.error(response.error);
         console.error("Response does not contain data.");
       }
-
     } catch (error) {
       console.error("Error fetching cars:", error);
     }
-  }
+  };
 
   const existFile = () => {
     console.log("image: " + carImages);
@@ -161,45 +161,63 @@ const AddCarPage = () => {
       });
     }
     console.log("image: " + documents);
-
-  }
+  };
 
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <Basic formData={formData}
-          setFormData={handleFormDataChange}
-          onDocumentsChange={handleDocumentsChange}
-        />;
+        return (
+          <Basic
+            formData={formData}
+            setFormData={handleFormDataChange}
+            onDocumentsChange={handleDocumentsChange}
+          />
+        );
       case 2:
-        return <Detail formData={formData}
-          setFormData={handleFormDataChange}
-          images={carImages}
-          onImagesChange={handleImagesChange}
-          handleCheckboxChange={handleCheckboxChange}
-          addFunc={addFunc}
-          setCarImages={setCarImages}
-          setPreviewImage={setPreviewImage}
-        />;
+        return (
+          <Detail
+            formData={formData}
+            setFormData={handleFormDataChange}
+            images={carImages}
+            onImagesChange={handleImagesChange}
+            handleCheckboxChange={handleCheckboxChange}
+            addFunc={addFunc}
+            setCarImages={setCarImages}
+            setPreviewImage={setPreviewImage}
+          />
+        );
       case 3:
-        return <Pricing formData={formData}
-          setFormData={handleFormDataChange}
-          terms={terms}
-          setTerms={setTerms}
-          otherDetail={otherDetail}
-          setOtherDetail={setOtherDetail}
-        />;
+        return (
+          <Pricing
+            formData={formData}
+            setFormData={handleFormDataChange}
+            terms={terms}
+            setTerms={setTerms}
+            otherDetail={otherDetail}
+            setOtherDetail={setOtherDetail}
+          />
+        );
       case 4:
-        return <Finish
-          formData={formData}
-          setFormData={handleFormDataChange}
-          previewImage={previewImage}
-        />;
+        return (
+          <Finish
+            formData={formData}
+            setFormData={handleFormDataChange}
+            previewImage={previewImage}
+          />
+        );
       default:
         return null;
     }
   };
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 700);
+  }, []);
 
+  if (loading) {
+    return <LoadingIcon />;
+  }
   return (
     <Container>
       <h2>Add a car</h2>
@@ -221,35 +239,23 @@ const AddCarPage = () => {
 
         <div className="d-flex justify-content-between mt-4">
           {step === 1 && (
-            <Button
-              variant="warning"
-              onClick={handleCancel}
-            >
+            <Button variant="warning" onClick={handleCancel}>
               Cancel
             </Button>
           )}
 
           {step !== 1 && step !== 5 && (
-            <Button
-              variant="warning"
-              onClick={handleBack}
-            >
+            <Button variant="warning" onClick={handleBack}>
               &larr; Back
             </Button>
           )}
 
           {step === 4 ? (
-            <Button
-              variant="warning"
-              onClick={handleNext}
-            >
+            <Button variant="warning" onClick={handleNext}>
               Submit
             </Button>
           ) : step !== 4 ? (
-            <Button
-              variant="warning"
-              onClick={handleNext}
-            >
+            <Button variant="warning" onClick={handleNext}>
               Next →
             </Button>
           ) : null}

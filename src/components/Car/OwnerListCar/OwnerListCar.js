@@ -13,14 +13,19 @@ import ReactPaginate from "react-paginate";
 import { FiList } from "react-icons/fi";
 import { MdGridOn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import LoadingIcon from "../../Loading";
+import { confirmPickup } from "../../../service/apiService";
 
 const OwnerListCar = (props) => {
-  const { cars, setCars, pageCount, currentPage, setCurrentPage, fetchCar } = props;
+  const { cars, setCars, pageCount, currentPage, setCurrentPage, fetchCar } =
+    props;
   const navigate = useNavigate();
 
   const [viewMode, setViewMode] = useState("table");
   const [sortOption, setSortOption] = useState("");
-  const [imageUrls, setImageUrls] = useState({}); // Lưu URL blob của ảnh
+  const [filterStatus, setFilterStatus] = useState("");
+  const [imageUrls, setImageUrls] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const handlePageClick = (event) => {
     fetchCar(+event.selected + 1);
@@ -31,7 +36,6 @@ const OwnerListCar = (props) => {
     navigate(`/owner-car-details/${carId}`);
   };
 
-  // Sắp xếp xe dựa trên lựa chọn
   const sortCars = (option) => {
     let sortedCars = [...cars];
     switch (option) {
@@ -52,7 +56,23 @@ const OwnerListCar = (props) => {
     sortCars(option);
   };
 
-  // Lấy ảnh từ API và lưu vào state
+  const filterCarsByStatus = (status) => {
+    setFilterStatus(status);
+  };
+
+  const filteredCars = filterStatus
+    ? cars.filter((car) => car.carStatus === filterStatus)
+    : cars;
+  const handlePickup = async (bookingId) => {
+    try {
+      await confirmPickup(bookingId);
+      alert(`Booking ${bookingId} has been confirmed pickup!`);
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      alert("Failed to confirm booking. Please try again.");
+    }
+  };
+
   useEffect(() => {
     const fetchImages = async () => {
       const urls = {};
@@ -63,7 +83,7 @@ const OwnerListCar = (props) => {
             const response = await fetch(`http://localhost:8386${imageApi}`);
             if (response.ok) {
               const blob = await response.blob();
-              urls[car.id] = URL.createObjectURL(blob); // Lưu URL blob
+              urls[car.id] = URL.createObjectURL(blob);
             }
           } catch (error) {
             console.error(`Error fetching image for car ${car.id}:`, error);
@@ -75,7 +95,6 @@ const OwnerListCar = (props) => {
 
     fetchImages();
 
-    // Cleanup các URL blob khi component bị unmount
     return () => {
       Object.values(imageUrls).forEach((url) => URL.revokeObjectURL(url));
     };
@@ -117,6 +136,15 @@ const OwnerListCar = (props) => {
       borderRadius: "5px",
     },
   };
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 800);
+  }, []);
+
+  if (loading) {
+    return <LoadingIcon />;
+  }
 
   return (
     <Container className="owner-list-car py-1">
@@ -127,7 +155,7 @@ const OwnerListCar = (props) => {
         >
           Add car
         </Button>
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-2 align-items-center">
           <Button
             style={{
               backgroundColor: viewMode === "table" ? "#ffc107" : "white",
@@ -161,6 +189,25 @@ const OwnerListCar = (props) => {
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+          <Dropdown>
+            <Dropdown.Toggle variant="outline-secondary">
+              Filter by Status
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => filterCarsByStatus("")}>
+                All
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => filterCarsByStatus("Available")}>
+                Available
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => filterCarsByStatus("Booked")}>
+                Booked
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => filterCarsByStatus("Stopped")}>
+                Stopped
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       </div>
 
@@ -179,8 +226,8 @@ const OwnerListCar = (props) => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(cars) &&
-              cars.map((car, index) => (
+            {Array.isArray(filteredCars) &&
+              filteredCars.map((car, index) => (
                 <tr key={car.id}>
                   <td>{index + 1}</td>
                   <td>{car.name}</td>
@@ -203,25 +250,29 @@ const OwnerListCar = (props) => {
                         car.carStatus === "Available"
                           ? styles.available
                           : car.carStatus === "Booked"
-                            ? styles.booked
-                            : styles.stopped
+                          ? styles.booked
+                          : styles.stopped
                       }
                     >
                       {car.carStatus}
                     </span>
                   </td>
                   <td>
-                    {car.carStatus === "Booked" && (
-                      <Button style={styles.primaryButton}>Confirm Payment</Button>
-                    )}
+                    {/* {car.carStatus === "Booked" && (
+                      <Button style={styles.primaryButton}>
+                        Confirm Payment
+                      </Button>
+                    )} */}
                     {car.carStatus === "Available" && (
-                      <Button style={styles.primaryButton} disabled>
-                        Confirm Deposit
+                      <Button style={styles.primaryButton}>
+                        Confirm Pick - up
                       </Button>
                     )}
-                    {car.carStatus === "Stopped" && (
-                      <Button style={styles.primaryButton}>Confirm Deposit</Button>
-                    )}
+                    {/* {car.carStatus === "Stopped" && (
+                      <Button style={styles.primaryButton}>
+                        Confirm Deposit
+                      </Button>
+                    )} */}
                   </td>
                   <td>
                     <Button
@@ -237,8 +288,8 @@ const OwnerListCar = (props) => {
         </Table>
       ) : (
         <Row>
-          {Array.isArray(cars) &&
-            cars.map((car) => (
+          {Array.isArray(filteredCars) &&
+            filteredCars.map((car) => (
               <Col md={12} key={car.id} className="mb-4">
                 <Card className="p-3">
                   <Row className="align-items-center">
@@ -258,7 +309,10 @@ const OwnerListCar = (props) => {
                         ))}
                       </Carousel>
                     </Col>
-                    <Col md={6} className="d-flex flex-column justify-content-center">
+                    <Col
+                      md={6}
+                      className="d-flex flex-column justify-content-center"
+                    >
                       <h5 className="text-center">{car.name}</h5>
                       <p className="text-center">
                         <strong>Price:</strong> {car.basePrice}
@@ -270,8 +324,8 @@ const OwnerListCar = (props) => {
                             car.carStatus === "Available"
                               ? styles.available
                               : car.carStatus === "Booked"
-                                ? styles.booked
-                                : styles.stopped
+                              ? styles.booked
+                              : styles.stopped
                           }
                         >
                           {car.carStatus}
@@ -285,12 +339,12 @@ const OwnerListCar = (props) => {
         </Row>
       )}
       <ReactPaginate
-        nextLabel="next >"
+        nextLabel=">>"
         onPageChange={handlePageClick}
         pageRangeDisplayed={3}
         marginPagesDisplayed={2}
         pageCount={pageCount}
-        previousLabel="< previous"
+        previousLabel="<<"
         pageClassName="page-item"
         pageLinkClassName="page-link"
         previousClassName="page-item"
@@ -300,11 +354,9 @@ const OwnerListCar = (props) => {
         breakLabel="..."
         breakClassName="page-item"
         breakLinkClassName="page-link"
-        containerClassName="pagination"
+        containerClassName="pagination justify-content-center"
         activeClassName="active"
         renderOnZeroPageCount={null}
-        forcePage={currentPage - 1}
-        initialPage={pageCount}
       />
     </Container>
   );

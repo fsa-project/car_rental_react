@@ -15,7 +15,7 @@ import { getUserCars, refreshToken } from "../../service/apiService";
 import { useNavigate } from "react-router-dom";
 
 const ListCar = () => {
-  const [viewMode, setViewMode] = useState("list"); // "list" hoặc "carousel"
+  const [viewMode, setViewMode] = useState("list");
 
   const cars = Array.from({ length: 10 }, (_, i) => ({
     id: i + 1,
@@ -34,7 +34,7 @@ const ListCar = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
-    fetchCar(); // Gọi API khi component được mount
+    fetchCar();
   }, []);
   const fetchCar = async () => {
     try {
@@ -45,11 +45,11 @@ const ListCar = () => {
         setData(response.data.result); // Gán nếu là mảng
       } else {
         console.error("Response data is not an array.");
-        setData([]); // Đặt giá trị mặc định là mảng rỗng nếu dữ liệu không hợp lệ
+        setData([]);
       }
     } catch (error) {
       console.error("Error fetching cars:", error);
-      setData([]); // Đặt giá trị mặc định là mảng rỗng nếu lỗi xảy ra
+      setData([]);
     }
   };
   const handleCarDetail = () => {

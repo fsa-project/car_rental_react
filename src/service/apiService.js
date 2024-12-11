@@ -103,30 +103,74 @@ const updateProfile = (userId, basicInfo, details, newPassword = null) => {
 
   return axios.put(`users/update/${userId}`, payload);
 };
+const confirmDeposit = async (bookingId, paymentMethod) => {
+  try {
+    const url = `/bookings/confirm/${bookingId}?paymentMethod=${paymentMethod}`;
+    const response = await axios.post(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API confirmDeposit:", error);
+    throw error;
+  }
+};
+const confirmPickup = async (bookingId) => {
+  try {
+    const url = `bookings/${bookingId}/confirm-pickup`;
+    const response = await axios.patch(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API confirmDeposit:", error);
+    throw error;
+  }
+};
+const completeBooking = async (bookingId, paymentMethod) => {
+  try {
+    const url = `/bookings/complete/${bookingId}?paymentMethod=${paymentMethod}`;
+    const response = await axios.post(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API completeBooking:", error);
+    throw error;
+  }
+};
+const getBookingDetail = (bookingId) => {
+  if (!bookingId) {
+    throw new Error("bookingId is required to fetch car details");
+  }
 
-export const updateCarDetail = (carId, basicInfo, details, status) => {
+  try {
+    axios.defaults.withCredentials = true;
+    console.log(`/bookings/booking-detail/${bookingId}`);
+    const response = axios.get(`/bookings/booking-detail/${bookingId}`);
+    return response;
+  } catch (error) {
+    console.error("Error in get booking detail:", error.message);
+    throw error;
+  }
+};
+
+const updateCarDetail = (carId, formData) => {
   const payload = {
-    name: basicInfo.name,
-    basePrice: basicInfo.basePrice,
-    address: basicInfo.address,
-    licensePlate: details.licensePlate,
-    color: details.color,
-    brand: details.brand,
-    model: details.model,
-    productionYears: details.productionYears,
-    numberOfSeats: details.numberOfSeats,
-    transmissionType: details.transmissionType,
-    fuelType: details.fuelType,
-    mileage: details.mileage,
-    fuelConsumption: details.fuelConsumption,
-    description: details.description,
-    additionalFunctions: details.additionalFunctions,
-    documents: details.documents,
-    termsOfUse: details.termsOfUse,
-    status: status,
+    name: formData.name,
+    basePrice: formData.basePrice,
+    address: formData.address,
+    licensePlate: formData.licensePlate,
+    color: formData.color,
+    brand: formData.brand,
+    model: formData.model,
+    productionYears: formData.productionYears,
+    numberOfSeats: formData.numberOfSeats,
+    transmissionType: formData.transmissionType,
+    fuelType: formData.fuelType,
+    mileage: formData.mileage,
+    fuelConsumption: formData.fuelConsumption,
+    description: formData.description,
+    additionalFunctions: formData.additionalFunctions || "",
+    termsOfUse: formData.termsOfUse || "",
+    status: formData.carStatus,
   };
 
-  return axios.put(`cars/update/${carId}`, payload);
+  return axios.put(`/cars/update/${carId}`, payload);
 };
 
 const getUserCarsDetail = (carId) => {
@@ -138,9 +182,9 @@ const getUserCarsDetail = (carId) => {
     axios.defaults.withCredentials = true;
     console.log(`cars/user-cars/${carId}`);
     const response = axios.get(`cars/user-cars/${carId}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
     });
     return response;
   } catch (error) {
@@ -167,6 +211,24 @@ const getTransaction = (userId) => {
     throw error;
   }
 };
+const cancelBooking = (bookingId) => {
+  if (!bookingId) {
+    throw new Error("bookingId is required to cancel booking");
+  }
+  try {
+    axios.defaults.withCredentials = true;
+    console.log(`/cancel/${bookingId}`);
+    const response = axios.post(`bookings/cancel/${bookingId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response;
+  } catch (e) {
+    console.error("Error in cancelBooking:", e.message);
+    throw e;
+  }
+};
 
 const postAddNewCar = (metadata, documents, images) => {
   axios.defaults.withCredentials = true;
@@ -174,19 +236,19 @@ const postAddNewCar = (metadata, documents, images) => {
   const formData = new FormData();
   const imagesArray = Object.values(images).filter((file) => file !== null);
 
-
   formData.append(
     "metadata",
     new Blob([JSON.stringify(metadata)], {
-      type: "application/json"
-    }));
+      type: "application/json",
+    })
+  );
   console.log(JSON.stringify(metadata));
 
   if (Array.isArray(documents)) {
     documents.forEach((file) => {
       formData.append("documents", file);
       console.log("tao la document");
-      console.log(file)
+      console.log(file);
     });
   } else {
     console.error("carImages is not an array:", images);
@@ -203,7 +265,7 @@ const postAddNewCar = (metadata, documents, images) => {
   }
 
   return axios.post(`cars/create`, formData, {
-    withCredentials: true
+    withCredentials: true,
   });
 };
 
@@ -219,43 +281,58 @@ const postANewBooking = (carId, bookingInfo, renter, driver) => {
   formData.append(
     "bookingInfo",
     new Blob([JSON.stringify(bookingInfo)], {
-      type: "application/json"
-    }));
+      type: "application/json",
+    })
+  );
 
   formData.append(
     "renter",
     new Blob([JSON.stringify(renter)], {
-      type: "application/json"
-    }));
+      type: "application/json",
+    })
+  );
 
   formData.append(
     "driver",
     new Blob([JSON.stringify(driver)], {
-      type: "application/json"
-    }));
+      type: "application/json",
+    })
+  );
 
   return axios.post(`bookings/new-booking?carId=${carId}`, formData, {
-    withCredentials: true
+    withCredentials: true,
   });
 };
 
-const getSearchCarsPaginate = (pickupDate, dropoffDate, location, page, size) => {
+const getSearchCarsPaginate = (
+  pickupDate,
+  dropoffDate,
+  location,
+  page,
+  size
+) => {
   axios.defaults.withCredentials = true;
-  return axios.get(`cars/search?startDate=${pickupDate}&endDate=${dropoffDate}&address=${location}&page=${page}&size=${size}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return axios.get(
+    `cars/search?startDate=${pickupDate}&endDate=${dropoffDate}&address=${location}&page=${page}&size=${size}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 
 const postConfirmBooking = (bookingId, paymentMethod) => {
   axios.defaults.withCredentials = true;
-  return axios.post(`bookings/confirm/${bookingId}?paymentMethod=${paymentMethod}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
+  return axios.post(
+    `bookings/confirm/${bookingId}?paymentMethod=${paymentMethod}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
 
 const postConfirmBooking2 = (bookingId, bookingStatus) => {
   axios.defaults.withCredentials = true;
@@ -264,7 +341,18 @@ const postConfirmBooking2 = (bookingId, bookingStatus) => {
       "Content-Type": "application/json",
     },
   });
-}
+};
+const getUsersBooking = () => {
+  try {
+    axios.defaults.withCredentials = true;
+
+    const response = axios.get(`bookings/all-booking`, {});
+    return response;
+  } catch (error) {
+    console.error("Error in getBooking:", error.message);
+    throw error;
+  }
+};
 
 export {
   postLogin,
@@ -281,5 +369,12 @@ export {
   getUserCarsPaginate,
   getSearchCarsPaginate,
   postConfirmBooking,
-  postConfirmBooking2
+  postConfirmBooking2,
+  getUsersBooking,
+  cancelBooking,
+  updateCarDetail,
+  confirmDeposit,
+  confirmPickup,
+  completeBooking,
+  getBookingDetail,
 };
