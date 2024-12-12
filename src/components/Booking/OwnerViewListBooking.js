@@ -3,16 +3,15 @@ import { Container, Button, Col, Row } from "react-bootstrap";
 import "./MyBooking.scss";
 import {
   getUserCarsDetail,
-  getUsersBooking,
   cancelBooking,
   confirmDeposit,
-  completeBooking,
-  confirmPickup,
+  getOwnersBooking,
+  postConfirmPayment,
 } from "../../service/apiService";
 import LoadingIcon from "../Loading";
 import { useNavigate } from "react-router-dom";
 
-function MyBooking() {
+function OwnerViewListBooking() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -20,29 +19,13 @@ function MyBooking() {
   const handleBookingDetail = (bookingId) => {
     navigate(`/booking-detail/${bookingId}`);
   };
-  const handleComplete = async (bookingId, paymentMethod) => {
+  const handleConfirmDeposit = async (bookingId) => {
     try {
-      await completeBooking(bookingId, paymentMethod);
-      alert(`Booking ${bookingId} has been complete!`);
+      await confirmDeposit(bookingId);
+      alert(`Booking ${bookingId} has been confirmed deposit!`);
       setData((prevData) =>
         prevData.map((item) =>
-          item.id === bookingId ? { ...item, bookingStatus: "Completed" } : item
-        )
-      );
-    } catch (error) {
-      console.error("Error conplete booking:", error);
-      alert("Failed to complete booking. Please try again.");
-    }
-  };
-  const handleConfirm = async (bookingId, paymentMethod) => {
-    try {
-      await confirmDeposit(bookingId, paymentMethod);
-      alert(`Booking ${bookingId} has been confirmed!`);
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id === bookingId
-            ? { ...item, bookingStatus: "Awaiting Pickup Confirmation" }
-            : item
+          item.id === bookingId ? { ...item, bookingStatus: "Confirmed" } : item
         )
       );
     } catch (error) {
@@ -50,15 +33,13 @@ function MyBooking() {
       alert("Failed to confirm booking. Please try again.");
     }
   };
-  const handleConfirmPickup = async (bookingId) => {
+  const handleConfirmPayment = async (bookingId) => {
     try {
-      await confirmPickup(bookingId);
-      alert(`Booking ${bookingId} has been confirmed pickup!`);
+      await postConfirmPayment(bookingId);
+      alert(`Booking ${bookingId} has been confirmed deposit!`);
       setData((prevData) =>
         prevData.map((item) =>
-          item.id === bookingId
-            ? { ...item, bookingStatus: "Awaiting Pickup Confirmation" }
-            : item
+          item.id === bookingId ? { ...item, bookingStatus: "Confirmed" } : item
         )
       );
     } catch (error) {
@@ -66,49 +47,10 @@ function MyBooking() {
       alert("Failed to confirm booking. Please try again.");
     }
   };
-  const handlePayment = async (bookingId, paymentMethod) => {
-    // try {
-    //   await confirmPickup(bookingId);
-    //   alert(`Booking ${bookingId} has been confirmed pickup!`);
-    //   setData((prevData) =>
-    //     prevData.map((item) =>
-    //       item.id === bookingId
-    //         ? { ...item, bookingStatus: "Awaiting Pickup Confirmation" }
-    //         : item
-    //     )
-    //   );
-    // } catch (error) {
-    //   console.error("Error confirming booking:", error);
-    //   alert("Failed to confirm booking. Please try again.");
-    // }
-  };
-
-  // const fetchImages = async (imageApis) => {
-  //   try {
-  //     const imagePromises = imageApis.map((api) =>
-  //       fetch(`http://localhost:8386${api}`).then((res) => {
-  //         if (res.ok) {
-  //           return res.blob();
-  //         }
-
-  //         throw new Error("Failed to fetch image");
-  //       })
-  //     );
-  //     const blobs = await Promise.all(imagePromises);
-  //     const urls = blobs.map((blob) => URL.createObjectURL(blob));
-  //     setImageURLs(urls);
-
-  //     return () => {
-  //       urls.forEach((url) => URL.revokeObjectURL(url));
-  //     };
-  //   } catch (error) {
-  //     console.error("Error fetching images:", error);
-  //   }
-  // };
   useEffect(() => {
     const fetchBookingsAndCars = async () => {
       try {
-        const bookingResponse = await getUsersBooking();
+        const bookingResponse = await getOwnersBooking();
         if (bookingResponse && bookingResponse.statusCode === 200) {
           const bookings = bookingResponse.data.result;
 
@@ -143,7 +85,24 @@ function MyBooking() {
 
     fetchBookingsAndCars();
   }, []);
+  //   useEffect(() => {
+  //     const fetchUserDetail = async () => {
+  //       try {
+  //         const response = await getUsersDetail(userId);
 
+  //         if (response?.statusCode === 200 && response.data) {
+  //           setWallet(response.data?.wallet);
+  //         } else {
+  //           console.error("Failed to fetch user detail.");
+  //         }
+  //       } catch (error) {
+  //         console.error("Error fetching user detail:", error);
+  //       } finally {
+  //       }
+  //     };
+
+  //     fetchUserDetail();
+  //   }, [userId]);
   const calculateDays = (start, end) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
@@ -170,31 +129,30 @@ function MyBooking() {
     }
   };
 
-  // Pending Deposit - sau khi tạo booking - Cancel ok
-  // Deposit Paid - sau khi renter trả tiền - Cancel v
-  // Confirmed - owner confirm là đã trả deposit v
-  // In Progress - sau khi renter confirm - pickup v
-  // Pending Payment - sau khi return car v
-  // Payment Paid - sau khi renter trả tiền v
+  // Pending Deposit - sau khi tạo booking - Cancel
+  // Deposit Paid - sau khi renter trả tiền - Cancel
+  // Confirmed - owner confirm là đã trả deposit
+  // In Progress - sau khi renter confirm - pickup
+  // Pending Payment - sau khi return car
+  // Payment Paid - sau khi renter trả tiền
   // Completed - sau khi owner xác nhận đã nhận đc tiền
-  // Canceled:
+  // Canceled
 
   // View Detail
   // Cancel
-  // return car
-  //confirm pick up
-  // pending payment
+  // confirm deposit
+  // confirm payment
 
   const renderActionButtons = (status, bookingId, paymentMethod) => {
     switch (status) {
-      case "Pending Deposit":
+      case "Deposit Paid":
         return (
           <>
             <Button
               className="btn-detail"
               onClick={() => handleBookingDetail(bookingId)}
             >
-              View details
+              Confirm Deposit
             </Button>
 
             <Button
@@ -202,6 +160,12 @@ function MyBooking() {
               className="btn-danger"
             >
               Cancel
+            </Button>
+            <Button
+              className="btn-detail"
+              onClick={() => handleBookingDetail(bookingId)}
+            >
+              View details
             </Button>
           </>
         );
@@ -223,12 +187,12 @@ function MyBooking() {
             >
               View details
             </Button>
-            {/* <Button
+            <Button
               className="btn-pickup"
-              onClick={() => handleConfirm(bookingId, paymentMethod)}
+              onClick={() => handleConfirmDeposit(bookingId, paymentMethod)}
             >
               Confirm deposit
-            </Button> */}
+            </Button>
             <Button
               onClick={() => handleCancel(bookingId)}
               className="btn-danger"
@@ -246,22 +210,24 @@ function MyBooking() {
             >
               View details
             </Button>
-            <Button
-              className="btn-detail"
-              onClick={() => handlePayment(bookingId, paymentMethod)}
-            >
-              Payment now!
-            </Button>
           </>
         );
       case "Payment Paid":
         return (
-          <Button
-            className="btn-detail"
-            onClick={() => handleBookingDetail(bookingId)}
-          >
-            View details
-          </Button>
+          <>
+            <Button
+              className="btn-detail"
+              onClick={() => handleBookingDetail(bookingId)}
+            >
+              View details
+            </Button>
+            <Button
+              className="btn-detail"
+              onClick={() => handleConfirmPayment(bookingId)}
+            >
+              Confirm Payment
+            </Button>
+          </>
         );
       case "Completed":
         return (
@@ -281,12 +247,6 @@ function MyBooking() {
             >
               View details
             </Button>
-            <Button
-              className="btn-detail"
-              onClick={() => handleConfirmPickup(bookingId)}
-            >
-              Confirm Pickup
-            </Button>
           </>
         );
       case "In Progress":
@@ -297,12 +257,6 @@ function MyBooking() {
               onClick={() => handleBookingDetail(bookingId)}
             >
               View details
-            </Button>
-            <Button
-              className="btn-return"
-              onClick={() => handleComplete(bookingId, paymentMethod)}
-            >
-              Return car
             </Button>
           </>
         );
@@ -399,4 +353,4 @@ function MyBooking() {
   );
 }
 
-export default MyBooking;
+export default OwnerViewListBooking;

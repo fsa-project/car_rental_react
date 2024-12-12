@@ -6,7 +6,13 @@ import BookingDetail from "../components/Booking/BookingDetail";
 import Payment from "../components/Booking/Payment";
 import Finish from "../components/Booking/Finish";
 import BookingInfo from "../components/Booking/BookingInfo";
-import { getTransaction, getUserCarsDetail, getUsersDetail, postANewBooking, postConfirmBooking } from "../service/apiService";
+import {
+  getTransaction,
+  getUserCarsDetail,
+  getUsersDetail,
+  postANewBooking,
+  postConfirmBooking,
+} from "../service/apiService";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
@@ -26,7 +32,6 @@ const BookingPage = () => {
   const [nODay, setNODay] = useState("");
   const [bookingResponse, setBookingResponse] = useState("");
 
-
   const [carDetail, setCarDetail] = useState("");
 
   const [requestBody, setRequestBody] = useState({
@@ -43,7 +48,7 @@ const BookingPage = () => {
     drivingLicense: "",
     address: "",
     nationalId: "",
-    email: ""
+    email: "",
   });
 
   const [requestDriver, setRequestDriver] = useState({
@@ -53,7 +58,7 @@ const BookingPage = () => {
     drivingLicense: "",
     address: "",
     nationalId: "",
-    email: ""
+    email: "",
   });
 
   const handleNext = () => {
@@ -85,20 +90,31 @@ const BookingPage = () => {
 
   const handleSearch = () => {
     navigate(
-      `/search-car?pickupDate=${encodeURIComponent(pickupDate)}&dropoffDate=${encodeURIComponent(dropoffDate)}&location=${encodeURIComponent(location)}`
+      `/search-car?pickupDate=${encodeURIComponent(
+        pickupDate
+      )}&dropoffDate=${encodeURIComponent(
+        dropoffDate
+      )}&location=${encodeURIComponent(location)}`
     );
   };
 
-
   const handleSubmitBooking = async () => {
     try {
-      const response = await postANewBooking(carId, requestBody, requestRenter, requestDriver);
+      const response = await postANewBooking(
+        carId,
+        requestBody,
+        requestRenter,
+        requestDriver
+      );
       console.log("Booking successful:", response.data);
 
       const bookingId = response.data.id;
       setBookingId(bookingId);
       if (requestBody.paymentMethod === "vnpay") {
-        const confirmResponse = await postConfirmBooking(response.data.id, requestBody.paymentMethod);
+        const confirmResponse = await postConfirmBooking(
+          response.data.id,
+          requestBody.paymentMethod
+        );
         console.log("VNPay confirmation response:", confirmResponse);
 
         window.location.href = confirmResponse.data.vnPayUrl;
@@ -106,24 +122,28 @@ const BookingPage = () => {
       }
 
       if (requestBody.paymentMethod === "wallet") {
-        const confirmResponse = await postConfirmBooking(response.data.id, requestBody.paymentMethod);
+        const confirmResponse = await postConfirmBooking(
+          response.data.id,
+          requestBody.paymentMethod
+        );
         console.log("Wallet confirmation response:", confirmResponse);
-        setBookingResponse(confirmResponse.data)
+        setBookingResponse(confirmResponse.data);
         if (confirmResponse.statusCode === 200) {
           console.log("Payment successfully");
-          toast.success("Payment successfully")
+          toast.success("Payment successfully");
         } else {
-          toast.error("Payment failure")
+          toast.error("Payment failure");
         }
       }
 
       handleNext();
       return response.data;
-
     } catch (error) {
       console.error("Error in booking process:", error);
       if (error.response) {
-        toast.error(error.response.data.message || "Có lỗi xảy ra khi xử lý yêu cầu.");
+        toast.error(
+          error.response.data.message || "Có lỗi xảy ra khi xử lý yêu cầu."
+        );
         console.error("Error response data:", error.response.data);
       } else if (error.request) {
         toast.error("Không nhận được phản hồi từ server.");
@@ -144,8 +164,6 @@ const BookingPage = () => {
     }
     return 0;
   };
-
-
 
   const [imageURLs, setImageURLs] = useState([]);
 
@@ -193,9 +211,7 @@ const BookingPage = () => {
     fetchUserDetail();
   }, [userId]);
 
-
   useEffect(() => {
-
     setPickupDate(searchParams.get("pickupDate"));
     setDropoffDate(searchParams.get("dropoffDate"));
     setLocation(searchParams.get("location"));
@@ -229,32 +245,38 @@ const BookingPage = () => {
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <BookingDetail
-          carDetail={carDetail}
-          requestBody={requestBody}
-          setRequestBody={setRequestBody}
-          imageURLs={imageURLs}
-          requestRenter={requestRenter}
-          requestDriver={requestDriver}
-          setRequestDriver={setRequestDriver}
-          setRequestRenter={setRequestRenter}
-        />;
+        return (
+          <BookingDetail
+            carDetail={carDetail}
+            requestBody={requestBody}
+            setRequestBody={setRequestBody}
+            imageURLs={imageURLs}
+            requestRenter={requestRenter}
+            requestDriver={requestDriver}
+            setRequestDriver={setRequestDriver}
+            setRequestRenter={setRequestRenter}
+          />
+        );
       case 2:
-        return <Payment
-          carDetail={carDetail}
-          requestBody={requestBody}
-          setRequestBody={setRequestBody}
-          wallet={wallet}
-          nODay={nODay}
-        />;
+        return (
+          <Payment
+            carDetail={carDetail}
+            requestBody={requestBody}
+            setRequestBody={setRequestBody}
+            wallet={wallet}
+            nODay={nODay}
+          />
+        );
       case 3:
-        return <Finish
-          carDetail={carDetail}
-          bookingResponse={bookingResponse}
-          pickupDate={pickupDate}
-          dropoffDate={dropoffDate}
-          location={location}
-        />;
+        return (
+          <Finish
+            carDetail={carDetail}
+            bookingResponse={bookingResponse}
+            pickupDate={pickupDate}
+            dropoffDate={dropoffDate}
+            location={location}
+          />
+        );
       default:
         return null;
     }

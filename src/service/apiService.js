@@ -333,6 +333,14 @@ const postConfirmBooking = (bookingId, paymentMethod) => {
     }
   );
 };
+const postConfirmPayment = (bookingId) => {
+  axios.defaults.withCredentials = true;
+  return axios.patch(`/${bookingId}/confirm-payment`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
 
 const postConfirmBooking2 = (bookingId, bookingStatus) => {
   axios.defaults.withCredentials = true;
@@ -347,6 +355,17 @@ const getUsersBooking = () => {
     axios.defaults.withCredentials = true;
 
     const response = axios.get(`bookings/all-booking`, {});
+    return response;
+  } catch (error) {
+    console.error("Error in getBooking:", error.message);
+    throw error;
+  }
+};
+const getOwnersBooking = () => {
+  try {
+    axios.defaults.withCredentials = true;
+
+    const response = axios.get(`bookings/owner-booking`, {});
     return response;
   } catch (error) {
     console.error("Error in getBooking:", error.message);
@@ -377,4 +396,6 @@ export {
   confirmPickup,
   completeBooking,
   getBookingDetail,
+  getOwnersBooking,
+  postConfirmPayment,
 };
