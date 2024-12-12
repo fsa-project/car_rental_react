@@ -31,6 +31,14 @@ const SearchCars = (props) => {
         navigate(`/car-details/${carId}?pickupDate=${encodeURIComponent(pickupDate)}&dropoffDate=${encodeURIComponent(dropoffDate)}&location=${encodeURIComponent(location)}`);
     };
 
+    // Format số tiền hiển thị
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        }).format(amount);
+    };
+
     // Sắp xếp xe dựa trên lựa chọn
     const sortCars = (option) => {
         let sortedCars = [...cars];
@@ -192,7 +200,7 @@ const SearchCars = (props) => {
                                             }}
                                         />
                                     </td>
-                                    <td>{car.basePrice}</td>
+                                    <td>{formatCurrency(car.basePrice)}</td>
                                     <td>{car.address}</td>
                                     <td>
                                         <span

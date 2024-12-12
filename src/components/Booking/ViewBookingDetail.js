@@ -20,6 +20,7 @@ import {
 import { useEffect } from "react";
 import LoadingIcon from "../Loading";
 import { useSelector } from "react-redux";
+import "./ViewBookingDetail.scss"
 
 function BookingDetails() {
   const [carDetail, setCarDetail] = useState(null);
@@ -168,17 +169,17 @@ function BookingDetails() {
   // const total = calculateTotal(days, basePrice);
   return (
     <Container style={{ paddingRight: "1.5 rem", paddingLeft: "1.5 rem" }}>
-      <h2 className="mb-4">Booking Details</h2>
-      <div className="d-flex justify-content-between">
-        {/* Khu vực hình ảnh */}
-        <div className="carousel-container">
-          <div className="carousel-wrapper">
+      <div className="view-booking-detail-container">
+        <h2 className="mb-4">Booking Details</h2>
+        <div className="d-flex justify-content-between">
+          {/* Khu vực hình ảnh */}
+          <div style={{ width: "60%", paddingRight: "20px" }}>
             <Carousel>
               {imageURLs.length > 0 ? (
                 imageURLs.map((url, index) => (
                   <Carousel.Item key={index}>
                     <img
-                      className="carousel-image"
+                      className="d-block"
                       src={url}
                       alt={`Car Image ${index + 1}`}
                       onError={(e) => {
@@ -190,7 +191,7 @@ function BookingDetails() {
               ) : (
                 <Carousel.Item>
                   <img
-                    className="carousel-image"
+                    className="d-block"
                     src="/no-image-available.jpg" // Ảnh mặc định
                     alt="No Images Available"
                   />
@@ -198,107 +199,108 @@ function BookingDetails() {
               )}
             </Carousel>
           </div>
-        </div>
 
-        <div style={{ width: "35%" }}>
-          <h4>{carDetail.name}</h4>
-          <p>
-            <strong>Form: </strong>
-            {new Date(bookingDetail.startDateTime).toLocaleString()}
-          </p>
-          <p>
-            <strong>To:</strong>{" "}
-            {new Date(bookingDetail.endDateTime).toLocaleString()}
-          </p>
-          <p>
-            Number of days:{" "}
-            <strong>
-              {calculateDays(
-                bookingDetail.startDateTime,
-                bookingDetail.endDateTime
+          <div style={{ width: "40%" }}>
+            <h4>{carDetail.name}</h4>
+            <p>
+              <strong>Form: </strong>
+              {new Date(bookingDetail.startDateTime).toLocaleString()}
+            </p>
+            <p>
+              <strong>To:</strong>{" "}
+              {new Date(bookingDetail.endDateTime).toLocaleString()}
+            </p>
+            <p>
+              Number of days:{" "}
+              <strong>
+                {calculateDays(
+                  bookingDetail.startDateTime,
+                  bookingDetail.endDateTime
+                )}
+              </strong>
+            </p>
+            <p>
+              Booking No.: <strong>BKN{bookingDetail.id}</strong>
+            </p>
+            <p>
+              Status:{" "}
+              <strong
+                style={{
+                  color:
+                    bookingDetail.bookingStatus === "Awaiting Pickup Confirmation"
+                      ? "#b88400"
+                      : bookingDetail.bookingStatus === "Pending Deposit"
+                        ? "blue"
+                        : bookingDetail.bookingStatus === "Cancelled"
+                          ? "red"
+                          : bookingDetail.bookingStatus === "Available"
+                            ? "green"
+                            : bookingDetail.bookingStatus === "In Progress"
+                              ? "orange"
+                              : "black",
+                }}
+              >
+                {bookingDetail.bookingStatus}
+              </strong>
+            </p>
+            <div className="d-flex justify-content-between mt-3">
+              <Button
+                onClick={() => {
+                  navigate(`/my-booking`);
+                }}
+                variant="success"
+                style={{
+                  backgroundColor: "#ffc107",
+                  color: "white",
+                  border: "none",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "5px",
+                }}
+              >
+                Back to list
+              </Button>
+            </div>
+            <div className="d-flex justify-content-between mt-3">
+              <Button
+                variant="primary"
+                onClick={() => {
+                  navigate(`/car-details/${bookingDetail.carId}`);
+                }}
+              >
+                View Details
+              </Button>
+            </div>
+
+            <div className="d-flex justify-content-between mt-3">
+              {["Awaiting Pickup Confirmation", "Pending Deposit"].includes(
+                bookingDetail.bookingStatus
+              ) && (
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      handleCancel(bookingDetail.id);
+                    }}
+                  >
+                    Cancel Booking
+                  </Button>
+                )}
+            </div>
+            <div className="d-flex justify-content-between mt-3">
+              {"In Progress".includes(bookingDetail.bookingStatus) && (
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    handleCancel(bookingDetail.id);
+                  }}
+                >
+                  Return Car
+                </Button>
               )}
-            </strong>
-          </p>
-          <p>
-            Booking No.: <strong>BKN{bookingDetail.id}</strong>
-          </p>
-          <p>
-            Status:{" "}
-            <strong
-              style={{
-                color:
-                  bookingDetail.bookingStatus === "Awaiting Pickup Confirmation"
-                    ? "#b88400"
-                    : bookingDetail.bookingStatus === "Pending Deposit"
-                    ? "blue"
-                    : bookingDetail.bookingStatus === "Cancelled"
-                    ? "red"
-                    : bookingDetail.bookingStatus === "Available"
-                    ? "green"
-                    : bookingDetail.bookingStatus === "In Progress"
-                    ? "orange"
-                    : "black",
-              }}
-            >
-              {bookingDetail.bookingStatus}
-            </strong>
-          </p>
-          <div className="d-flex justify-content-between mt-3">
-            <Button
-              onClick={() => {
-                navigate(`/my-booking`);
-              }}
-              variant="success"
-              style={{
-                backgroundColor: "#ffc107",
-                color: "white",
-                border: "none",
-                padding: "0.5rem 1rem",
-                borderRadius: "5px",
-              }}
-            >
-              Back to list
-            </Button>
-          </div>
-          <div className="d-flex justify-content-between mt-3">
-            <Button
-              variant="primary"
-              onClick={() => {
-                navigate(`/car-details/${bookingDetail.carId}`);
-              }}
-            >
-              View Details
-            </Button>
-          </div>
-
-          <div className="d-flex justify-content-between mt-3">
-            {["Awaiting Pickup Confirmation", "Pending Deposit"].includes(
-              bookingDetail.bookingStatus
-            ) && (
-              <Button
-                variant="danger"
-                onClick={() => {
-                  handleCancel(bookingDetail.id);
-                }}
-              >
-                Cancel Booking
-              </Button>
-            )}
-          </div>
-          <div className="d-flex justify-content-between mt-3">
-            {"In Progress".includes(bookingDetail.bookingStatus) && (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  handleCancel(bookingDetail.id);
-                }}
-              >
-                Return Car
-              </Button>
-            )}
+            </div>
           </div>
         </div>
       </div>
+
 
       {/* Tabs hiển thị thông tin */}
       <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mt-4">
