@@ -22,11 +22,12 @@ function MyBooking() {
   };
   const handleComplete = async (bookingId, paymentMethod) => {
     try {
-      await completeBooking(bookingId, paymentMethod);
+      let response = await completeBooking(bookingId, paymentMethod);
+      console.log(response);
       alert(`Booking ${bookingId} has been complete!`);
       setData((prevData) =>
         prevData.map((item) =>
-          item.id === bookingId ? { ...item, bookingStatus: "Completed" } : item
+          item.id === bookingId ? { ...item, bookingStatus: "Payment Paid" } : item
         )
       );
     } catch (error) {
@@ -41,7 +42,7 @@ function MyBooking() {
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId
-            ? { ...item, bookingStatus: "Awaiting Pickup Confirmation" }
+            ? { ...item, bookingStatus: "In Progress" }
             : item
         )
       );
@@ -57,7 +58,7 @@ function MyBooking() {
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId
-            ? { ...item, bookingStatus: "Awaiting Pickup Confirmation" }
+            ? { ...item, bookingStatus: "In Progress" }
             : item
         )
       );
@@ -387,7 +388,7 @@ function MyBooking() {
                   {renderActionButtons(
                     item.bookingStatus,
                     item.id,
-                    item.paymentMethod
+                    "wallet"
                   )}
                 </div>
               </div>

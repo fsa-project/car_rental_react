@@ -39,7 +39,7 @@ function OwnerViewListBooking() {
       alert(`Booking ${bookingId} has been confirmed deposit!`);
       setData((prevData) =>
         prevData.map((item) =>
-          item.id === bookingId ? { ...item, bookingStatus: "Confirmed" } : item
+          item.id === bookingId ? { ...item, bookingStatus: "Completed" } : item
         )
       );
     } catch (error) {
@@ -150,7 +150,7 @@ function OwnerViewListBooking() {
           <>
             <Button
               className="btn-detail"
-              onClick={() => handleBookingDetail(bookingId)}
+              onClick={() => handleConfirmDeposit(bookingId)}
             >
               Confirm Deposit
             </Button>

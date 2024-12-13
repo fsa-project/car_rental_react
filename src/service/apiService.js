@@ -103,10 +103,11 @@ const updateProfile = (userId, basicInfo, details, newPassword = null) => {
 
   return axios.put(`users/update/${userId}`, payload);
 };
-const confirmDeposit = async (bookingId, paymentMethod) => {
+const confirmDeposit = async (bookingId) => {
   try {
-    const url = `/bookings/confirm/${bookingId}?paymentMethod=${paymentMethod}`;
-    const response = await axios.post(url);
+    axios.defaults.withCredentials = true;
+    const url = `/bookings/${bookingId}/confirm-deposit`;
+    const response = await axios.patch(url);
     return response.data;
   } catch (error) {
     console.error("Error in API confirmDeposit:", error);
@@ -115,6 +116,7 @@ const confirmDeposit = async (bookingId, paymentMethod) => {
 };
 const confirmPickup = async (bookingId) => {
   try {
+    axios.defaults.withCredentials = true;
     const url = `bookings/${bookingId}/confirm-pickup`;
     const response = await axios.patch(url);
     return response.data;
@@ -125,6 +127,7 @@ const confirmPickup = async (bookingId) => {
 };
 const completeBooking = async (bookingId, paymentMethod) => {
   try {
+    axios.defaults.withCredentials = true;
     const url = `/bookings/complete/${bookingId}?paymentMethod=${paymentMethod}`;
     const response = await axios.post(url);
     return response.data;
@@ -335,7 +338,7 @@ const postConfirmBooking = (bookingId, paymentMethod) => {
 };
 const postConfirmPayment = (bookingId) => {
   axios.defaults.withCredentials = true;
-  return axios.patch(`/${bookingId}/confirm-payment`, {
+  return axios.patch(`bookings/${bookingId}/confirm-payment`, {
     headers: {
       "Content-Type": "application/json",
     },

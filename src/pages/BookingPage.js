@@ -12,6 +12,7 @@ import {
   getUsersDetail,
   postANewBooking,
   postConfirmBooking,
+  postConfirmBooking2,
 } from "../service/apiService";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -98,6 +99,21 @@ const BookingPage = () => {
     );
   };
 
+  const updatePaymentStatus = async (bookingId, bookingStatus) => {
+    try {
+      const response = await postConfirmBooking2(bookingId, bookingStatus)
+
+      if (response.data.bookingStatus === "Confirmed" || response.data.bookingStatus === "Deposit Paid") {
+        toast.success("Payment status updated successfully!");
+      } else {
+        toast.error("Failed to update payment status.");
+      }
+    } catch (error) {
+      console.error("Error updating payment status:", error);
+      toast.error("An error occurred while updating payment status.");
+    }
+  };
+
   const handleSubmitBooking = async () => {
     try {
       const response = await postANewBooking(
@@ -128,8 +144,8 @@ const BookingPage = () => {
         );
         console.log("Wallet confirmation response:", confirmResponse);
         setBookingResponse(confirmResponse.data);
+
         if (confirmResponse.statusCode === 200) {
-          console.log("Payment successfully");
           toast.success("Payment successfully");
         } else {
           toast.error("Payment failure");
