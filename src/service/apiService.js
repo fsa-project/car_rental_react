@@ -152,28 +152,29 @@ const getBookingDetail = (bookingId) => {
   }
 };
 
-const updateCarDetail = (carId, formData) => {
-  const payload = {
-    name: formData.name,
-    basePrice: formData.basePrice,
-    address: formData.address,
-    licensePlate: formData.licensePlate,
-    color: formData.color,
-    brand: formData.brand,
-    model: formData.model,
-    productionYears: formData.productionYears,
-    numberOfSeats: formData.numberOfSeats,
-    transmissionType: formData.transmissionType,
-    fuelType: formData.fuelType,
-    mileage: formData.mileage,
-    fuelConsumption: formData.fuelConsumption,
-    description: formData.description,
-    additionalFunctions: formData.additionalFunctions || "",
-    termsOfUse: formData.termsOfUse || "",
-    status: formData.carStatus,
-  };
+const updateCarDetail = (carId, metadata, images) => {
+  const formData = new FormData();
 
-  return axios.put(`/cars/update/${carId}`, payload);
+  formData.append(
+    "metadata",
+    new Blob([JSON.stringify(metadata)], {
+      type: "application/json",
+    })
+  );
+  const imagesArray = Object.values(images).filter((file) => file !== null);
+
+  if (Array.isArray(imagesArray)) {
+    imagesArray.forEach((file) => {
+      formData.append("images", file);
+    });
+  } else {
+    console.error("carImages is not an array:", images);
+    return;
+  }
+
+  return axios.put(`/cars/update/${carId}`, formData, {
+    withCredentials: true,
+  });
 };
 
 const getUserCarsDetail = (carId) => {
