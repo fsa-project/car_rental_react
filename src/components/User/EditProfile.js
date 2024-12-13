@@ -95,11 +95,7 @@ const EditProfile = () => {
   // Cập nhật state cho Details
   const handleDetailsChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "drivingLicense") {
-      setDetails((prev) => ({ ...prev, [name]: files[0] }));
-    } else {
-      setDetails((prev) => ({ ...prev, [name]: value }));
-    }
+    setDetails((prev) => ({ ...prev, [name]: value }));
   };
   const fetchUpdatedUser = async () => {
     const userDetailResponse = await getUsersDetail(userId);

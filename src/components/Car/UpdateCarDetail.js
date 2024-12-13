@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Form, Button, Container, Row, Col, Tabs, Tab } from "react-bootstrap";
 import { getUserCarsDetail, updateCarDetail } from "../../service/apiService";
 import LoadingIcon from "../Loading";
+import { toast } from "react-toastify";
 
 function UpdateCarDetail() {
   const [imageURLs, setImageURLs] = useState([]);
@@ -127,11 +128,11 @@ function UpdateCarDetail() {
     e.preventDefault();
     try {
       const response = await updateCarDetail(carId, formData, carImages);
-      if (response && response.status === 200) {
-        alert("Car details updated successfully!");
-        navigate(`/owner/car-detail/${carId}`);
+      if (response && response.statusCode === 200) {
+        toast.success("Car details updated successfully!");
+        navigate(`/owner-car-details/${carId}`);
       } else {
-        alert("Failed to update car details.");
+        toast.error("Failed to update car details.");
       }
     } catch (error) {
       console.error("Error updating car details:", error);

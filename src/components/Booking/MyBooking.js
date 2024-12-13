@@ -11,11 +11,16 @@ import {
 } from "../../service/apiService";
 import LoadingIcon from "../Loading";
 import { useNavigate } from "react-router-dom";
+import SelectPaymentMethodModal from "./SelectPaymentMethodModal";
 
 function MyBooking() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [showModalPayment, setShowModalPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("vnpay");
+  const [bookingId, setBookingId] = useState("");
+  const [type, setType] = useState("Deposit");
 
   const handleBookingDetail = (bookingId) => {
     navigate(`/booking-detail/${bookingId}`);
@@ -30,6 +35,7 @@ function MyBooking() {
           item.id === bookingId ? { ...item, bookingStatus: "Payment Paid" } : item
         )
       );
+      return response;
     } catch (error) {
       console.error("Error conplete booking:", error);
       alert("Failed to complete booking. Please try again.");
@@ -171,6 +177,12 @@ function MyBooking() {
     }
   };
 
+  const handleSelectPayment = (event, bookingId) => {
+    setType(event.target.name);
+    setBookingId(bookingId);
+    setShowModalPayment(true);
+  }
+
   // Pending Deposit - sau khi tạo booking - Cancel ok
   // Deposit Paid - sau khi renter trả tiền - Cancel v
   // Confirmed - owner confirm là đã trả deposit v
@@ -196,6 +208,14 @@ function MyBooking() {
               onClick={() => handleBookingDetail(bookingId)}
             >
               View details
+            </Button>
+
+            <Button
+              className="btn-detail"
+              name="Deposit"
+              onClick={(event) => handleSelectPayment(event, bookingId)}
+            >
+              Payment Deposit
             </Button>
 
             <Button
@@ -249,7 +269,7 @@ function MyBooking() {
             </Button>
             <Button
               className="btn-detail"
-              onClick={() => handlePayment(bookingId, paymentMethod)}
+              onClick={() => handleSelectPayment(bookingId)}
             >
               Payment now!
             </Button>
@@ -301,7 +321,8 @@ function MyBooking() {
             </Button>
             <Button
               className="btn-return"
-              onClick={() => handleComplete(bookingId, paymentMethod)}
+              name="Rental"
+              onClick={(event) => handleSelectPayment(event, bookingId)}
             >
               Return car
             </Button>
@@ -321,6 +342,15 @@ function MyBooking() {
 
   return (
     <Container>
+      <SelectPaymentMethodModal
+        show={showModalPayment}
+        setShow={setShowModalPayment}
+        bookingId={bookingId}
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        type={type}
+        handleComplete={handleComplete}
+      />
       <h1 className="text-center">My Bookings</h1>
 
       {isLoading ? (

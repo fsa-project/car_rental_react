@@ -13,9 +13,9 @@ const ThanksForPayingPage = () => {
     // Gửi trạng thái giao dịch về backend để cập nhật
     const updatePaymentStatus = async () => {
       try {
-        const response = await postConfirmBooking2(orderId, "00")
+        const response = await postConfirmBooking2(orderId, status)
 
-        if (response.data.bookingStatus === "Confirmed" || response.data.bookingStatus === "Deposit Paid") {
+        if (response.data.bookingStatus === "Payment Paid" || response.data.bookingStatus === "Deposit Paid") {
           setMessage("Payment status updated successfully!");
         } else {
           setMessage("Failed to update payment status.");
