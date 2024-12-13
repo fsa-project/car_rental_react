@@ -14,6 +14,19 @@ function UpdateCarDetail() {
     updatedImageURLs[index] = value;
     setNewImageURLs(updatedImageURLs);
   };
+  const [carImages, setCarImages] = useState([]);
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    console.log(files);
+    setCarImages((prevState) => ({
+      ...prevState,
+      [e.target.name]: files[0] || null,
+    }));
+
+    const fileURL = URL.createObjectURL(files[0]);
+    setImageURLs(fileURL);
+  };
   const [carDetail, setCarDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -21,7 +34,6 @@ function UpdateCarDetail() {
     basePrice: "",
     deposit: "",
     address: "",
-    carStatus: "Available",
     licensePlate: "",
     color: "",
     brand: "",
@@ -114,7 +126,7 @@ function UpdateCarDetail() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await updateCarDetail(carId, formData);
+      const response = await updateCarDetail(carId, formData, carImages);
       if (response && response.status === 200) {
         alert("Car details updated successfully!");
         navigate(`/owner/car-detail/${carId}`);
@@ -393,7 +405,7 @@ function UpdateCarDetail() {
                       type="file"
                       accept=".jpg,.jpeg,.png,.gif"
                       placeholder="Up new Image"
-                      value={newImageURLs[index]}
+                      value={handleFileChange[index]}
                       onChange={(e) => handleImageChange(index, e.target.value)}
                     />
                   </Form.Group>
