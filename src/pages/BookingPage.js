@@ -126,30 +126,15 @@ const BookingPage = () => {
 
       const bookingId = response.data.id;
       setBookingId(bookingId);
-      if (requestBody.paymentMethod === "vnpay") {
-        const confirmResponse = await postConfirmBooking(
-          response.data.id,
-          requestBody.paymentMethod
-        );
-        console.log("VNPay confirmation response:", confirmResponse);
+      const confirmResponse = await postConfirmBooking(
+        response.data.id,
+        requestBody.paymentMethod
+      );
+      console.log("Payment confirmation response:", confirmResponse);
 
-        window.location.href = confirmResponse.data.vnPayUrl;
+      if (confirmResponse.data.paymentUrl !== "") {
+        window.location.href = confirmResponse.data.paymentUrl;
         return;
-      }
-
-      if (requestBody.paymentMethod === "wallet") {
-        const confirmResponse = await postConfirmBooking(
-          response.data.id,
-          requestBody.paymentMethod
-        );
-        console.log("Wallet confirmation response:", confirmResponse);
-        setBookingResponse(confirmResponse.data);
-
-        if (confirmResponse.statusCode === 200) {
-          toast.success("Payment successfully");
-        } else {
-          toast.error("Payment failure");
-        }
       }
 
       handleNext();

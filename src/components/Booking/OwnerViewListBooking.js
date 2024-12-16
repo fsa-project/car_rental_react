@@ -10,14 +10,29 @@ import {
 } from "../../service/apiService";
 import LoadingIcon from "../Loading";
 import { useNavigate } from "react-router-dom";
+import SelectPaymentMethodModal from "./SelectPaymentMethodModal";
 
 function OwnerViewListBooking() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [showModalPayment, setShowModalPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("vnpay");
+  const [bookingId, setBookingId] = useState("");
+  const [type, setType] = useState("Refund");
 
   const handleBookingDetail = (bookingId) => {
     navigate(`/booking-detail/${bookingId}`);
+  };
+  // Format số tiền hiển thị
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+  const handleRefund = async () => {
+
   };
   const handleConfirmDeposit = async (bookingId) => {
     try {
@@ -129,6 +144,12 @@ function OwnerViewListBooking() {
     }
   };
 
+  const handleSelectPayment = (event, bookingId) => {
+    setType(event.target.name);
+    setBookingId(bookingId);
+    setShowModalPayment(true);
+  }
+
   // Pending Deposit - sau khi tạo booking - Cancel
   // Deposit Paid - sau khi renter trả tiền - Cancel
   // Confirmed - owner confirm là đã trả deposit
@@ -229,6 +250,35 @@ function OwnerViewListBooking() {
             </Button>
           </>
         );
+      case "Pending Refund":
+        return (
+          <>
+            <Button
+              className="btn-detail"
+              onClick={() => handleBookingDetail(bookingId)}
+            >
+              View details
+            </Button>
+            <Button
+              name="Refund"
+              onClick={(event) => handleSelectPayment(event, bookingId)}
+              className="btn-warning"
+            >
+              Refund
+            </Button>
+          </>
+        );
+      case "Refund Paid":
+        return (
+          <>
+            <Button
+              className="btn-detail"
+              onClick={() => handleBookingDetail(bookingId)}
+            >
+              View details
+            </Button>
+          </>
+        );
       case "Completed":
         return (
           <Button
@@ -274,6 +324,14 @@ function OwnerViewListBooking() {
 
   return (
     <Container>
+      <SelectPaymentMethodModal
+        show={showModalPayment}
+        setShow={setShowModalPayment}
+        bookingId={bookingId}
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        type={type}
+      />
       <h1 className="text-center">My Bookings</h1>
 
       {isLoading ? (
@@ -318,13 +376,13 @@ function OwnerViewListBooking() {
                     </Col>
                     <Col md={6}>
                       <p className="car-info">
-                        <strong>Base price:</strong> {basePrice} đ
+                        <strong>Base price:</strong> {formatCurrency(basePrice)}
                       </p>
                       <p className="car-info">
-                        <strong>Total:</strong> {total} đ
+                        <strong>Total:</strong> {formatCurrency(total)}
                       </p>
                       <p className="car-info">
-                        <strong>Deposit:</strong> {deposit}
+                        <strong>Deposit:</strong> {formatCurrency(deposit)}
                       </p>
                       <p className="car-info">
                         <strong>Booking No:</strong> {item.id}

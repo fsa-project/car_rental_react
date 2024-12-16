@@ -7,50 +7,35 @@ import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 import "../Home/Content/ModalPickLocation.scss";
 import { toast } from "react-toastify";
-import { completeBooking, postConfirmBooking } from "../../service/apiService";
+import { completeBooking, postConfirmBooking, refundBooking } from "../../service/apiService";
 
 function SelectPaymentMethodModal(props) {
     const { show, setShow, bookingId, paymentMethod, setPaymentMethod, type, handleComplete } = props;
 
     const handleSubmit = async () => {
         if (type === "Deposit") {
-            if (paymentMethod === "vnpay") {
-                const confirmResponse = await postConfirmBooking(
-                    bookingId,
-                    paymentMethod
-                );
-                console.log("VNPay confirmation response:", confirmResponse);
+            const confirmResponse = await postConfirmBooking(
+                bookingId,
+                paymentMethod
+            );
+            console.log("Payment confirmation response:", confirmResponse);
 
-                window.location.href = confirmResponse.data.vnPayUrl;
-                return;
-            }
+            window.location.href = confirmResponse.data.paymentUrl;
+            return;
+        }
+        if (type === "Refund") {
+            let response = await refundBooking(bookingId, paymentMethod);
+            console.log("Payment confirmation response:", response.paymentUrl);
 
-            if (paymentMethod === "wallet") {
-                const confirmResponse = await postConfirmBooking(
-                    bookingId,
-                    paymentMethod
-                );
-                console.log("Wallet confirmation response:", confirmResponse);
+            window.location.href = response.paymentUrl;
+            return;
+        }
+        if (type === "Rental") {
+            let response = await completeBooking(bookingId, paymentMethod);
+            console.log("Payment confirmation response:", response.paymentUrl);
 
-                if (confirmResponse.statusCode === 200) {
-                    toast.success("Payment successfully");
-                } else {
-                    toast.error("Payment failure");
-                }
-            }
-        } else {
-            if (paymentMethod === "vnpay") {
-                let response = await completeBooking(bookingId, paymentMethod);
-                console.log("VNPay confirmation response:", response.vnPayUrl);
-
-                window.location.href = response.vnPayUrl;
-                return;
-            }
-
-            if (paymentMethod === "wallet") {
-                handleComplete(bookingId, paymentMethod);
-                return;
-            }
+            window.location.href = response.paymentUrl;
+            return;
         }
 
         handleClose();

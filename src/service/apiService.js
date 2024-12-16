@@ -125,10 +125,32 @@ const confirmPickup = async (bookingId) => {
     throw error;
   }
 };
+const confirmRefund = async (bookingId) => {
+  try {
+    axios.defaults.withCredentials = true;
+    const url = `bookings/${bookingId}/confirm-refund`;
+    const response = await axios.patch(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API confirmDeposit:", error);
+    throw error;
+  }
+};
 const completeBooking = async (bookingId, paymentMethod) => {
   try {
     axios.defaults.withCredentials = true;
     const url = `/bookings/complete/${bookingId}?paymentMethod=${paymentMethod}`;
+    const response = await axios.post(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API completeBooking:", error);
+    throw error;
+  }
+};
+const refundBooking = async (bookingId, paymentMethod) => {
+  try {
+    axios.defaults.withCredentials = true;
+    const url = `/bookings/refund/${bookingId}?paymentMethod=${paymentMethod}`;
     const response = await axios.post(url);
     return response.data;
   } catch (error) {
@@ -346,9 +368,9 @@ const postConfirmPayment = (bookingId) => {
   });
 };
 
-const postConfirmBooking2 = (bookingId, bookingStatus) => {
+const postConfirmBooking2 = (bookingId, paramsObject) => {
   axios.defaults.withCredentials = true;
-  return axios.post(`bookings/confirm2/${bookingId}?status=${bookingStatus}`, {
+  return axios.post(`payment/call-back/${bookingId}`, paramsObject, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -402,4 +424,6 @@ export {
   getBookingDetail,
   getOwnersBooking,
   postConfirmPayment,
+  confirmRefund,
+  refundBooking,
 };
